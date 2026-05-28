@@ -1,6 +1,9 @@
 .git
 .github
 .agents
+AGENTS.md
+docs
+tests
 node_modules
 vendor
 storage/logs/*
@@ -15,4 +18,13 @@ npm-debug.log
 yarn-error.log
 .phpunit.result.cache
 .phpunit.cache
+phpunit.xml
+.editorconfig
+.gitattributes
+README.md
+package.json
+package-lock.json
+vite.config.js
+resources/css
+resources/js
 AGENTS.md.backup-*

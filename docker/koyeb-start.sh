@@ -9,6 +9,10 @@ sed -ri "s/<VirtualHost \*:[0-9]+>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-
 mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache
 
+if [ ! -L public/storage ]; then
+    php artisan storage:link --no-interaction || true
+fi
+
 php artisan config:clear --no-interaction
 php artisan route:clear --no-interaction
 php artisan view:clear --no-interaction

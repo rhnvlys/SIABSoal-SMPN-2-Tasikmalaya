@@ -8,6 +8,7 @@ Rekomendasi utama:
 
 - Web app: Koyeb Free Instance, karena mendukung PHP melalui Git/Docker dan memberi URL `*.koyeb.app`.
 - Database: TiDB Cloud Starter/Serverless, karena kompatibel dengan protokol MySQL sehingga Laravel tetap memakai `DB_CONNECTION=mysql`.
+- Builder: Dockerfile project ini. Jalur ini lebih terkendali untuk Laravel karena extension PHP, Apache document root, migration, dan cache production diatur eksplisit.
 
 Alternatif:
 
@@ -21,6 +22,7 @@ Alternatif:
 3. Buka menu Connect.
 4. Pilih koneksi MySQL compatible.
 5. Catat host, port, database, username, dan password.
+6. Pastikan koneksi menggunakan TLS/SSL. TiDB Serverless mewajibkan koneksi TLS.
 
 Nilai environment Laravel yang dipakai:
 
@@ -33,6 +35,8 @@ DB_USERNAME=<username>
 DB_PASSWORD=<password>
 MYSQL_ATTR_SSL_CA=/etc/ssl/certs/ca-certificates.crt
 ```
+
+Gunakan plan Starter/Serverless dan set spend limit supaya tetap di jalur gratis.
 
 ## 2. Siapkan APP_KEY
 
@@ -70,6 +74,12 @@ work/siabsoal-build
 7. Isi environment variables mengikuti `.env.koyeb.example`.
 8. Deploy.
 
+Catatan upload:
+
+- File runtime yang dibutuhkan ada di `app`, `bootstrap`, `config`, `database`, `docker`, `public`, `resources/views`, `routes`, `artisan`, `composer.json`, `composer.lock`, `Dockerfile`, dan file konfigurasi deploy.
+- File internal `.agents`, `AGENTS.md`, `docs/superpowers`, `.env`, `vendor`, `node_modules`, `tests`, cache, dan dokumen non-runtime tidak dimasukkan ke image Docker.
+- `.koyebignore` hanya mencegah redeploy otomatis karena perubahan dokumen. Koyeb tetap menyalin repository saat build, jadi file internal harus benar-benar tidak ter-track Git atau harus dikecualikan oleh `.dockerignore`.
+
 ## 4. Environment production minimal
 
 Gunakan nilai berikut di Koyeb:
@@ -87,6 +97,8 @@ DB_DATABASE=<database TiDB>
 DB_USERNAME=<username TiDB>
 DB_PASSWORD=<password TiDB>
 MYSQL_ATTR_SSL_CA=/etc/ssl/certs/ca-certificates.crt
+PORT=8000
+SESSION_SECURE_COOKIE=true
 RUN_MIGRATIONS=true
 RUN_SEEDERS=true
 ```
