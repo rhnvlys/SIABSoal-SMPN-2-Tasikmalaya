@@ -21,3 +21,5 @@ AGENTS.md.backup-*
 .agents/
 AGENTS.md
 docs/superpowers/
+.deploy-render/
+.deploy-vercel/
