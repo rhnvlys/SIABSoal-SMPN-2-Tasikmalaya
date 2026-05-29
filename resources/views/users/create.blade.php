@@ -10,7 +10,7 @@
 
 <div class="card" style="max-width:680px">
     <div class="card-body">
-        <form action="{{ route('users.store') }}" method="POST">
+        <form action="{{ route('users.store') }}" method="POST" data-loading data-loading-text="Memproses...">
             @csrf
             <div class="form-row">
                 <div class="form-group">
@@ -32,9 +32,13 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Password <span class="required">*</span></label>
-                    <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" required>
+                    <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" required minlength="8">
                     @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Konfirmasi Password <span class="required">*</span></label>
+                <input type="password" name="password_confirmation" class="form-control" required minlength="8">
             </div>
             <div class="form-row">
                 <div class="form-group">

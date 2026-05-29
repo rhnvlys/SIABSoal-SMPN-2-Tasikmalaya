@@ -27,6 +27,15 @@
                     <div style="font-weight:600;font-size:var(--font-size-sm)">{{ auth()->user()->name ?? '' }}</div>
                     <div style="font-size:var(--font-size-xs);color:var(--text-muted)">{{ auth()->user()->role->nama_role ?? '' }}</div>
                 </div>
+                <a href="{{ route('profile.edit') }}">
+                    <i class="bi bi-person"></i>
+                    Profil Saya
+                </a>
+                <a href="{{ route('profile.password.edit') }}">
+                    <i class="bi bi-key"></i>
+                    Ganti Password
+                </a>
+                <div class="dropdown-divider"></div>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit">

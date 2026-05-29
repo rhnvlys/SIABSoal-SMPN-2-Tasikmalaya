@@ -44,7 +44,7 @@ class AuthController extends Controller
             // Cek status user
             if ($user->status !== 'aktif') {
                 Auth::logout();
-                return back()->with('error', 'Akun Anda tidak aktif. Hubungi administrator.');
+                return back()->with('error', 'Akun Anda nonaktif. Silakan hubungi administrator.');
             }
 
             $request->session()->regenerate();

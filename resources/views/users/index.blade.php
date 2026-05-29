@@ -51,6 +51,13 @@
                             <div class="btn-group">
                                 <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-outline"><i class="bi bi-pencil"></i></a>
                                 @if($user->id !== auth()->id())
+                                    <form action="{{ route('users.toggle-status', $user) }}" method="POST" data-loading data-loading-text="Memproses..." style="display:inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm btn-outline" title="{{ $user->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}">
+                                            <i class="bi {{ $user->status === 'aktif' ? 'bi-person-x' : 'bi-person-check' }}"></i>
+                                        </button>
+                                    </form>
                                     <form id="delete-user-{{ $user->id }}" action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline">
                                         @csrf @method('DELETE')
                                     </form>

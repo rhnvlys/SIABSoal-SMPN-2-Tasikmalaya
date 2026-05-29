@@ -82,7 +82,6 @@
         <h4>E. Ketuntasan</h4>
         <table>
             <tr><td>Tuntas</td><td>: {{ $ketuntasan['tuntas'] }}</td></tr>
-            <tr><td>Tuntas dengan Remedi</td><td>: {{ $ketuntasan['tuntas_dengan_remedi'] }}</td></tr>
             <tr><td>Belum Tuntas</td><td>: {{ $ketuntasan['belum_tuntas'] }}</td></tr>
         </table>
     </div>

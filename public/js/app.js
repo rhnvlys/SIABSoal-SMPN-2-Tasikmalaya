@@ -103,24 +103,97 @@
             }, 5000);
         });
 
-        document.querySelectorAll('form[data-loading]').forEach(function (form) {
-            form.addEventListener('submit', function () {
-                const btn = form.querySelector('button[type="submit"]');
-                if (btn && !btn.classList.contains('is-loading')) {
-                    btn.classList.add('is-loading');
-                    btn.innerHTML = '<span class="btn-text">' + btn.innerHTML + '</span>';
-                    btn.style.minWidth = btn.offsetWidth + 'px';
+        document.querySelectorAll('form').forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (form.dataset.confirm && form.dataset.confirmed !== 'true') {
+                    event.preventDefault();
+                    showActionConfirm({
+                        title: form.dataset.confirmTitle || 'Konfirmasi',
+                        message: form.dataset.confirm,
+                        confirmText: form.dataset.confirmButton || 'Ya, proses',
+                        onConfirm: function () {
+                            form.dataset.confirmed = 'true';
+                            if (typeof form.requestSubmit === 'function') {
+                                form.requestSubmit();
+                            } else {
+                                applyLoadingToForm(form);
+                                form.submit();
+                            }
+                        }
+                    });
+                    return;
+                }
+
+                if (form.dataset.confirmed === 'true') {
+                    delete form.dataset.confirmed;
+                }
+
+                if (form.dataset.loading !== undefined) {
+                    applyLoadingToForm(form);
                 }
             });
         });
 
         document.querySelectorAll('a[data-loading]').forEach(function (link) {
             link.addEventListener('click', function () {
-                link.classList.add('is-loading');
-                link.innerHTML = '<span class="btn-text">' + link.innerHTML + '</span>';
+                applyLoadingToButton(link, link.dataset.loadingText || 'Mengexport...');
             });
         });
     });
+
+    function applyLoadingToForm(form) {
+        const btn = form.querySelector('button[type="submit"]');
+        if (!btn) return;
+
+        applyLoadingToButton(btn, form.dataset.loadingText || btn.dataset.loadingText || 'Memproses...');
+    }
+
+    function applyLoadingToButton(element, text) {
+        if (element.classList.contains('is-loading')) return;
+
+        element.style.minWidth = element.offsetWidth + 'px';
+        element.classList.add('is-loading');
+        element.setAttribute('aria-disabled', 'true');
+        element.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span><span>' + text + '</span>';
+
+        if ('disabled' in element) {
+            element.disabled = true;
+        }
+    }
+
+    function showActionConfirm(options) {
+        const modal = document.getElementById('modal-confirm-action');
+        const titleEl = document.getElementById('confirm-action-title');
+        const messageEl = document.getElementById('confirm-action-message');
+        const confirmBtn = document.getElementById('btn-confirm-action');
+        const cancelBtn = document.getElementById('btn-cancel-action');
+
+        if (!modal || !confirmBtn) {
+            if (options.onConfirm) options.onConfirm();
+            return;
+        }
+
+        if (titleEl) titleEl.innerHTML = '<i class="bi bi-question-circle-fill text-primary" style="margin-right:6px"></i>' + options.title;
+        if (messageEl) messageEl.textContent = options.message;
+        confirmBtn.textContent = options.confirmText || 'Ya, proses';
+
+        modal.classList.add('active');
+
+        const cleanup = function () {
+            modal.classList.remove('active');
+            confirmBtn.onclick = null;
+            if (cancelBtn) cancelBtn.onclick = null;
+        };
+
+        confirmBtn.onclick = function () {
+            cleanup();
+            if (options.onConfirm) options.onConfirm();
+        };
+
+        if (cancelBtn) {
+            cancelBtn.onclick = cleanup;
+        }
+    }
 
     window.confirmDelete = function (formId, itemName) {
         const modal = document.getElementById('modal-confirm-delete');

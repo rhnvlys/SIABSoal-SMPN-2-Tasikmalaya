@@ -55,6 +55,18 @@ class OlahDataController extends Controller
         ]);
 
         try {
+            $jumlahHadir = PesertaUjian::where('ujian_id', $ujian->id)
+                ->where('status_kehadiran', 'hadir')
+                ->count();
+
+            $this->groupingService->hitungJumlahKelompok(
+                $jumlahHadir,
+                $request->input('metode_kelompok'),
+                $request->input('metode_kelompok') === 'manual'
+                    ? $request->integer('jumlah_kelompok_manual')
+                    : null
+            );
+
             $ujian->update([
                 'metode_kelompok' => $request->input('metode_kelompok'),
                 'jumlah_kelompok_manual' => $request->input('metode_kelompok') === 'manual'

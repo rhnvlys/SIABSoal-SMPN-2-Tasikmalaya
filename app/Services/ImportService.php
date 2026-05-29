@@ -73,10 +73,11 @@ class ImportService
             $statusHadir = str_replace([' ', '-'], '_', strtolower(trim($row[4] ?? 'hadir')));
 
             $rowErrors = [];
+            $displayName = $nama ?: $nis;
 
             // F7a: NIS kosong
             if (empty($nis)) {
-                $rowErrors[] = "NIS kosong";
+                $rowErrors[] = "Baris {$lineNum}: NIS wajib diisi.";
             }
 
             // F7b: NIS tidak ditemukan (cek di DB)
@@ -85,8 +86,9 @@ class ImportService
             if (!empty($nis)) {
                 $siswa = Siswa::where('nis', $nis)->first();
                 if (!$siswa) {
-                    $rowErrors[] = "NIS '{$nis}' tidak ditemukan di database";
+                    $rowErrors[] = "Baris {$lineNum}: NIS {$nis} tidak ditemukan di database.";
                 } else {
+                    $displayName = $siswa->nama_siswa;
                     $siswaKelas = SiswaKelas::where('siswa_id', $siswa->id)
                         ->whereIn('kelas_id', $kelasUjianIds)
                         ->where('tahun_ajaran_id', $ujian->tahun_ajaran_id)
@@ -95,7 +97,7 @@ class ImportService
                         ->first();
 
                     if (!$siswaKelas) {
-                        $rowErrors[] = "NIS '{$nis}' tidak terdaftar pada kelas ujian";
+                        $rowErrors[] = "Baris {$lineNum}: NIS {$nis} tidak terdaftar pada kelas ujian.";
                     }
                 }
             }
@@ -103,7 +105,7 @@ class ImportService
             // F7c: Duplikasi NIS dalam file
             if (!empty($nis)) {
                 if (isset($nisTracker[$nis])) {
-                    $rowErrors[] = "NIS '{$nis}' duplikat (sudah ada di baris {$nisTracker[$nis]})";
+                    $rowErrors[] = "Baris {$lineNum}: NIS {$nis} duplikat dengan baris {$nisTracker[$nis]}.";
                 } else {
                     $nisTracker[$nis] = $lineNum;
                 }
@@ -112,11 +114,11 @@ class ImportService
             // F7d: Jumlah kolom soal tidak sesuai
             $jawabanCols = array_slice($row, 5);
             if (count($jawabanCols) !== $jumlahSoal) {
-                $rowErrors[] = "Jumlah kolom jawaban tidak sesuai (butuh {$jumlahSoal}, ditemukan " . count($jawabanCols) . ")";
+                $rowErrors[] = "Baris {$lineNum}, siswa {$displayName}: jumlah kolom jawaban harus {$jumlahSoal}, ditemukan " . count($jawabanCols) . '.';
             }
 
             if (!in_array($statusHadir, ['hadir', 'tidak_hadir'])) {
-                $rowErrors[] = "Status kehadiran harus hadir atau tidak_hadir";
+                $rowErrors[] = "Baris {$lineNum}, siswa {$displayName}: status kehadiran harus hadir atau tidak_hadir.";
             }
 
             // F7e/f: Validasi isi jawaban per soal
@@ -126,11 +128,11 @@ class ImportService
 
                 if ($mode === 'abcd') {
                     if (!in_array($val, ['A','B','C','D','E'])) {
-                        $rowErrors[] = "Soal " . ($idx+1) . ": jawaban '{$val}' bukan A/B/C/D/E";
+                        $rowErrors[] = "Baris {$lineNum}, siswa {$displayName}, soal {$soal->nomor_soal}: jawaban harus A/B/C/D/E atau kosong.";
                     }
                 } else {
                     if (!in_array($val, ['0','1'])) {
-                        $rowErrors[] = "Soal " . ($idx+1) . ": skor '{$val}' bukan 0/1";
+                        $rowErrors[] = "Baris {$lineNum}, siswa {$displayName}, soal {$soal->nomor_soal}: skor harus 0 atau 1.";
                     }
                 }
             }

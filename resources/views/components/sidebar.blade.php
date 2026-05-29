@@ -57,9 +57,9 @@
                     @php
                         $isActive = false;
                         if (isset($menu['customActive'])) {
-                            $isActive = request()->is('*' . $menu['customActive'] . '*');
+                            $isActive = request()->routeIs($menu['customActive'] . '.*') || request()->is('*' . $menu['customActive'] . '*');
                         } else {
-                            $isActive = str_starts_with($currentRoute, explode('.', $menu['route'])[0]);
+                            $isActive = request()->routeIs(explode('.', $menu['route'])[0] . '.*') || $currentRoute === $menu['route'];
                         }
                         $href = '#';
                         try {

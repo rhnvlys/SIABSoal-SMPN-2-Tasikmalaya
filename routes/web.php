@@ -18,6 +18,7 @@ use App\Http\Controllers\DaftarNilaiController;
 use App\Http\Controllers\RekapNilaiController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ProfilSekolahController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,25 +40,33 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard (semua role)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Profil Saya
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile/password', [ProfileController::class, 'editPassword'])->name('profile.password.edit');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+
     // --------------------------------------------------
     // Manajemen User (Admin only)
     // --------------------------------------------------
     Route::middleware(['role:Admin'])->group(function () {
-        Route::resource('users', UserController::class);
+        Route::patch('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+        Route::put('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
+        Route::resource('users', UserController::class)->except(['show']);
     });
 
     // --------------------------------------------------
     // Data Guru (Admin only)
     // --------------------------------------------------
     Route::middleware(['role:Admin'])->group(function () {
-        Route::resource('guru', GuruController::class);
+        Route::resource('guru', GuruController::class)->except(['show']);
     });
 
     // --------------------------------------------------
     // Data Siswa (Admin, Operator)
     // --------------------------------------------------
     Route::middleware(['role:Admin,Operator'])->group(function () {
-        Route::resource('siswa', SiswaController::class);
+        Route::resource('siswa', SiswaController::class)->except(['show']);
     });
 
     // --------------------------------------------------
@@ -71,14 +80,14 @@ Route::middleware(['auth'])->group(function () {
     // Mata Pelajaran (Admin, Operator)
     // --------------------------------------------------
     Route::middleware(['role:Admin,Operator'])->group(function () {
-        Route::resource('mapel', MapelController::class);
+        Route::resource('mapel', MapelController::class)->except(['show']);
     });
 
     // --------------------------------------------------
     // Tahun Ajaran (Admin only)
     // --------------------------------------------------
     Route::middleware(['role:Admin'])->group(function () {
-        Route::resource('tahun-ajaran', TahunAjaranController::class);
+        Route::resource('tahun-ajaran', TahunAjaranController::class)->except(['show']);
     });
 
     // --------------------------------------------------

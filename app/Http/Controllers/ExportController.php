@@ -278,6 +278,8 @@ class ExportController extends Controller
 
         // Append summary
         $r = $data['ringkasan'];
+        $rentang = $data['rentang_nilai'];
+        $ketuntasan = $data['ketuntasan'];
         $rows[] = [];
         $rows[] = ['', '', '', 'RINGKASAN', '', '', '', '', '', ''];
         $rows[] = ['', '', '', 'Jumlah Siswa', $r['jumlah_siswa']];
@@ -286,8 +288,11 @@ class ExportController extends Controller
         $rows[] = ['', '', '', 'Nilai Tertinggi', $r['nilai_tertinggi']];
         $rows[] = ['', '', '', 'Nilai Terendah', $r['nilai_terendah']];
         $rows[] = ['', '', '', 'Rata-rata', $r['rata_rata']];
-        $rows[] = ['', '', '', 'Tercapai', $r['jumlah_tercapai']];
-        $rows[] = ['', '', '', 'Perlu Peningkatan', $r['jumlah_perlu_peningkatan']];
+        $rows[] = ['', '', '', 'Nilai < KKM', $rentang['bawah_kkm']];
+        $rows[] = ['', '', '', 'Nilai = KKM', $rentang['sama_kkm']];
+        $rows[] = ['', '', '', 'Nilai > KKM', $rentang['atas_kkm']];
+        $rows[] = ['', '', '', 'Tuntas', $ketuntasan['tuntas']];
+        $rows[] = ['', '', '', 'Belum Tuntas', $ketuntasan['belum_tuntas']];
 
         return $this->downloadCsv($header, $rows, "rekap_nilai_{$ujian->nama_ujian}");
     }

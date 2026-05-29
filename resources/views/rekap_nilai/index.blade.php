@@ -25,10 +25,10 @@
 
 {{-- Tombol Export --}}
 <div class="btn-group mb-3">
-    <a href="{{ route('export.rekap-nilai.excel', $ujian) }}" class="btn btn-outline">
+    <a href="{{ route('export.rekap-nilai.excel', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
         <i class="bi bi-file-earmark-spreadsheet"></i> Export Excel
     </a>
-    <a href="{{ route('export.rekap-nilai.pdf', $ujian) }}" class="btn btn-outline">
+    <a href="{{ route('export.rekap-nilai.pdf', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
         <i class="bi bi-file-earmark-pdf"></i> Export PDF
     </a>
     <button onclick="window.print()" class="btn btn-outline">
@@ -105,7 +105,6 @@
     <div class="card-body">
         <div class="info-grid">
             <div><strong>Tuntas:</strong> <span class="badge badge-green">{{ $ketuntasan['tuntas'] }}</span></div>
-            <div><strong>Tuntas dengan Remedi:</strong> <span class="badge badge-amber">{{ $ketuntasan['tuntas_dengan_remedi'] }}</span></div>
             <div><strong>Belum Tuntas:</strong> <span class="badge badge-red">{{ $ketuntasan['belum_tuntas'] }}</span></div>
         </div>
     </div>

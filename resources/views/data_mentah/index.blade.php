@@ -94,13 +94,16 @@
 
     {{-- Proses Data Mentah --}}
     @if($peserta->count() > 0 && $kunciLengkap)
-    <form action="{{ route('data-mentah.proses', $ujian) }}" method="POST" style="display:inline-flex;gap:8px;align-items:center">
+    <form action="{{ route('data-mentah.proses', $ujian) }}" method="POST" style="display:inline-flex;gap:8px;align-items:center"
+          data-loading data-loading-text="Memproses..."
+          data-confirm="Proses Data Mentah T1 akan mengonversi jawaban menjadi skor 0/1 dan menghitung ulang nilai. Lanjutkan?"
+          data-confirm-button="Ya, proses">
         @csrf
         <select name="mode" class="form-control" style="width:180px">
             <option value="abcd">Mode Jawaban A-E</option>
             <option value="biner">Mode Skor 0/1</option>
         </select>
-        <button type="submit" class="btn btn-success" onclick="return confirm('Proses Data Mentah T1? Jawaban akan dikonversi ke skor 0/1.')">
+        <button type="submit" class="btn btn-success">
             <i class="bi bi-play-fill"></i> Proses Data Mentah T1
         </button>
     </form>
@@ -108,8 +111,11 @@
 
     {{-- Export --}}
     @if($peserta->count() > 0)
-    <a href="{{ route('export.data-mentah.excel', $ujian) }}" class="btn btn-outline">
+    <a href="{{ route('export.data-mentah.excel', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
         <i class="bi bi-file-earmark-spreadsheet"></i> Export Excel
+    </a>
+    <a href="{{ route('export.data-mentah.pdf', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
+        <i class="bi bi-file-earmark-pdf"></i> Export PDF
     </a>
     @endif
 </div>
@@ -333,7 +339,7 @@
             <h3>Import Jawaban A/B/C/D/E</h3>
             <button type="button" class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('show')">&times;</button>
         </div>
-        <form action="{{ route('data-mentah.preview', $ujian) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('data-mentah.preview', $ujian) }}" method="POST" enctype="multipart/form-data" data-loading data-loading-text="Mengimport...">
             @csrf
             <input type="hidden" name="mode" value="abcd">
             <div class="modal-body">
@@ -355,7 +361,7 @@
             <h3>Import Skor 0/1</h3>
             <button type="button" class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('show')">&times;</button>
         </div>
-        <form action="{{ route('data-mentah.preview', $ujian) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('data-mentah.preview', $ujian) }}" method="POST" enctype="multipart/form-data" data-loading data-loading-text="Mengimport...">
             @csrf
             <input type="hidden" name="mode" value="biner">
             <div class="modal-body">

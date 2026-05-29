@@ -50,7 +50,7 @@ class DashboardController extends Controller
             $ujianQuery->where('guru_id', $user->guru->id);
         }
 
-        $ujianTerbaru = $ujianQuery->take(10)->get();
+        $ujianTerbaru = $ujianQuery->limit(5)->get();
 
         return view('dashboard.index', compact('stats', 'analisis', 'statusProgres', 'ujianTerbaru'));
     }

@@ -41,18 +41,21 @@
 {{-- Tombol Proses --}}
 @if(in_array($ujian->status, ['olah_data', 'dianalisis', 'selesai']))
 <div style="margin-bottom:24px">
-    <form action="{{ route('analisis-data.proses', $ujian) }}" method="POST" style="display:inline">
+    <form action="{{ route('analisis-data.proses', $ujian) }}" method="POST" style="display:inline"
+          data-loading data-loading-text="Memproses..."
+          data-confirm="Proses analisis akan menghitung ulang DP dan TK. Hasil analisis lama akan diperbarui. Lanjutkan?"
+          data-confirm-button="Ya, proses">
         @csrf
-        <button type="submit" class="btn btn-primary" onclick="return confirm('Proses Analisis Data T3? Hasil analisis sebelumnya akan diperbarui.')">
+        <button type="submit" class="btn btn-primary">
             <i class="bi bi-calculator"></i> Proses Analisis Data T3
         </button>
     </form>
 
     @if($analisis->count() > 0)
-        <a href="{{ route('export.analisis.excel', $ujian) }}" class="btn btn-outline">
+        <a href="{{ route('export.analisis.excel', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
             <i class="bi bi-file-earmark-spreadsheet"></i> Export Excel
         </a>
-        <a href="{{ route('export.analisis.pdf', $ujian) }}" class="btn btn-outline">
+        <a href="{{ route('export.analisis.pdf', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
             <i class="bi bi-file-earmark-pdf"></i> Export PDF
         </a>
     @endif

@@ -1390,11 +1390,8 @@ textarea.form-control {
     position: relative;
 }
 
-.btn.is-loading .btn-text { visibility: hidden; }
-
-.btn.is-loading::after {
-    content: '';
-    position: absolute;
+.loading-spinner {
+    display: inline-block;
     width: 16px;
     height: 16px;
     border: 2px solid transparent;

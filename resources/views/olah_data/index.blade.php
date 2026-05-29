@@ -60,7 +60,10 @@
         <i class="bi bi-sliders"></i> Metode Pembagian Kelompok
     </div>
     <div class="card-body">
-        <form action="{{ route('olah-data.proses', $ujian) }}" method="POST" data-loading>
+        <form action="{{ route('olah-data.proses', $ujian) }}" method="POST"
+              data-loading data-loading-text="Memproses..."
+              data-confirm="Proses Olah Data T2 akan menghitung ulang ranking serta kelompok atas, bawah, dan tengah. Lanjutkan?"
+              data-confirm-button="Ya, proses">
             @csrf
             <div class="form-row">
                 <div class="form-group">
@@ -80,13 +83,16 @@
             </div>
 
             <div class="btn-group" style="margin-top:12px;flex-wrap:wrap;gap:8px">
-                <button type="submit" class="btn btn-primary" onclick="return confirm('Proses Olah Data T2? Ranking dan kelompok akan dihitung ulang.')">
+                <button type="submit" class="btn btn-primary">
                     <i class="bi bi-play-fill"></i> Proses Olah Data T2
                 </button>
 
                 @if($pesertaHadir->count() > 0)
-                    <a href="{{ route('export.olah-data.excel', $ujian) }}" class="btn btn-outline">
+                    <a href="{{ route('export.olah-data.excel', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
                         <i class="bi bi-file-earmark-spreadsheet"></i> Export Excel
+                    </a>
+                    <a href="{{ route('export.olah-data.pdf', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
+                        <i class="bi bi-file-earmark-pdf"></i> Export PDF
                     </a>
                 @endif
             </div>

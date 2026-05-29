@@ -52,10 +52,10 @@
         <i class="bi bi-pencil-square"></i> Input Manual Nilai
     </button>
     @endif
-    <a href="{{ route('export.daftar-nilai.excel', $ujian) }}" class="btn btn-outline">
+    <a href="{{ route('export.daftar-nilai.excel', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
         <i class="bi bi-file-earmark-spreadsheet"></i> Export Excel
     </a>
-    <a href="{{ route('export.daftar-nilai.pdf', $ujian) }}" class="btn btn-outline">
+    <a href="{{ route('export.daftar-nilai.pdf', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
         <i class="bi bi-file-earmark-pdf"></i> Export PDF
     </a>
     <button onclick="window.print()" class="btn btn-outline">
@@ -154,7 +154,7 @@
             <h3>Input Manual Daftar Nilai T4</h3>
             <button type="button" class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('show')">&times;</button>
         </div>
-        <form action="{{ route('daftar-nilai.manual', $ujian) }}" method="POST" data-loading>
+        <form action="{{ route('daftar-nilai.manual', $ujian) }}" method="POST" data-loading data-loading-text="Memproses...">
             @csrf
             <div class="modal-body">
                 <div class="alert alert-info" style="margin-bottom:16px">

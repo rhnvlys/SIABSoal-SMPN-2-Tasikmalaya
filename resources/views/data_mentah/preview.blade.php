@@ -73,7 +73,7 @@
     <a href="{{ route('data-mentah.index', $ujian) }}" class="btn btn-outline"><i class="bi bi-arrow-left"></i> Batal</a>
 
     @if(count($result['valid']) > 0 && count($result['errors']) === 0)
-    <form action="{{ route('data-mentah.confirm-import', $ujian) }}" method="POST" data-loading>
+    <form action="{{ route('data-mentah.confirm-import', $ujian) }}" method="POST" data-loading data-loading-text="Mengimport...">
         @csrf
         <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Konfirmasi Import ({{ count($result['valid']) }} siswa)</button>
     </form>
