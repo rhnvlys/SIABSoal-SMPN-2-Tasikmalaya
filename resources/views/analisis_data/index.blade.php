@@ -41,6 +41,7 @@
 {{-- Tombol Proses --}}
 @if(in_array($ujian->status, ['olah_data', 'dianalisis', 'selesai']))
 <div style="margin-bottom:24px">
+    @if(!auth()->user()->isKepalaSekolah())
     <form action="{{ route('analisis-data.proses', $ujian) }}" method="POST" style="display:inline"
           data-loading data-loading-text="Memproses..."
           data-confirm="Proses analisis akan menghitung ulang DP dan TK. Hasil analisis lama akan diperbarui. Lanjutkan?"
@@ -50,6 +51,7 @@
             <i class="bi bi-calculator"></i> Proses Analisis Data T3
         </button>
     </form>
+    @endif
 
     @if($analisis->count() > 0)
         <a href="{{ route('export.analisis.excel', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">

@@ -4,7 +4,9 @@
 @section('content')
 <div class="page-header d-flex justify-between align-center flex-wrap gap-2">
     <div><h1>Data Ujian</h1><p>Kelola ujian, DP/TK, dan laporan nilai</p></div>
+    @if(!auth()->user()->isKepalaSekolah())
     <a href="{{ route('ujian.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Tambah Ujian</a>
+    @endif
 </div>
 <div class="card mb-3"><div class="card-body">
     <form action="{{ route('ujian.index') }}" method="GET" class="d-flex gap-1 flex-wrap">
@@ -31,9 +33,11 @@
             <td>{{ $u->tanggal_ujian?->format('d/m/Y') ?? '-' }}</td>
             <td><div class="btn-group">
                 <a href="{{ route('ujian.show', $u) }}" class="btn btn-sm btn-outline" title="Detail"><i class="bi bi-eye"></i></a>
+                @if(!auth()->user()->isKepalaSekolah())
                 <a href="{{ route('ujian.edit', $u) }}" class="btn btn-sm btn-outline"><i class="bi bi-pencil"></i></a>
                 <form id="delete-ujian-{{ $u->id }}" action="{{ route('ujian.destroy', $u) }}" method="POST" style="display:inline">@csrf @method('DELETE')</form>
                 <button class="btn btn-sm btn-danger" onclick="confirmDelete('delete-ujian-{{ $u->id }}', '{{ $u->nama_ujian }}')"><i class="bi bi-trash"></i></button>
+                @endif
             </div></td>
         </tr>
         @empty<tr><td colspan="9" class="text-center text-muted" style="padding:24px">Belum ada data ujian.</td></tr>@endforelse

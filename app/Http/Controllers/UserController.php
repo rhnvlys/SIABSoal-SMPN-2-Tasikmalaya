@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\LogAktivitas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -23,7 +24,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $roles = Role::orderBy('nama_role')->get();
+        $roles = $this->finalRoles();
         return view('users.create', compact('roles'));
     }
 
@@ -34,7 +35,7 @@ class UserController extends Controller
             'username' => 'required|string|max:100|unique:users,username',
             'email'    => 'nullable|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            'role_id'  => 'required|exists:roles,id',
+            'role_id'  => ['required', $this->roleExistsRule()],
             'status'   => 'required|in:aktif,nonaktif',
         ]);
 
@@ -54,7 +55,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $roles = Role::orderBy('nama_role')->get();
+        $roles = $this->finalRoles();
         return view('users.edit', compact('user', 'roles'));
     }
 
@@ -65,7 +66,7 @@ class UserController extends Controller
             'username' => 'required|string|max:100|unique:users,username,' . $user->id,
             'email'    => 'nullable|email|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
-            'role_id'  => 'required|exists:roles,id',
+            'role_id'  => ['required', $this->roleExistsRule()],
             'status'   => 'required|in:aktif,nonaktif',
         ]);
 
@@ -124,5 +125,22 @@ class UserController extends Controller
         LogAktivitas::catat("Menghapus user: {$username}", 'User');
 
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
+    }
+
+    private function finalRoles()
+    {
+        foreach (User::FINAL_ROLES as $roleName) {
+            Role::firstOrCreate(['nama_role' => $roleName]);
+        }
+
+        return Role::whereIn('nama_role', User::FINAL_ROLES)
+            ->orderByRaw("FIELD(nama_role, 'Admin', 'Guru', 'Kepala Sekolah')")
+            ->get();
+    }
+
+    private function roleExistsRule()
+    {
+        return Rule::exists('roles', 'id')
+            ->where(fn($query) => $query->whereIn('nama_role', User::FINAL_ROLES));
     }
 }

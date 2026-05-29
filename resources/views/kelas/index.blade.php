@@ -3,8 +3,10 @@
 @section('page-title', 'Data Kelas')
 @section('content')
 <div class="page-header d-flex justify-between align-center flex-wrap gap-2">
-    <div><h1>Data Kelas</h1><p>Kelola kelas dan assignment siswa</p></div>
+    <div><h1>{{ auth()->user()->isGuru() ? 'Data Kelas Saya' : 'Data Kelas' }}</h1><p>{{ auth()->user()->isGuru() ? 'Kelas yang Anda pegang sebagai wali kelas' : 'Kelola kelas dan assignment siswa' }}</p></div>
+    @if(auth()->user()->isAdmin())
     <a href="{{ route('kelas.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Tambah Kelas</a>
+    @endif
 </div>
 <div class="card mb-3"><div class="card-body">
     <form action="{{ route('kelas.index') }}" method="GET" class="d-flex gap-1">
@@ -25,9 +27,11 @@
             <td>{{ $k->siswa_kelas_count }}</td>
             <td><div class="btn-group">
                 <a href="{{ route('kelas.show', $k) }}" class="btn btn-sm btn-outline" title="Detail"><i class="bi bi-eye"></i></a>
+                @if(auth()->user()->isAdmin())
                 <a href="{{ route('kelas.edit', $k) }}" class="btn btn-sm btn-outline"><i class="bi bi-pencil"></i></a>
                 <form id="delete-kelas-{{ $k->id }}" action="{{ route('kelas.destroy', $k) }}" method="POST" style="display:inline">@csrf @method('DELETE')</form>
                 <button class="btn btn-sm btn-danger" onclick="confirmDelete('delete-kelas-{{ $k->id }}', '{{ $k->nama_kelas }}')"><i class="bi bi-trash"></i></button>
+                @endif
             </div></td>
         </tr>
         @empty

@@ -11,6 +11,15 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public const ROLE_ADMIN = 'Admin';
+    public const ROLE_GURU = 'Guru';
+    public const ROLE_KEPALA_SEKOLAH = 'Kepala Sekolah';
+    public const FINAL_ROLES = [
+        self::ROLE_ADMIN,
+        self::ROLE_GURU,
+        self::ROLE_KEPALA_SEKOLAH,
+    ];
+
     protected $fillable = [
         'role_id',
         'name',
@@ -49,7 +58,7 @@ class User extends Authenticatable
      */
     public function hasRole($roleName): bool
     {
-        return $this->role->nama_role === $roleName;
+        return $this->role?->nama_role === $roleName;
     }
 
     /**
@@ -57,7 +66,7 @@ class User extends Authenticatable
      */
     public function hasAnyRole(array $roles): bool
     {
-        return in_array($this->role->nama_role, $roles);
+        return in_array($this->role?->nama_role, $roles, true);
     }
 
     /**
@@ -65,6 +74,31 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->hasRole('Admin');
+        return $this->hasRole(self::ROLE_ADMIN);
+    }
+
+    public function isGuru(): bool
+    {
+        return $this->hasRole(self::ROLE_GURU);
+    }
+
+    public function isKepalaSekolah(): bool
+    {
+        return $this->hasRole(self::ROLE_KEPALA_SEKOLAH);
+    }
+
+    public function hasFinalRole(): bool
+    {
+        return $this->hasAnyRole(self::FINAL_ROLES);
+    }
+
+    public function dashboardRouteName(): ?string
+    {
+        return match ($this->role?->nama_role) {
+            self::ROLE_ADMIN => 'dashboard.admin',
+            self::ROLE_GURU => 'dashboard.guru',
+            self::ROLE_KEPALA_SEKOLAH => 'dashboard.kepala-sekolah',
+            default => null,
+        };
     }
 }

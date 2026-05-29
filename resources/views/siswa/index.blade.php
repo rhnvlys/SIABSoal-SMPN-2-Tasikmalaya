@@ -3,8 +3,10 @@
 @section('page-title', 'Data Siswa')
 @section('content')
 <div class="page-header d-flex justify-between align-center flex-wrap gap-2">
-    <div><h1>Data Siswa</h1><p>Kelola data peserta didik</p></div>
+    <div><h1>{{ auth()->user()->isGuru() ? 'Siswa Kelas Saya' : 'Data Siswa' }}</h1><p>{{ auth()->user()->isGuru() ? 'Data siswa pada kelas yang Anda pegang' : 'Kelola data peserta didik' }}</p></div>
+    @if(auth()->user()->isAdmin())
     <a href="{{ route('siswa.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Tambah Siswa</a>
+    @endif
 </div>
 <div class="card mb-3"><div class="card-body">
     <form action="{{ route('siswa.index') }}" method="GET" class="d-flex gap-1 flex-wrap">
@@ -26,9 +28,15 @@
             <td>@include('components.badge', ['type' => $s->jenis_kelamin])</td>
             <td>@include('components.badge', ['type' => $s->status])</td>
             <td><div class="btn-group">
+                @if(!auth()->user()->isKepalaSekolah())
                 <a href="{{ route('siswa.edit', $s) }}" class="btn btn-sm btn-outline"><i class="bi bi-pencil"></i></a>
+                @if(auth()->user()->isAdmin())
                 <form id="delete-siswa-{{ $s->id }}" action="{{ route('siswa.destroy', $s) }}" method="POST" style="display:inline">@csrf @method('DELETE')</form>
                 <button class="btn btn-sm btn-danger" onclick="confirmDelete('delete-siswa-{{ $s->id }}', '{{ $s->nama_siswa }}')"><i class="bi bi-trash"></i></button>
+                @endif
+                @else
+                <span class="text-muted">Read-only</span>
+                @endif
             </div></td>
         </tr>
         @empty

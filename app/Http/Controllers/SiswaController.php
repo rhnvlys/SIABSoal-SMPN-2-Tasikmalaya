@@ -10,8 +10,16 @@ class SiswaController extends Controller
 {
     public function index(Request $request)
     {
-        $siswa = Siswa::when($request->search, fn($q, $s) => $q->where('nama_siswa', 'like', "%{$s}%")->orWhere('nis', 'like', "%{$s}%")->orWhere('nisn', 'like', "%{$s}%"))
+        $siswa = Siswa::when($request->search, fn($q, $s) => $q->where(function ($query) use ($s) {
+                          $query->where('nama_siswa', 'like', "%{$s}%")
+                              ->orWhere('nis', 'like', "%{$s}%")
+                              ->orWhere('nisn', 'like', "%{$s}%");
+                      }))
                       ->when($request->status, fn($q, $s) => $q->where('status', $s))
+                      ->when(auth()->user()->isGuru(), function ($q) {
+                          $kelasIds = auth()->user()->guru?->kelasWali()->pluck('id') ?? collect();
+                          $q->whereHas('siswaKelas', fn($sk) => $sk->whereIn('kelas_id', $kelasIds));
+                      })
                       ->orderBy('nama_siswa')
                       ->paginate(20)
                       ->withQueryString();
@@ -44,11 +52,14 @@ class SiswaController extends Controller
 
     public function edit(Siswa $siswa)
     {
+        $this->authorizeSiswaAccess($siswa);
         return view('siswa.edit', compact('siswa'));
     }
 
     public function update(Request $request, Siswa $siswa)
     {
+        $this->authorizeSiswaAccess($siswa);
+
         $request->validate([
             'nis'            => 'required|string|max:20|unique:siswa,nis,' . $siswa->id,
             'nisn'           => 'nullable|string|max:20|unique:siswa,nisn,' . $siswa->id,
@@ -67,6 +78,8 @@ class SiswaController extends Controller
 
     public function destroy(Siswa $siswa)
     {
+        $this->authorizeSiswaAccess($siswa);
+
         if ($siswa->pesertaUjian()->exists()) {
             return back()->with('error', 'Siswa tidak dapat dihapus karena memiliki data ujian.');
         }
@@ -77,5 +90,20 @@ class SiswaController extends Controller
         LogAktivitas::catat("Menghapus siswa: {$nama}", 'Siswa');
 
         return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil dihapus.');
+    }
+
+    private function authorizeSiswaAccess(Siswa $siswa): void
+    {
+        $user = auth()->user();
+        if ($user->isAdmin()) {
+            return;
+        }
+
+        $kelasIds = $user->guru?->kelasWali()->pluck('id') ?? collect();
+        $hasAccess = $siswa->siswaKelas()->whereIn('kelas_id', $kelasIds)->exists();
+
+        if (!$hasAccess) {
+            abort(403, 'Anda tidak memiliki akses ke data siswa ini.');
+        }
     }
 }

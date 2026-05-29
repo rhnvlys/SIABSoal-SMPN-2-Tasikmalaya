@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
-@section('page-title', 'Dashboard')
+@section('title', 'Dashboard Admin')
+@section('page-title', 'Dashboard Admin')
 
 @section('content')
 <div class="page-header">
-    <h1>Dashboard</h1>
-    <p>Selamat datang di Sistem Informasi Analisis Butir Soal SMPN 2 Tasikmalaya</p>
+    <h1>Dashboard Admin</h1>
+    <p>Ringkasan seluruh data SIABSoal SMPN 2 Tasikmalaya.</p>
 </div>
 
 <div class="stats-grid">
-    @include('components.card-stat', ['value' => $stats['siswa'], 'label' => 'Jumlah Siswa', 'icon' => 'bi-mortarboard-fill', 'color' => 'blue'])
     @include('components.card-stat', ['value' => $stats['guru'], 'label' => 'Jumlah Guru', 'icon' => 'bi-person-badge-fill', 'color' => 'green'])
+    @include('components.card-stat', ['value' => $stats['siswa'], 'label' => 'Jumlah Siswa', 'icon' => 'bi-mortarboard-fill', 'color' => 'blue'])
     @include('components.card-stat', ['value' => $stats['kelas'], 'label' => 'Jumlah Kelas', 'icon' => 'bi-building', 'color' => 'purple'])
     @include('components.card-stat', ['value' => $stats['mapel'], 'label' => 'Mata Pelajaran', 'icon' => 'bi-book-fill', 'color' => 'teal'])
     @include('components.card-stat', ['value' => $stats['ujian'], 'label' => 'Jumlah Ujian', 'icon' => 'bi-file-earmark-text-fill', 'color' => 'amber'])
@@ -40,60 +40,31 @@
     </h3>
     <div class="status-grid">
         @foreach($statusLabels as $statusKey => $statusLabel)
-        <div class="status-card">
-            <div class="status-count">{{ $statusProgres[$statusKey] ?? 0 }}</div>
-            <div class="status-label">{{ $statusLabel }}</div>
-        </div>
+            <div class="status-card">
+                <div class="status-count">{{ $statusProgres[$statusKey] ?? 0 }}</div>
+                <div class="status-label">{{ $statusLabel }}</div>
+            </div>
         @endforeach
     </div>
 </div>
 
 <div class="btn-group mb-3">
-    @if(auth()->user()->hasAnyRole(['Admin','Guru']))
-        <a href="{{ route('ujian.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Tambah Ujian
-        </a>
-        <a href="{{ route('ujian.index') }}" class="btn btn-outline">
-            <i class="bi bi-key-fill"></i> Input Kunci Jawaban
-        </a>
-        <a href="{{ route('ujian.index') }}" class="btn btn-outline">
-            <i class="bi bi-table"></i> Import Data Mentah
-        </a>
-        <a href="{{ route('ujian.index') }}" class="btn btn-outline">
-            <i class="bi bi-clipboard-data-fill"></i> Lihat Analisis
-        </a>
-    @endif
-    @if(auth()->user()->hasAnyRole(['Admin','Guru','Wakil Kurikulum']))
-        <a href="{{ route('ujian.index') }}" class="btn btn-outline">
-            <i class="bi bi-download"></i> Export Rekap
-        </a>
-    @endif
+    <a href="{{ route('users.index') }}" class="btn btn-primary"><i class="bi bi-people-fill"></i> Manajemen User</a>
+    <a href="{{ route('guru.index') }}" class="btn btn-outline"><i class="bi bi-person-badge-fill"></i> Data Guru</a>
+    <a href="{{ route('siswa.index') }}" class="btn btn-outline"><i class="bi bi-mortarboard-fill"></i> Data Siswa</a>
+    <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-file-earmark-text-fill"></i> Data Ujian</a>
+    <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-download"></i> Laporan Export</a>
 </div>
 
 <div class="card">
-    <div class="card-header d-flex justify-between align-center">
-        <span><i class="bi bi-clock-history"></i> Ujian Terbaru</span>
-    </div>
+    <div class="card-header"><i class="bi bi-clock-history"></i> Ujian Terbaru Seluruh Sekolah</div>
     <div class="table-responsive">
         <table class="table">
-            <thead>
-                <tr>
-                    <th>Nama Ujian</th>
-                    <th>Mata Pelajaran</th>
-                    <th>Guru</th>
-                    <th>Kelas</th>
-                    <th>Status Proses</th>
-                    <th>Tanggal</th>
-                </tr>
-            </thead>
+            <thead><tr><th>Nama Ujian</th><th>Mata Pelajaran</th><th>Guru</th><th>Kelas</th><th>Status</th><th>Tanggal</th></tr></thead>
             <tbody>
                 @forelse ($ujianTerbaru as $u)
                     <tr>
-                        <td>
-                            <a href="{{ route('ujian.show', $u->id) }}" style="font-weight:600">
-                                {{ $u->nama_ujian }}
-                            </a>
-                        </td>
+                        <td><a href="{{ route('ujian.show', $u) }}" class="fw-semibold">{{ $u->nama_ujian }}</a></td>
                         <td>{{ $u->mapel->nama_mapel ?? '-' }}</td>
                         <td>{{ $u->guru->nama_guru ?? '-' }}</td>
                         <td>{{ $u->kelas->pluck('nama_kelas')->join(', ') ?: '-' }}</td>
@@ -101,11 +72,7 @@
                         <td>{{ $u->tanggal_ujian?->format('d/m/Y') ?? '-' }}</td>
                     </tr>
                 @empty
-                    <tr>
-                        <td colspan="6">
-                            @include('components.empty-state', ['icon' => 'bi-file-earmark-text', 'title' => 'Belum ada data ujian', 'description' => 'Klik tombol "Tambah Ujian" untuk membuat ujian baru.'])
-                        </td>
-                    </tr>
+                    <tr><td colspan="6" class="text-center text-muted" style="padding:24px">Belum ada data ujian.</td></tr>
                 @endforelse
             </tbody>
         </table>

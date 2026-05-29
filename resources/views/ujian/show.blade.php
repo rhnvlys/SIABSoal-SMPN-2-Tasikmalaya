@@ -29,9 +29,11 @@
 {{-- Action Buttons (Workflow) --}}
 <div class="card mb-3"><div class="card-header">Alur Kerja</div><div class="card-body">
     <div class="btn-group flex-wrap">
+        @if(!auth()->user()->isKepalaSekolah())
         <a href="{{ route('kunci-jawaban.index', $ujian) }}" class="btn {{ $ujian->status === 'draft' ? 'btn-primary' : 'btn-outline' }}"><i class="bi bi-key-fill"></i> Kunci Jawaban</a>
         <a href="{{ route('data-mentah.index', $ujian) }}" class="btn {{ $ujian->status === 'kunci_lengkap' ? 'btn-primary' : 'btn-outline' }}"><i class="bi bi-table"></i> T1 Data Mentah</a>
         <a href="{{ route('olah-data.index', $ujian) }}" class="btn {{ $ujian->status === 'data_mentah' ? 'btn-primary' : 'btn-outline' }}"><i class="bi bi-bar-chart-line-fill"></i> T2 Olah Data</a>
+        @endif
         <a href="{{ route('analisis-data.index', $ujian) }}" class="btn {{ $ujian->status === 'olah_data' ? 'btn-primary' : 'btn-outline' }}"><i class="bi bi-clipboard-data-fill"></i> T3 Analisis</a>
         <a href="{{ route('daftar-nilai.index', $ujian) }}" class="btn btn-outline"><i class="bi bi-journal-text"></i> T4 Daftar Nilai</a>
         <a href="{{ route('rekap-nilai.index', $ujian) }}" class="btn btn-outline"><i class="bi bi-file-earmark-bar-graph-fill"></i> T5 Rekap Nilai</a>
@@ -40,7 +42,10 @@
 
 {{-- Kunci Jawaban Preview --}}
 <div class="card mb-3"><div class="card-header d-flex justify-between align-center"><span>Kunci Jawaban</span>
-    <a href="{{ route('kunci-jawaban.index', $ujian) }}" class="btn btn-sm btn-outline"><i class="bi bi-pencil"></i> Edit</a></div>
+    @if(!auth()->user()->isKepalaSekolah())
+    <a href="{{ route('kunci-jawaban.index', $ujian) }}" class="btn btn-sm btn-outline"><i class="bi bi-pencil"></i> Edit</a>
+    @endif
+</div>
 <div class="card-body" style="display:flex;flex-wrap:wrap;gap:6px">
     @foreach($ujian->soal as $soal)
     <span class="badge {{ $soal->kunci_jawaban ? 'badge-aktif' : 'badge-draft' }}">{{ $soal->nomor_soal }}. {{ $soal->kunci_jawaban ?? '-' }}</span>
@@ -48,7 +53,9 @@
 </div></div>
 
 <div class="btn-group mt-2">
+    @if(!auth()->user()->isKepalaSekolah())
     <a href="{{ route('ujian.edit', $ujian) }}" class="btn btn-outline"><i class="bi bi-pencil"></i> Edit Ujian</a>
+    @endif
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-arrow-left"></i> Kembali</a>
 </div>
 @endsection

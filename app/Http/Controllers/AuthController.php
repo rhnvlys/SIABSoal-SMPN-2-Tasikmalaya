@@ -14,7 +14,7 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            return redirect()->route(Auth::user()->dashboardRouteName() ?? 'dashboard');
         }
 
         return view('auth.login');
@@ -47,12 +47,19 @@ class AuthController extends Controller
                 return back()->with('error', 'Akun Anda nonaktif. Silakan hubungi administrator.');
             }
 
+            $dashboardRoute = $user->dashboardRouteName();
+            if (!$dashboardRoute) {
+                Auth::logout();
+                return redirect()->route('login')
+                    ->with('error', 'Role pengguna tidak valid. Hubungi administrator.');
+            }
+
             $request->session()->regenerate();
 
             LogAktivitas::catat('Login ke sistem', 'Auth');
 
-            return redirect()->intended(route('dashboard'))
-                             ->with('success', 'Selamat datang, ' . $user->name . '!');
+            return redirect()->route($dashboardRoute)
+                ->with('success', 'Selamat datang, ' . $user->name . '!');
         }
 
         return back()->with('error', 'Username atau password salah.')

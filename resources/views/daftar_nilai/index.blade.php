@@ -47,7 +47,7 @@
 
 {{-- Tombol Export --}}
 <div class="btn-group mb-3">
-    @if($peserta->count() > 0)
+    @if($peserta->count() > 0 && !auth()->user()->isKepalaSekolah())
     <button type="button" class="btn btn-primary" onclick="document.getElementById('manualNilaiModal').classList.add('show')">
         <i class="bi bi-pencil-square"></i> Input Manual Nilai
     </button>
@@ -147,7 +147,7 @@
     ])
 @endif
 
-@if($peserta->count() > 0)
+@if($peserta->count() > 0 && !auth()->user()->isKepalaSekolah())
 <div class="modal-overlay" id="manualNilaiModal">
     <div class="modal-content modal-content-wide">
         <div class="modal-header">

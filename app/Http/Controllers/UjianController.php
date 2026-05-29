@@ -38,6 +38,10 @@ class UjianController extends Controller
     public function create()
     {
         $user = auth()->user();
+        if ($user->isGuru() && !$user->guru) {
+            abort(403, 'Akun guru belum terhubung dengan data guru.');
+        }
+
         $guruList = $user->isAdmin()
             ? Guru::where('status', 'aktif')->orderBy('nama_guru')->get()
             : collect([$user->guru])->filter();
@@ -51,6 +55,13 @@ class UjianController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->user()->isGuru()) {
+            if (!auth()->user()->guru) {
+                abort(403, 'Akun guru belum terhubung dengan data guru.');
+            }
+            $request->merge(['guru_id' => auth()->user()->guru->id]);
+        }
+
         $request->validate([
             'guru_id'          => 'required|exists:guru,id',
             'mapel_id'         => 'required|exists:mapel,id',
@@ -106,6 +117,10 @@ class UjianController extends Controller
     public function edit(Ujian $ujian)
     {
         $user = auth()->user();
+        if ($user->isGuru() && !$user->guru) {
+            abort(403, 'Akun guru belum terhubung dengan data guru.');
+        }
+
         $guruList = $user->isAdmin() ? Guru::where('status', 'aktif')->orderBy('nama_guru')->get() : collect([$user->guru])->filter();
         $mapelList = Mapel::orderBy('nama_mapel')->get();
         $tahunAjaranList = TahunAjaran::orderByDesc('tahun_ajaran')->get();
@@ -117,6 +132,13 @@ class UjianController extends Controller
 
     public function update(Request $request, Ujian $ujian)
     {
+        if (auth()->user()->isGuru()) {
+            if (!auth()->user()->guru) {
+                abort(403, 'Akun guru belum terhubung dengan data guru.');
+            }
+            $request->merge(['guru_id' => $ujian->guru_id]);
+        }
+
         $request->validate([
             'guru_id'          => 'required|exists:guru,id',
             'mapel_id'         => 'required|exists:mapel,id',

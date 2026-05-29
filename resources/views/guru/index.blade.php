@@ -3,8 +3,10 @@
 @section('page-title', 'Data Guru')
 @section('content')
 <div class="page-header d-flex justify-between align-center flex-wrap gap-2">
-    <div><h1>Data Guru</h1><p>Kelola data guru</p></div>
+    <div><h1>Data Guru</h1><p>{{ auth()->user()->isKepalaSekolah() ? 'Data guru sekolah' : 'Kelola data guru' }}</p></div>
+    @if(auth()->user()->isAdmin())
     <a href="{{ route('guru.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Tambah Guru</a>
+    @endif
 </div>
 <div class="card mb-3"><div class="card-body">
     <form action="{{ route('guru.index') }}" method="GET" class="d-flex gap-1">
@@ -26,9 +28,13 @@
             <td>@include('components.badge', ['type' => $g->status])</td>
             <td>{{ $g->user->username ?? '-' }}</td>
             <td><div class="btn-group">
+                @if(auth()->user()->isAdmin())
                 <a href="{{ route('guru.edit', $g) }}" class="btn btn-sm btn-outline"><i class="bi bi-pencil"></i></a>
                 <form id="delete-guru-{{ $g->id }}" action="{{ route('guru.destroy', $g) }}" method="POST" style="display:inline">@csrf @method('DELETE')</form>
                 <button class="btn btn-sm btn-danger" onclick="confirmDelete('delete-guru-{{ $g->id }}', '{{ $g->nama_guru }}')"><i class="bi bi-trash"></i></button>
+                @else
+                <span class="text-muted">Read-only</span>
+                @endif
             </div></td>
         </tr>
         @empty

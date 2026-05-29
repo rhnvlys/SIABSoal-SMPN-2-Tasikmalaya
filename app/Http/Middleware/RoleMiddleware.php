@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,8 +21,7 @@ class RoleMiddleware
 
         $user = auth()->user();
 
-        // Cek apakah user memiliki salah satu role yang diizinkan
-        if (!$user->hasAnyRole($roles)) {
+        if (!$user->hasFinalRole() || !$user->hasAnyRole($roles)) {
             abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 

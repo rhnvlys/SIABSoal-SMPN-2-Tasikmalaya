@@ -17,6 +17,7 @@ class KelasController extends Controller
         $kelas = Kelas::with(['tahunAjaran', 'waliKelas'])
                       ->withCount('siswaKelas')
                       ->when($request->tahun_ajaran_id, fn($q, $v) => $q->where('tahun_ajaran_id', $v))
+                      ->when(auth()->user()->isGuru(), fn($q) => $q->where('wali_kelas_id', auth()->user()->guru?->id ?? 0))
                       ->orderBy('tingkat')
                       ->orderBy('nama_kelas')
                       ->paginate(15)
@@ -53,13 +54,16 @@ class KelasController extends Controller
     public function show(Kelas $kela)
     {
         $kelas = $kela;
+        $this->authorizeClassAccess($kelas);
+
         $kelas->load(['tahunAjaran', 'waliKelas', 'siswaKelas.siswa']);
         $siswaList = Siswa::where('status', 'aktif')
                           ->whereNotIn('id', $kelas->siswaKelas->pluck('siswa_id'))
                           ->orderBy('nama_siswa')
                           ->get();
+        $canManageStudents = auth()->user()->isAdmin() || $this->isWaliKelas($kelas);
 
-        return view('kelas.show', compact('kelas', 'siswaList'));
+        return view('kelas.show', compact('kelas', 'siswaList', 'canManageStudents'));
     }
 
     public function edit(Kelas $kela)
@@ -112,5 +116,66 @@ class KelasController extends Controller
         LogAktivitas::catat("Menghapus kelas: {$nama}", 'Kelas');
 
         return redirect()->route('kelas.index')->with('success', 'Data kelas berhasil dihapus.');
+    }
+
+    public function attachSiswa(Request $request, Kelas $kela)
+    {
+        $kelas = $kela;
+        $this->authorizeClassManageStudents($kelas);
+
+        $request->validate([
+            'siswa_id' => 'required|exists:siswa,id',
+        ], [
+            'siswa_id.required' => 'Pilih siswa yang akan ditambahkan.',
+        ]);
+
+        SiswaKelas::firstOrCreate([
+            'siswa_id' => $request->siswa_id,
+            'kelas_id' => $kelas->id,
+            'tahun_ajaran_id' => $kelas->tahun_ajaran_id,
+        ], ['status' => 'aktif']);
+
+        LogAktivitas::catat("Menambahkan siswa ke kelas: {$kelas->nama_kelas}", 'Kelas');
+
+        return redirect()->route('kelas.show', $kelas)->with('success', 'Siswa berhasil ditambahkan ke kelas.');
+    }
+
+    public function detachSiswa(Kelas $kela, Siswa $siswa)
+    {
+        $kelas = $kela;
+        $this->authorizeClassManageStudents($kelas);
+
+        SiswaKelas::where('kelas_id', $kelas->id)
+            ->where('siswa_id', $siswa->id)
+            ->delete();
+
+        LogAktivitas::catat("Menghapus siswa dari kelas: {$kelas->nama_kelas}", 'Kelas');
+
+        return redirect()->route('kelas.show', $kelas)->with('success', 'Siswa berhasil dihapus dari kelas.');
+    }
+
+    private function authorizeClassAccess(Kelas $kelas): void
+    {
+        if (auth()->user()->isGuru() && !$this->isWaliKelas($kelas)) {
+            abort(403, 'Anda tidak memiliki akses ke kelas ini.');
+        }
+    }
+
+    private function authorizeClassManageStudents(Kelas $kelas): void
+    {
+        if (auth()->user()->isAdmin()) {
+            return;
+        }
+
+        if (!$this->isWaliKelas($kelas)) {
+            abort(403, 'Anda tidak memiliki akses mengelola siswa kelas ini.');
+        }
+    }
+
+    private function isWaliKelas(Kelas $kelas): bool
+    {
+        return auth()->user()->isGuru()
+            && auth()->user()->guru
+            && (int) $kelas->wali_kelas_id === (int) auth()->user()->guru->id;
     }
 }
