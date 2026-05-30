@@ -19,7 +19,7 @@
         table.data th { background: #E5E7EB; font-weight: bold; font-size: 7pt; }
         .ringkasan { margin-bottom: 16px; }
         .ringkasan h4 { font-size: 10pt; margin-bottom: 8px; }
-        .ringkasan-grid { display: inline-block; }
+        .ringkasan-grid { width: auto; border-collapse: collapse; margin-top: 4px; }
         .ringkasan-grid td { padding: 2px 12px 2px 0; font-size: 9pt; }
         .badge { padding: 1px 6px; border-radius: 8px; font-size: 7pt; font-weight: bold; }
         .badge-green { background: #D1FAE5; color: #065F46; }
@@ -129,7 +129,7 @@
     </table>
 
     <div class="footer">
-        <p>Dicetak oleh SIABSoal SMPN 2 Tasikmalaya — {{ now()->format('d F Y H:i') }}</p>
+        <p>Dicetak oleh SIABSoal SMPN 2 Tasikmalaya - {{ now()->format('d F Y H:i') }}</p>
     </div>
 </body>
 </html>

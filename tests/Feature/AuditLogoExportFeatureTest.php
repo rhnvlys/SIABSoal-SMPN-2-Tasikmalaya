@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Exports\DataMentahTemplateExport;
+use App\Models\AnalisisButir;
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\LogAktivitas;
@@ -125,6 +126,33 @@ class AuditLogoExportFeatureTest extends TestCase
             ->get(route('kunci-jawaban.template', $data['ujian']))
             ->assertOk()
             ->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    }
+
+    public function test_analisis_pdf_export_renders_successfully(): void
+    {
+        $data = $this->makeUjianContext();
+        $soal = $data['ujian']->soal()->firstOrFail();
+
+        AnalisisButir::create([
+            'ujian_id' => $data['ujian']->id,
+            'soal_id' => $soal->id,
+            'nomor_soal' => $soal->nomor_soal,
+            'ba' => 8,
+            'bb' => 3,
+            'ja' => 10,
+            'jb' => 10,
+            'n_analisis' => 20,
+            'dp' => 0.5,
+            'kategori_dp' => 'Baik',
+            'tk' => 0.55,
+            'kategori_tk' => 'Sedang',
+            'keputusan' => 'Dipakai',
+        ]);
+
+        $this->actingAs($data['guru']->user)
+            ->get(route('export.analisis.pdf', $data['ujian']))
+            ->assertOk()
+            ->assertHeader('content-type', 'application/pdf');
     }
 
     private function makeUser(string $roleName, string $username): User
