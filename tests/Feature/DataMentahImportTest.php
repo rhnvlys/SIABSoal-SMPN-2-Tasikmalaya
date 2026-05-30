@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Exports\StyledArraySheet;
 use App\Models\Guru;
 use App\Models\JawabanSiswa;
 use App\Models\Kelas;
@@ -17,6 +18,9 @@ use App\Models\UjianKelas;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\UploadedFile;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Excel as ExcelFormat;
 use Tests\TestCase;
 
 class DataMentahImportTest extends TestCase
@@ -131,6 +135,47 @@ class DataMentahImportTest extends TestCase
             ])
             ->assertRedirect(route('data-mentah.index', $data['ujian']))
             ->assertSessionHas('error');
+    }
+
+    public function test_preview_reads_import_rows_from_second_sheet_when_first_sheet_is_petunjuk(): void
+    {
+        $data = $this->makeImportData();
+        $rows = [
+            ['nis', 'nisn', 'nama_siswa', 'jenis_kelamin', 'status_kehadiran', 'soal_1'],
+            [$data['validSiswa']->nis, $data['validSiswa']->nisn, $data['validSiswa']->nama_siswa, 'L', 'hadir', 'A'],
+        ];
+
+        $export = new class($rows) implements WithMultipleSheets {
+            public function __construct(private readonly array $rows)
+            {
+            }
+
+            public function sheets(): array
+            {
+                return [
+                    new StyledArraySheet('PETUNJUK', [
+                        ['PETUNJUK IMPORT DATA MENTAH T1'],
+                        ['1', 'Isi data pada sheet IMPORT_JAWABAN_ABCD.'],
+                    ]),
+                    new StyledArraySheet('IMPORT_JAWABAN_ABCD', $this->rows),
+                ];
+            }
+        };
+
+        $file = UploadedFile::fake()->createWithContent(
+            'data_mentah.xlsx',
+            Excel::raw($export, ExcelFormat::XLSX)
+        );
+
+        $this->actingAs($data['admin'])
+            ->post(route('data-mentah.preview', $data['ujian']), [
+                'mode' => 'abcd',
+                'file' => $file,
+            ])
+            ->assertOk();
+
+        $this->assertCount(1, session('import_preview_data'));
+        $this->assertSame($data['validSiswa']->nis, session('import_preview_data.0.nis'));
     }
 
     private function makeImportData(): array

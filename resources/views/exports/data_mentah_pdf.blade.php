@@ -11,6 +11,7 @@
         .header h2 { font-size: 11px; font-weight: normal; }
         .header h3 { font-size: 10px; font-weight: normal; color: #555; }
         .header p { font-size: 8px; color: #666; }
+        .school-logo { width: 50px; height: 50px; object-fit: contain; margin-bottom: 4px; }
         .info { margin-bottom: 10px; }
         .info td { padding: 1px 6px 1px 0; font-size: 9px; }
         .info td.label { font-weight: bold; }
@@ -25,6 +26,9 @@
 </head>
 <body>
     <div class="header">
+        @if($sekolah && $sekolah->logoPath())
+            <img src="{{ $sekolah->logoPath() }}" class="school-logo" alt="Logo sekolah">
+        @endif
         <h1>{{ $sekolah->nama_sekolah ?? 'SMP NEGERI 2 TASIKMALAYA' }}</h1>
         <h2>SIABSoal SMPN 2 Tasikmalaya</h2>
         <h3>DATA MENTAH T1 — SKOR JAWABAN SISWA</h3>

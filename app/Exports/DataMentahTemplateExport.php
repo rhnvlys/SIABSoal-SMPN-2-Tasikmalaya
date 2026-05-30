@@ -3,12 +3,9 @@
 namespace App\Exports;
 
 use App\Models\Ujian;
-use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class DataMentahTemplateExport implements FromArray, WithHeadings, WithTitle, ShouldAutoSize
+class DataMentahTemplateExport implements WithMultipleSheets
 {
     public function __construct(
         private readonly Ujian $ujian,
@@ -16,7 +13,17 @@ class DataMentahTemplateExport implements FromArray, WithHeadings, WithTitle, Sh
     ) {
     }
 
-    public function headings(): array
+    public function sheets(): array
+    {
+        $templateTitle = $this->mode === 'biner' ? 'IMPORT_SKOR_01' : 'IMPORT_JAWABAN_ABCD';
+
+        return [
+            new StyledArraySheet('PETUNJUK', $this->instructionRows(), 1),
+            new StyledArraySheet($templateTitle, $this->templateRows()),
+        ];
+    }
+
+    private function templateRows(): array
     {
         $this->ujian->loadMissing('soal');
         $prefix = $this->mode === 'biner' ? 'skor_' : 'soal_';
@@ -26,16 +33,28 @@ class DataMentahTemplateExport implements FromArray, WithHeadings, WithTitle, Sh
             $headings[] = $prefix . $soal->nomor_soal;
         }
 
-        return $headings;
+        $example = ['2025001', '3200000001', 'Contoh Siswa', 'L', 'hadir'];
+        foreach ($this->ujian->soal->sortBy('nomor_soal') as $soal) {
+            $example[] = $this->mode === 'biner' ? '1' : 'A';
+        }
+
+        return [$headings, $example];
     }
 
-    public function array(): array
+    private function instructionRows(): array
     {
-        return [];
-    }
+        $answerFormat = $this->mode === 'biner'
+            ? 'Kolom skor_1, skor_2, dan seterusnya hanya boleh diisi 0 atau 1.'
+            : 'Kolom soal_1, soal_2, dan seterusnya hanya boleh diisi A, B, C, D, E, atau dikosongkan.';
 
-    public function title(): string
-    {
-        return $this->mode === 'biner' ? 'IMPORT_SKOR_01' : 'IMPORT_JAWABAN_ABCD';
+        return [
+            ['PETUNJUK IMPORT DATA MENTAH T1'],
+            ['1', 'Gunakan sheet ' . ($this->mode === 'biner' ? 'IMPORT_SKOR_01' : 'IMPORT_JAWABAN_ABCD') . ' untuk mengisi data.'],
+            ['2', 'Kolom nis wajib sesuai NIS yang sudah ada di database.'],
+            ['3', 'Kolom status_kehadiran diisi hadir atau tidak_hadir.'],
+            ['4', $answerFormat],
+            ['5', 'Baris contoh boleh dihapus sebelum file diimport.'],
+            ['6', 'Jangan mengubah nama header kolom karena sistem membaca header tersebut saat validasi.'],
+        ];
     }
 }

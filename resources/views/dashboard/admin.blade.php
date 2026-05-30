@@ -53,6 +53,7 @@
     <a href="{{ route('guru.index') }}" class="btn btn-outline"><i class="bi bi-person-badge-fill"></i> Data Guru</a>
     <a href="{{ route('siswa.index') }}" class="btn btn-outline"><i class="bi bi-mortarboard-fill"></i> Data Siswa</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-file-earmark-text-fill"></i> Data Ujian</a>
+    <a href="{{ route('audit-log.index') }}" class="btn btn-outline"><i class="bi bi-clock-history"></i> Audit Log</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-download"></i> Laporan Export</a>
 </div>
 
@@ -77,5 +78,10 @@
             </tbody>
         </table>
     </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header"><i class="bi bi-clock-history"></i> Aktivitas Terbaru Pengguna</div>
+    @include('components.activity-table', ['logs' => $aktivitasTerbaru, 'showUser' => true])
 </div>
 @endsection

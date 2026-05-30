@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AnalisisButir;
 use App\Models\Guru;
 use App\Models\Kelas;
+use App\Models\LogAktivitas;
 use App\Models\Mapel;
 use App\Models\Siswa;
 use App\Models\SiswaKelas;
@@ -44,8 +45,9 @@ class DashboardController extends Controller
             ->orderByDesc('created_at')
             ->limit(5)
             ->get();
+        $aktivitasTerbaru = LogAktivitas::latest()->limit(6)->get();
 
-        return view('dashboard.admin', compact('stats', 'analisis', 'statusProgres', 'ujianTerbaru'));
+        return view('dashboard.admin', compact('stats', 'analisis', 'statusProgres', 'ujianTerbaru', 'aktivitasTerbaru'));
     }
 
     public function guru()
@@ -78,8 +80,9 @@ class DashboardController extends Controller
             ->orderByDesc('created_at')
             ->limit(5)
             ->get();
+        $aktivitasSaya = LogAktivitas::where('user_id', auth()->id())->latest()->limit(6)->get();
 
-        return view('dashboard.guru', compact('stats', 'analisis', 'ujianTerbaru', 'kelasWali'));
+        return view('dashboard.guru', compact('stats', 'analisis', 'ujianTerbaru', 'kelasWali', 'aktivitasSaya'));
     }
 
     public function kepalaSekolah()
@@ -89,6 +92,7 @@ class DashboardController extends Controller
             'siswa' => Siswa::where('status', 'aktif')->count(),
             'kelas' => Kelas::count(),
             'mapel' => Mapel::count(),
+            'ujian' => Ujian::count(),
             'ujian_selesai' => Ujian::where('status', 'selesai')->count(),
             'ujian_belum_selesai' => Ujian::where('status', '!=', 'selesai')->count(),
         ];
@@ -109,13 +113,15 @@ class DashboardController extends Controller
             ->orderByDesc('updated_at')
             ->limit(5)
             ->get();
+        $aktivitasTerbaru = LogAktivitas::latest()->limit(6)->get();
 
         return view('dashboard.kepala-sekolah', compact(
             'stats',
             'analisis',
             'ujianTerbaru',
             'rataNilaiUjian',
-            'laporanTerbaru'
+            'laporanTerbaru',
+            'aktivitasTerbaru'
         ));
     }
 

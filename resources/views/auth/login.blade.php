@@ -3,10 +3,16 @@
 @section('title', 'Login')
 
 @section('content')
+@php($pengaturan = \App\Models\PengaturanSekolah::getSettings())
 <div class="auth-card">
     <div class="auth-logo">
-        <h1>SIABSoal</h1>
-        <p>Sistem Informasi Analisis Butir Soal<br>SMPN 2 Tasikmalaya</p>
+        @if($pengaturan->logoUrl())
+            <img src="{{ $pengaturan->logoUrl() }}" alt="Logo sekolah" class="auth-school-logo">
+        @else
+            <div class="auth-logo-fallback"><i class="bi bi-clipboard-data-fill"></i></div>
+        @endif
+        <h1>{{ $pengaturan->nama_sistem ?? 'SIABSoal' }}</h1>
+        <p>{{ $pengaturan->nama_lengkap_sistem ?? 'Sistem Informasi Analisis Butir Soal' }}<br>{{ $pengaturan->nama_sekolah ?? 'SMPN 2 Tasikmalaya' }}</p>
     </div>
 
     {{-- Alert --}}

@@ -9,8 +9,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement("ALTER TABLE analisis_butir MODIFY kategori_dp ENUM('Sangat Baik','Baik','Cukup','Jelek','Bermasalah','Revisi','Buang') NOT NULL DEFAULT 'Jelek'");
-        DB::statement("ALTER TABLE analisis_butir MODIFY keputusan ENUM('Dipakai','Dipakai dengan catatan','Revisi','Buang') NOT NULL DEFAULT 'Buang'");
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE analisis_butir MODIFY kategori_dp ENUM('Sangat Baik','Baik','Cukup','Jelek','Bermasalah','Revisi','Buang') NOT NULL DEFAULT 'Jelek'");
+            DB::statement("ALTER TABLE analisis_butir MODIFY keputusan ENUM('Dipakai','Dipakai dengan catatan','Revisi','Buang') NOT NULL DEFAULT 'Buang'");
+        }
 
         if (! Schema::hasColumn('analisis_butir', 'jumlah_benar')) {
             Schema::table('analisis_butir', function (Blueprint $table) {
@@ -99,7 +101,9 @@ return new class extends Migration
             });
         }
 
-        DB::statement("ALTER TABLE analisis_butir MODIFY kategori_dp ENUM('Baik','Revisi','Buang') NOT NULL DEFAULT 'Buang'");
-        DB::statement("ALTER TABLE analisis_butir MODIFY keputusan ENUM('Dipakai','Dipakai dengan catatan','Revisi','Buang') NOT NULL DEFAULT 'Buang'");
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE analisis_butir MODIFY kategori_dp ENUM('Baik','Revisi','Buang') NOT NULL DEFAULT 'Buang'");
+            DB::statement("ALTER TABLE analisis_butir MODIFY keputusan ENUM('Dipakai','Dipakai dengan catatan','Revisi','Buang') NOT NULL DEFAULT 'Buang'");
+        }
     }
 };

@@ -1,8 +1,8 @@
 {
-    "name": "laravel/laravel",
+    "name": "rhnvlys/siabsoal-smpn-2-tasikmalaya",
     "type": "project",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "description": "Sistem Informasi Analisis Butir Soal Berbasis Web untuk SMPN 2 Tasikmalaya",
+    "keywords": ["laravel", "education", "item-analysis", "siabsoal", "kp"],
     "license": "MIT",
     "require": {
         "php": "^8.1",

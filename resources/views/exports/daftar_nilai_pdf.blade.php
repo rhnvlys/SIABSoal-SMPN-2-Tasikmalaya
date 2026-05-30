@@ -10,6 +10,7 @@
         .header h2 { margin: 4px 0; font-size: 14pt; }
         .header p { margin: 2px 0; font-size: 9pt; color: #4B5563; }
         .header hr { border: 1px solid #1F2937; margin: 8px 0; }
+        .school-logo { width: 56px; height: 56px; object-fit: contain; margin-bottom: 4px; }
         .info-table { width: 100%; margin-bottom: 16px; border: none; }
         .info-table td { padding: 2px 8px; font-size: 9pt; vertical-align: top; }
         .info-table td:first-child { font-weight: bold; width: 200px; }
@@ -30,6 +31,9 @@
 <body>
     {{-- Header --}}
     <div class="header">
+        @if($sekolah && $sekolah->logoPath())
+            <img src="{{ $sekolah->logoPath() }}" class="school-logo" alt="Logo sekolah">
+        @endif
         <h3>PEMERINTAH KOTA TASIKMALAYA</h3>
         <h3>DINAS PENDIDIKAN</h3>
         <h2>SMP NEGERI 2 TASIKMALAYA</h2>

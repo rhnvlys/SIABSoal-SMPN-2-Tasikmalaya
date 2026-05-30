@@ -1,9 +1,13 @@
 {{-- Navbar Component --}}
+@php($pengaturanSekolah = \App\Models\PengaturanSekolah::getSettings())
 <nav class="navbar">
     <div class="navbar-left">
         <button class="btn-toggle-sidebar" id="btn-toggle-sidebar" type="button" aria-label="Toggle sidebar">
             <i class="bi bi-list" style="font-size:24px"></i>
         </button>
+        @if($pengaturanSekolah->logoUrl())
+            <img src="{{ $pengaturanSekolah->logoUrl() }}" alt="Logo sekolah" class="navbar-school-logo">
+        @endif
         <span class="page-title">@yield('page-title', 'Dashboard')</span>
     </div>
 

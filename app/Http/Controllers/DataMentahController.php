@@ -158,6 +158,8 @@ class DataMentahController extends Controller
         $filename = 'template_data_mentah_' . ($mode === 'biner' ? 'skor_01' : 'jawaban_abcd') . '_' .
                     str_replace(' ', '_', $ujian->nama_ujian) . '.xlsx';
 
+        LogAktivitas::catat('Download template Data Mentah T1', 'Data Mentah', "Download template Data Mentah T1 ({$mode}) ujian: {$ujian->nama_ujian}");
+
         return Excel::download(new DataMentahTemplateExport($ujian, $mode), $filename);
     }
 
@@ -172,8 +174,8 @@ class DataMentahController extends Controller
         ]);
 
         try {
-            $rows = $this->parseFile($request->file('file'));
             $mode = $request->input('mode', 'abcd');
+            $rows = $this->parseFile($request->file('file'), $ujian, $mode);
 
             // Ambil header, skip header row
             $header = array_shift($rows);
@@ -251,17 +253,37 @@ class DataMentahController extends Controller
     /**
      * Parse file CSV/Excel ke array rows
      */
-    private function parseFile($file): array
+    private function parseFile($file, Ujian $ujian, string $mode): array
     {
         $extension = $file->getClientOriginalExtension();
 
         if (in_array($extension, ['csv', 'txt'])) {
             $rows = array_map('str_getcsv', file($file->getRealPath()));
-        } else {
-            $data = Excel::toArray(new SpreadsheetRowsImport(), $file);
-            $rows = $data[0] ?? [];
+            return $this->filledRows($rows);
         }
 
+        $sheets = Excel::toArray(new SpreadsheetRowsImport(), $file);
+        foreach ($sheets as $sheetRows) {
+            $rows = $this->filledRows($sheetRows);
+            $header = $rows[0] ?? null;
+
+            if ($header && $this->importService->isHeaderValid($header, $ujian, $mode)) {
+                return $rows;
+            }
+        }
+
+        foreach ($sheets as $sheetRows) {
+            $rows = $this->filledRows($sheetRows);
+            if ($rows !== []) {
+                return $rows;
+            }
+        }
+
+        return [];
+    }
+
+    private function filledRows(array $rows): array
+    {
         return array_values(array_filter($rows, function ($row) {
             return count(array_filter($row, fn ($value) => trim((string) $value) !== '')) > 0;
         }));

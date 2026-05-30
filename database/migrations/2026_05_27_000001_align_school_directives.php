@@ -19,6 +19,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         // 1. Add 'tidak_hadir' to keterangan enum
         DB::statement("ALTER TABLE peserta_ujian MODIFY keterangan ENUM('tercapai','perlu_peningkatan','tidak_hadir') NULL");
 
@@ -41,6 +45,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::statement("ALTER TABLE peserta_ujian MODIFY keterangan ENUM('tercapai','perlu_peningkatan') NULL");
         DB::statement("ALTER TABLE analisis_butir MODIFY kategori_dp ENUM('Sangat Baik','Baik','Cukup','Jelek','Bermasalah','Revisi','Buang') NOT NULL DEFAULT 'Jelek'");
     }

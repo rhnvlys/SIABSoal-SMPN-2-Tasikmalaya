@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnalisisDataController;
+use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DaftarNilaiController;
 use App\Http\Controllers\DashboardController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\KunciJawabanController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MapelController;
 use App\Http\Controllers\OlahDataController;
 use App\Http\Controllers\ProfileController;
@@ -20,7 +22,10 @@ use App\Http\Controllers\UjianController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'landing')->name('landing');
+Route::get('/', LandingController::class)->name('landing');
+Route::get('/logo-sekolah/{path}', [ProfilSekolahController::class, 'logo'])
+    ->where('path', '.*')
+    ->name('logo-sekolah.show');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -94,6 +99,17 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('tahun-ajaran', TahunAjaranController::class)->except(['show']);
         Route::get('/profil-sekolah', [ProfilSekolahController::class, 'edit'])->name('profil-sekolah.edit');
         Route::put('/profil-sekolah', [ProfilSekolahController::class, 'update'])->name('profil-sekolah.update');
+    });
+
+    Route::middleware(['role:Admin,Kepala Sekolah'])->prefix('audit-log')->name('audit-log.')->group(function () {
+        Route::get('/', [AuditLogController::class, 'index'])->name('index');
+        Route::get('/export/excel', [AuditLogController::class, 'exportExcel'])->name('export.excel');
+        Route::get('/export/pdf', [AuditLogController::class, 'exportPdf'])->name('export.pdf');
+    });
+    Route::middleware(['role:Admin,Kepala Sekolah'])->prefix('audit-trail')->name('audit-trail.')->group(function () {
+        Route::get('/', [AuditLogController::class, 'index'])->name('index');
+        Route::get('/export/excel', [AuditLogController::class, 'exportExcel'])->name('export.excel');
+        Route::get('/export/pdf', [AuditLogController::class, 'exportPdf'])->name('export.pdf');
     });
 
     Route::get('ujian', [UjianController::class, 'index'])->middleware('role:Admin,Guru,Kepala Sekolah')->name('ujian.index');

@@ -4,6 +4,7 @@
     $role = $user->role->nama_role ?? '';
     $currentRoute = request()->route() ? request()->route()->getName() : '';
     $dashboardRoute = $user->dashboardRouteName() ?? 'dashboard';
+    $pengaturanSekolah = \App\Models\PengaturanSekolah::getSettings();
 
     $menus = [
         ['label' => 'UTAMA', 'type' => 'section'],
@@ -31,10 +32,11 @@
         ['route' => 'ujian.index', 'label' => 'Analisis Data T3', 'icon' => 'bi-clipboard-data-fill', 'roles' => ['Admin','Guru'], 'customActive' => 'analisis-data'],
 
         ['label' => 'LAPORAN', 'type' => 'section', 'roles' => ['Admin','Guru','Kepala Sekolah']],
-        ['route' => 'ujian.index', 'label' => $role === 'Kepala Sekolah' ? 'Laporan Analisis' : 'Daftar Nilai T4', 'icon' => 'bi-clipboard-data-fill', 'roles' => ['Kepala Sekolah'], 'customActive' => 'analisis-data'],
+        ['route' => 'ujian.index', 'label' => 'Laporan Analisis T3', 'icon' => 'bi-clipboard-data-fill', 'roles' => ['Kepala Sekolah'], 'customActive' => 'analisis-data'],
         ['route' => 'ujian.index', 'label' => 'Daftar Nilai T4', 'icon' => 'bi-journal-text', 'roles' => ['Admin','Guru','Kepala Sekolah'], 'customActive' => 'daftar-nilai'],
         ['route' => 'ujian.index', 'label' => 'Rekap Nilai T5', 'icon' => 'bi-file-earmark-bar-graph-fill', 'roles' => ['Admin','Guru','Kepala Sekolah'], 'customActive' => 'rekap-nilai'],
         ['route' => 'ujian.index', 'label' => 'Laporan Export', 'icon' => 'bi-download', 'roles' => ['Admin','Guru','Kepala Sekolah'], 'customActive' => 'export'],
+        ['route' => 'audit-log.index', 'label' => 'Riwayat Aktivitas', 'icon' => 'bi-clock-history', 'roles' => ['Admin','Kepala Sekolah'], 'activeRoutes' => ['audit-log.*', 'audit-trail.*']],
 
         ['label' => 'DATA READ-ONLY', 'type' => 'section', 'roles' => ['Kepala Sekolah']],
         ['route' => 'guru.index', 'label' => 'Data Guru Read-only', 'icon' => 'bi-person-badge-fill', 'roles' => ['Kepala Sekolah']],
@@ -49,8 +51,17 @@
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <h2>SIABSoal</h2>
-        <small>SMPN 2 Tasikmalaya</small>
+        <div class="sidebar-brand-row">
+            @if($pengaturanSekolah->logoUrl())
+                <img src="{{ $pengaturanSekolah->logoUrl() }}" alt="Logo sekolah">
+            @else
+                <span class="sidebar-brand-mark"><i class="bi bi-clipboard-data-fill"></i></span>
+            @endif
+            <div>
+                <h2>SIABSoal</h2>
+                <small>SMPN 2 Tasikmalaya</small>
+            </div>
+        </div>
     </div>
 
     <ul class="sidebar-nav">

@@ -25,9 +25,11 @@
     <a href="{{ route('ujian.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Tambah Ujian</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-key-fill"></i> Input Kunci Jawaban</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-table"></i> Data Mentah T1</a>
+    <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-bar-chart-line-fill"></i> Olah Data T2</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-clipboard-data-fill"></i> Analisis Data T3</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-journal-text"></i> Daftar Nilai T4</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-file-earmark-bar-graph-fill"></i> Rekap Nilai T5</a>
+    <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-download"></i> Laporan Export</a>
 </div>
 
 <div class="card mb-3">
@@ -71,5 +73,10 @@
             </tbody>
         </table>
     </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header"><i class="bi bi-clock-history"></i> Aktivitas Saya Terbaru</div>
+    @include('components.activity-table', ['logs' => $aktivitasSaya, 'showUser' => false])
 </div>
 @endsection

@@ -70,8 +70,11 @@ docs/superpowers/
 .deploy-render/
 .deploy-vercel/
 /.codex
+/.codex/
 /.skills
+/.skills/
 /skills
+/skills/
 SKILL.md
 skill.md
 *_skill.md

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ujian;
 use App\Models\AnalisisButir;
+use App\Models\LogAktivitas;
 use App\Models\PesertaUjian;
 use App\Models\PengaturanSekolah;
 use App\Services\ReportService;
@@ -38,12 +39,11 @@ class ExportController extends Controller
 
         $soalList = $ujian->soal;
 
-        // Build CSV
-        $header = ['No', 'NIS', 'NISN', 'Nama Siswa', 'L/P', 'Kehadiran'];
+        $header = ['No', 'NIS', 'NISN', 'Nama Siswa', 'L/P', 'Status Kehadiran'];
         foreach ($soalList as $soal) {
             $header[] = 'Soal ' . $soal->nomor_soal;
         }
-        $header = array_merge($header, ['Benar', 'Salah', 'Nilai', 'Keterangan']);
+        $header = array_merge($header, ['Jumlah Benar', 'Jumlah Salah', 'Nilai', 'Keterangan']);
 
         $rows = [];
         foreach ($peserta as $idx => $p) {
@@ -76,7 +76,7 @@ class ExportController extends Controller
             $rows[] = $row;
         }
 
-        return $this->downloadCsv($header, $rows, "data_mentah_{$ujian->nama_ujian}");
+        return $this->downloadReport($ujian, $header, $rows, "data_mentah_{$ujian->nama_ujian}", 'DATA_MENTAH_T1', 'DATA MENTAH T1');
     }
 
     public function dataMentahPdf(Ujian $ujian)
@@ -94,6 +94,8 @@ class ExportController extends Controller
 
         $pdf = Pdf::loadView('exports.data_mentah_pdf', compact('ujian', 'peserta', 'sekolah'))
                   ->setPaper('a4', 'landscape');
+
+        $this->catatExport($ujian, 'Data Mentah T1', 'PDF');
 
         return $pdf->download("data_mentah_{$ujian->nama_ujian}.pdf");
     }
@@ -125,7 +127,7 @@ class ExportController extends Controller
             ];
         }
 
-        return $this->downloadCsv($header, $rows, "olah_data_{$ujian->nama_ujian}");
+        return $this->downloadReport($ujian, $header, $rows, "olah_data_{$ujian->nama_ujian}", 'OLAH_DATA_T2', 'OLAH DATA T2');
     }
 
     public function olahDataPdf(Ujian $ujian)
@@ -143,6 +145,8 @@ class ExportController extends Controller
         $pdf = Pdf::loadView('exports.olah_data_pdf', compact('ujian', 'peserta', 'sekolah'))
                   ->setPaper('a4', 'portrait');
 
+        $this->catatExport($ujian, 'Olah Data T2', 'PDF');
+
         return $pdf->download("olah_data_{$ujian->nama_ujian}.pdf");
     }
 
@@ -159,7 +163,6 @@ class ExportController extends Controller
             'BB',
             'JA',
             'JB',
-            'N',
             'DP',
             'Kategori DP',
             'TK',
@@ -174,7 +177,6 @@ class ExportController extends Controller
                 $a->bb,
                 $a->ja,
                 $a->jb,
-                $a->n_analisis,
                 $a->dp,
                 $a->kategori_dp,
                 $a->tk,
@@ -183,7 +185,7 @@ class ExportController extends Controller
             ];
         }
 
-        return $this->downloadCsv($header, $rows, "analisis_butir_{$ujian->nama_ujian}");
+        return $this->downloadReport($ujian, $header, $rows, "analisis_butir_{$ujian->nama_ujian}", 'ANALISIS_DATA_T3', 'ANALISIS DATA T3');
     }
 
     public function analisisPdf(Ujian $ujian)
@@ -196,6 +198,8 @@ class ExportController extends Controller
         $pdf = Pdf::loadView('exports.analisis_pdf', compact('ujian', 'analisis', 'sekolah', 'ringkasan'))
                   ->setPaper('a4', 'landscape');
 
+        $this->catatExport($ujian, 'Analisis Data T3', 'PDF');
+
         return $pdf->download("analisis_butir_{$ujian->nama_ujian}.pdf");
     }
 
@@ -207,7 +211,7 @@ class ExportController extends Controller
         $data = $this->reportService->getDaftarNilai($ujian->id);
         $peserta = $data['peserta'];
 
-        $header = ['No', 'NIS', 'NISN', 'Nama Peserta Didik', 'L/P', 'Kehadiran', 'Skor PG', 'Salah', 'Nilai', 'Keterangan'];
+        $header = ['No', 'NIS', 'NISN', 'Nama Peserta Didik', 'L/P', 'Status Kehadiran', 'Jumlah Benar', 'Jumlah Salah', 'Nilai', 'Keterangan'];
         $rows = [];
         foreach ($peserta as $idx => $p) {
             $keterangan = match($p->keterangan) {
@@ -231,7 +235,7 @@ class ExportController extends Controller
             ];
         }
 
-        return $this->downloadCsv($header, $rows, "daftar_nilai_{$ujian->nama_ujian}");
+        return $this->downloadReport($data['ujian'], $header, $rows, "daftar_nilai_{$data['ujian']->nama_ujian}", 'DAFTAR_NILAI_T4', 'DAFTAR NILAI T4');
     }
 
     public function daftarNilaiPdf(Ujian $ujian)
@@ -240,6 +244,8 @@ class ExportController extends Controller
 
         $pdf = Pdf::loadView('exports.daftar_nilai_pdf', $data)
                   ->setPaper('a4', 'portrait');
+
+        $this->catatExport($data['ujian'], 'Daftar Nilai T4', 'PDF');
 
         return $pdf->download("daftar_nilai_{$ujian->nama_ujian}.pdf");
     }
@@ -250,51 +256,52 @@ class ExportController extends Controller
     public function rekapNilaiExcel(Ujian $ujian)
     {
         $data = $this->reportService->getRekapNilai($ujian->id);
-        $peserta = $data['peserta'];
-
-        $header = ['No', 'NIS', 'NISN', 'Nama Peserta Didik', 'L/P', 'Kehadiran', 'Benar', 'Salah', 'Nilai', 'Keterangan'];
-        $rows = [];
-        foreach ($peserta as $idx => $p) {
-            $keterangan = match($p->keterangan) {
-                'tercapai' => 'TERCAPAI',
-                'perlu_peningkatan' => 'PERLU PENINGKATAN',
-                'tidak_hadir' => 'TIDAK HADIR',
-                default => '-',
-            };
-
-            $rows[] = [
-                $idx + 1,
-                $p->siswa->nis ?? '',
-                $p->siswa->nisn ?? '',
-                $p->siswa->nama_siswa ?? '',
-                $p->siswa->jenis_kelamin ?? '',
-                ucfirst(str_replace('_', ' ', $p->status_kehadiran)),
-                $p->jumlah_benar,
-                $p->jumlah_salah,
-                $p->nilai,
-                $keterangan,
-            ];
-        }
-
-        // Append summary
         $r = $data['ringkasan'];
         $rentang = $data['rentang_nilai'];
         $ketuntasan = $data['ketuntasan'];
-        $rows[] = [];
-        $rows[] = ['', '', '', 'RINGKASAN', '', '', '', '', '', ''];
-        $rows[] = ['', '', '', 'Jumlah Siswa', $r['jumlah_siswa']];
-        $rows[] = ['', '', '', 'Hadir', $r['hadir']];
-        $rows[] = ['', '', '', 'Tidak Hadir', $r['tidak_hadir']];
-        $rows[] = ['', '', '', 'Nilai Tertinggi', $r['nilai_tertinggi']];
-        $rows[] = ['', '', '', 'Nilai Terendah', $r['nilai_terendah']];
-        $rows[] = ['', '', '', 'Rata-rata', $r['rata_rata']];
-        $rows[] = ['', '', '', 'Nilai < KKM', $rentang['bawah_kkm']];
-        $rows[] = ['', '', '', 'Nilai = KKM', $rentang['sama_kkm']];
-        $rows[] = ['', '', '', 'Nilai > KKM', $rentang['atas_kkm']];
-        $rows[] = ['', '', '', 'Tuntas', $ketuntasan['tuntas']];
-        $rows[] = ['', '', '', 'Belum Tuntas', $ketuntasan['belum_tuntas']];
+        $analisis = $data['analisis_ringkasan'];
 
-        return $this->downloadCsv($header, $rows, "rekap_nilai_{$ujian->nama_ujian}");
+        $header = [
+            'Jumlah Siswa',
+            'Hadir',
+            'Tidak Hadir',
+            'Nilai Tertinggi',
+            'Nilai Terendah',
+            'Rata-rata',
+            'Nilai < KKM',
+            'Nilai = KKM',
+            'Nilai > KKM',
+            'Tuntas',
+            'Belum Tuntas',
+            'Soal Baik',
+            'Soal Revisi',
+            'Soal Buang',
+            'Soal Mudah',
+            'Soal Sedang',
+            'Soal Sukar',
+        ];
+
+        $rows = [[
+            $r['jumlah_siswa'],
+            $r['hadir'],
+            $r['tidak_hadir'],
+            $r['nilai_tertinggi'],
+            $r['nilai_terendah'],
+            $r['rata_rata'],
+            $rentang['bawah_kkm'],
+            $rentang['sama_kkm'],
+            $rentang['atas_kkm'],
+            $ketuntasan['tuntas'],
+            $ketuntasan['belum_tuntas'],
+            $analisis['soal_baik'],
+            $analisis['soal_revisi'],
+            $analisis['soal_buang'],
+            $analisis['soal_mudah'],
+            $analisis['soal_sedang'],
+            $analisis['soal_sukar'],
+        ]];
+
+        return $this->downloadReport($data['ujian'], $header, $rows, "rekap_nilai_{$data['ujian']->nama_ujian}", 'REKAP_NILAI_T5', 'REKAP NILAI T5');
     }
 
     public function rekapNilaiPdf(Ujian $ujian)
@@ -304,14 +311,42 @@ class ExportController extends Controller
         $pdf = Pdf::loadView('exports.rekap_nilai_pdf', $data)
                   ->setPaper('a4', 'portrait');
 
+        $this->catatExport($data['ujian'], 'Rekap Nilai T5', 'PDF');
+
         return $pdf->download("rekap_nilai_{$ujian->nama_ujian}.pdf");
     }
 
-    // ===========================
-    // HELPER: CSV Download
-    // ===========================
-    private function downloadCsv(array $header, array $rows, string $filename)
+    private function downloadReport(Ujian $ujian, array $header, array $rows, string $filename, string $title, string $namaLaporan)
     {
-        return $this->exportService->downloadExcel($header, $rows, $filename);
+        $this->catatExport($ujian, $namaLaporan, 'Excel');
+
+        return $this->exportService->downloadExcel($header, $rows, $filename, $title, $this->reportMetaRows($ujian, $namaLaporan));
+    }
+
+    private function reportMetaRows(Ujian $ujian, string $namaLaporan): array
+    {
+        $ujian->loadMissing(['guru', 'mapel', 'tahunAjaran', 'kelas']);
+
+        return [
+            ['SMP NEGERI 2 TASIKMALAYA'],
+            ['SIABSoal SMPN 2 Tasikmalaya'],
+            ['Nama Laporan', $namaLaporan],
+            ['Nama Ujian', $ujian->nama_ujian],
+            ['Mata Pelajaran', $ujian->mapel->nama_mapel ?? '-'],
+            ['Kelas', $ujian->kelas->pluck('nama_kelas')->join(', ') ?: '-'],
+            ['Semester', $ujian->tahunAjaran->semester ?? '-'],
+            ['Tahun Pelajaran', $ujian->tahunAjaran->tahun_ajaran ?? '-'],
+            ['Guru', $ujian->guru->nama_guru ?? '-'],
+            ['Tanggal Export', now()->format('d/m/Y H:i')],
+        ];
+    }
+
+    private function catatExport(Ujian $ujian, string $namaLaporan, string $format): void
+    {
+        LogAktivitas::catat(
+            "Export {$format}",
+            'Laporan Export',
+            "Mengekspor {$namaLaporan} {$format} untuk ujian: {$ujian->nama_ujian}"
+        );
     }
 }

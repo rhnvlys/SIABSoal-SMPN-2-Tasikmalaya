@@ -134,8 +134,9 @@ class UserController extends Controller
         }
 
         return Role::whereIn('nama_role', User::FINAL_ROLES)
-            ->orderByRaw("FIELD(nama_role, 'Admin', 'Guru', 'Kepala Sekolah')")
-            ->get();
+            ->get()
+            ->sortBy(fn (Role $role) => array_search($role->nama_role, User::FINAL_ROLES, true))
+            ->values();
     }
 
     private function roleExistsRule()

@@ -14,6 +14,7 @@
     @include('components.card-stat', ['value' => $stats['siswa'], 'label' => 'Jumlah Siswa', 'icon' => 'bi-mortarboard-fill', 'color' => 'blue'])
     @include('components.card-stat', ['value' => $stats['kelas'], 'label' => 'Jumlah Kelas', 'icon' => 'bi-building', 'color' => 'purple'])
     @include('components.card-stat', ['value' => $stats['mapel'], 'label' => 'Mata Pelajaran', 'icon' => 'bi-book-fill', 'color' => 'teal'])
+    @include('components.card-stat', ['value' => $stats['ujian'], 'label' => 'Jumlah Ujian', 'icon' => 'bi-file-earmark-text-fill', 'color' => 'amber'])
     @include('components.card-stat', ['value' => $stats['ujian_selesai'], 'label' => 'Ujian Selesai', 'icon' => 'bi-check-circle-fill', 'color' => 'green'])
     @include('components.card-stat', ['value' => $stats['ujian_belum_selesai'], 'label' => 'Ujian Belum Selesai', 'icon' => 'bi-hourglass-split', 'color' => 'amber'])
     @include('components.card-stat', ['value' => $analisis->soal_baik ?? 0, 'label' => 'Soal Baik', 'icon' => 'bi-check-circle-fill', 'color' => 'green'])
@@ -29,6 +30,7 @@
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-journal-text"></i> Daftar Nilai T4</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-file-earmark-bar-graph-fill"></i> Rekap Nilai T5</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-download"></i> Export Laporan</a>
+    <a href="{{ route('audit-log.index') }}" class="btn btn-outline"><i class="bi bi-clock-history"></i> Audit Log</a>
 </div>
 
 <div class="card mb-3">
@@ -94,5 +96,10 @@
             </tbody>
         </table>
     </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header"><i class="bi bi-clock-history"></i> Riwayat Aktivitas Terbaru</div>
+    @include('components.activity-table', ['logs' => $aktivitasTerbaru, 'showUser' => true])
 </div>
 @endsection

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\KunciJawabanTemplateExport;
 use App\Models\Ujian;
 use App\Models\Soal;
 use App\Models\LogAktivitas;
 use App\Imports\SpreadsheetRowsImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KunciJawabanController extends Controller
 {
@@ -50,28 +52,11 @@ class KunciJawabanController extends Controller
 
     public function downloadTemplate(Ujian $ujian)
     {
-        // Return simple CSV template for kunci jawaban
-        $headers = ['nomor_soal', 'kunci_jawaban', 'bobot'];
-        $rows = [];
-        for ($i = 1; $i <= $ujian->jumlah_soal; $i++) {
-            $rows[] = [$i, '', '1'];
-        }
+        LogAktivitas::catat('Download template kunci jawaban', 'Kunci Jawaban', "Download template kunci jawaban ujian: {$ujian->nama_ujian}");
 
-        $callback = function() use ($headers, $rows) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, $headers);
-            foreach ($rows as $row) {
-                fputcsv($file, $row);
-            }
-            fclose($file);
-        };
+        $filename = 'template_kunci_jawaban_' . str_replace(' ', '_', $ujian->nama_ujian) . '.xlsx';
 
-        $filename = 'template_kunci_jawaban_' . str_replace(' ', '_', $ujian->nama_ujian) . '.csv';
-
-        return response()->stream($callback, 200, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ]);
+        return Excel::download(new KunciJawabanTemplateExport($ujian), $filename);
     }
 
     public function import(Request $request, Ujian $ujian)
@@ -89,7 +74,7 @@ class KunciJawabanController extends Controller
             } else {
                 // Use Laravel Excel for xlsx/xls
                 $data = \Maatwebsite\Excel\Facades\Excel::toArray(new SpreadsheetRowsImport(), $file);
-                $this->importFromArray($data[0] ?? [], $ujian);
+                $this->importFromArray($this->selectImportSheetRows($data), $ujian);
             }
 
             LogAktivitas::catat("Import kunci jawaban ujian: {$ujian->nama_ujian}", 'Kunci Jawaban');
@@ -130,5 +115,36 @@ class KunciJawabanController extends Controller
                 $ujian->update(['status' => 'kunci_lengkap']);
             }
         });
+    }
+
+    private function selectImportSheetRows(array $sheets): array
+    {
+        foreach ($sheets as $sheetRows) {
+            $rows = $this->filledRows($sheetRows);
+            $header = array_map(
+                fn ($value) => strtolower(trim((string) $value)),
+                $rows[0] ?? []
+            );
+
+            if (array_slice($header, 0, 3) === ['nomor_soal', 'kunci_jawaban', 'bobot']) {
+                return $rows;
+            }
+        }
+
+        foreach ($sheets as $sheetRows) {
+            $rows = $this->filledRows($sheetRows);
+            if ($rows !== []) {
+                return $rows;
+            }
+        }
+
+        return [];
+    }
+
+    private function filledRows(array $rows): array
+    {
+        return array_values(array_filter($rows, function ($row) {
+            return count(array_filter($row, fn ($value) => trim((string) $value) !== '')) > 0;
+        }));
     }
 }
