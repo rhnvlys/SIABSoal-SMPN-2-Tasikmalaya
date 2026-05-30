@@ -16,11 +16,24 @@
 /storage/framework/views/*
 !/storage/framework/views/.gitignore
 /vendor
+
+# Laravel environment and secrets
 /.env
 /.env.*
 !.env.example
 !.env.production.example
 !.env.koyeb.example
+.env.local
+.env.backup
+.env.production
+.env.staging
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# Logs, archives, database dumps, and temporary files
 *.log
 *.zip
 *.rar
@@ -29,8 +42,15 @@
 *.sqlite
 *.sqlite3
 *.bak
+*.backup
 *.tmp
+*.temp
 *.cache
+*.dump
+*.tar
+*.gz
+
+# OS and editor files
 .DS_Store
 Thumbs.db
 Homestead.json
@@ -41,6 +61,8 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# Local AI / agent / skill files that must not be pushed
 AGENTS.md.backup-*
 .agents/
 AGENTS.md
@@ -55,3 +77,17 @@ skill.md
 *_skill.md
 prompt*.txt
 Pasted text*
+discord_rpc_*.py
+*_rpc_*.py
+*.session
+*.token
+*.secret
+
+# Deployment credentials and local hosting artifacts
+.koyeb*
+.turso*
+.tidb*
+.tidbcloud*
+vercel.json
+render.yaml
+fly.toml
