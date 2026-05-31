@@ -26,7 +26,7 @@ File `vercel.json` memakai:
 - Route Laravel: semua request non-static diarahkan ke `/api/index.php`
 - Route static asset: `/build`, `/assets`, `/css`, `/js`, `/storage`, `/favicon.ico`, dan `/robots.txt` diarahkan ke folder `public`
 
-Build command yang disarankan di Vercel:
+Build command yang dipakai di `vercel.json`:
 
 ```bash
 composer install --no-dev --optimize-autoloader && npm install && npm run build
