@@ -5,6 +5,24 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+error_reporting(E_ALL);
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+ini_set('error_log', 'php://stderr');
+
+register_shutdown_function(function (): void {
+    $error = error_get_last();
+
+    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+        error_log(sprintf(
+            'SIABSoal Vercel fatal error: %s in %s:%s',
+            $error['message'],
+            $error['file'],
+            $error['line']
+        ));
+    }
+});
+
 $basePath = dirname(__DIR__);
 $storagePath = getenv('APP_STORAGE_PATH') ?: sys_get_temp_dir().'/siabsoal-storage';
 $releaseKeySource = implode('|', [
@@ -41,15 +59,31 @@ foreach ([
     $_SERVER[$key] = $value;
 }
 
-require $basePath.'/vendor/autoload.php';
+try {
+    require $basePath.'/vendor/autoload.php';
 
-$app = require_once $basePath.'/bootstrap/app.php';
-$app->useStoragePath($storagePath);
+    $app = require_once $basePath.'/bootstrap/app.php';
+    $app->useStoragePath($storagePath);
 
-$kernel = $app->make(Kernel::class);
+    $kernel = $app->make(Kernel::class);
 
-$response = $kernel->handle(
-    $request = Request::capture()
-)->send();
+    $response = $kernel->handle(
+        $request = Request::capture()
+    )->send();
 
-$kernel->terminate($request, $response);
+    $kernel->terminate($request, $response);
+} catch (Throwable $exception) {
+    error_log(sprintf(
+        'SIABSoal Vercel uncaught exception: %s: %s in %s:%s',
+        get_class($exception),
+        $exception->getMessage(),
+        $exception->getFile(),
+        $exception->getLine()
+    ));
+
+    if (! headers_sent()) {
+        http_response_code(500);
+    }
+
+    echo 'Server Error';
+}
