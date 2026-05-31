@@ -42,7 +42,15 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
+            if (env('VERCEL')) {
+                error_log(sprintf(
+                    'SIABSoal Laravel exception: %s: %s in %s:%s',
+                    get_class($e),
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine()
+                ));
+            }
         });
     }
 }
