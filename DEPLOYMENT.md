@@ -34,7 +34,7 @@ composer install --no-dev --optimize-autoloader && npm install && npm run build
 
 Catatan: Blade project saat ini masih memakai asset dari `public/css/app.css` dan `public/js/app.js`. `npm run build` tetap aman dijalankan karena project memiliki konfigurasi Vite.
 
-Output directory: biarkan kosong/default untuk Laravel PHP runtime. Jangan ubah jika deployment production sudah berhasil.
+Output directory: `public`, karena Vercel mendeteksi build Vite dan perlu mengambil asset hasil build dari folder public Laravel.
 
 ## Environment Variables Vercel
 
