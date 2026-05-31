@@ -3,7 +3,7 @@
 ## Ringkasan
 
 - Project: SIABSoal SMPN 2 Tasikmalaya
-- URL production: https://siabsoal-smpn2-kp.vercel.app/
+- URL production: https://siabsoal-smpn2-tasikmalaya-taupe.vercel.app/
 - Platform: Vercel
 - Repository: https://github.com/rhnvlys/SIABSoal-SMPN-2-Tasikmalaya
 - Branch production: `work/siabsoal-build`
@@ -47,7 +47,7 @@ APP_NAME="SIABSoal SMPN 2 Tasikmalaya"
 APP_ENV=production
 APP_KEY=base64:ISI_APP_KEY_PRODUCTION
 APP_DEBUG=false
-APP_URL=https://siabsoal-smpn2-kp.vercel.app
+APP_URL=https://siabsoal-smpn2-tasikmalaya-taupe.vercel.app
 
 LOG_CHANNEL=stack
 LOG_LEVEL=error
@@ -62,14 +62,16 @@ DB_PASSWORD=ISI_PASSWORD_DATABASE
 SESSION_DRIVER=database
 SESSION_LIFETIME=120
 SESSION_SECURE_COOKIE=true
-CACHE_DRIVER=file
-CACHE_STORE=file
+CACHE_DRIVER=array
+CACHE_STORE=array
 QUEUE_CONNECTION=sync
 FILESYSTEM_DISK=local
 
 MAIL_MAILER=log
 VITE_APP_NAME="SIABSoal SMPN 2 Tasikmalaya"
 ```
+
+Untuk Vercel, gunakan `CACHE_STORE=array` dan `CACHE_DRIVER=array`. Cache `array` mencegah error runtime `Cache store [file] is not defined` dan lebih cocok untuk serverless karena tidak bergantung pada file cache persisten.
 
 Jika memakai TiDB, gunakan `DB_PORT=4000`. Jika database membutuhkan SSL CA, simpan CA di jalur yang tersedia saat build/runtime lalu isi `DB_SSL_CA`.
 
@@ -146,7 +148,7 @@ Pastikan:
 
 ## Checklist Setelah Deploy
 
-1. Buka https://siabsoal-smpn2-kp.vercel.app/
+1. Buka https://siabsoal-smpn2-tasikmalaya-taupe.vercel.app/
 2. Pastikan landing page tampil.
 3. Klik Login.
 4. Login role Admin, Guru, dan Kepala Sekolah.
