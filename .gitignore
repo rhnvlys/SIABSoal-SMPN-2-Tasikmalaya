@@ -85,12 +85,12 @@ discord_rpc_*.py
 *.session
 *.token
 *.secret
+/.vercel
 
 # Deployment credentials and local hosting artifacts
 .koyeb*
 .turso*
 .tidb*
 .tidbcloud*
-vercel.json
 render.yaml
 fly.toml

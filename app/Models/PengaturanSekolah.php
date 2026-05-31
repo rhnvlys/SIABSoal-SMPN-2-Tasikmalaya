@@ -20,6 +20,7 @@ class PengaturanSekolah extends Model
         'kepala_sekolah',
         'nip_kepala_sekolah',
         'logo',
+        'logo_url',
     ];
 
     /**
@@ -39,8 +40,16 @@ class PengaturanSekolah extends Model
 
     public function logoUrl(): ?string
     {
-        if (!$this->logo) {
+        if ($this->logo_url) {
+            return $this->logo_url;
+        }
+
+        if (! $this->logo) {
             return null;
+        }
+
+        if (filter_var($this->logo, FILTER_VALIDATE_URL)) {
+            return $this->logo;
         }
 
         return route('logo-sekolah.show', ['path' => $this->logo]);
@@ -48,7 +57,7 @@ class PengaturanSekolah extends Model
 
     public function logoPath(): ?string
     {
-        if (!$this->logo || !Storage::disk('public')->exists($this->logo)) {
+        if (! $this->logo || filter_var($this->logo, FILTER_VALIDATE_URL) || ! Storage::disk('public')->exists($this->logo)) {
             return null;
         }
 

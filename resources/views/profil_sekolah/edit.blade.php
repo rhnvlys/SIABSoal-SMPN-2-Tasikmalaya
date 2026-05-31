@@ -29,9 +29,16 @@
                 </div>
                 <div style="flex:1">
                     <input type="file" name="logo" id="logo-input" class="form-control" accept="image/png,image/jpeg,image/webp">
+                    @error('logo')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                     <p class="text-sm text-muted mt-1">Format png, jpg, jpeg, atau webp. Maksimal 2MB.</p>
                 </div>
             </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">URL Logo Sekolah</label>
+            <input type="url" name="logo_url" id="logo-url-input" class="form-control @error('logo_url') is-invalid @enderror" value="{{ old('logo_url', $pengaturan->logo_url) }}" placeholder="https://example.com/logo-sekolah.png">
+            @error('logo_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            <p class="text-sm text-muted mt-1">Opsional untuk logo yang disimpan di Cloudinary, Supabase Storage, atau URL publik lain.</p>
         </div>
         <div class="btn-group mt-2"><button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Simpan</button></div>
     </form>
@@ -42,6 +49,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const input = document.getElementById('logo-input');
+    const urlInput = document.getElementById('logo-url-input');
     const preview = document.getElementById('logo-preview');
     const fallback = document.getElementById('logo-preview-fallback');
 
@@ -59,6 +67,16 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         reader.readAsDataURL(file);
     });
+
+    if (urlInput) {
+        urlInput.addEventListener('input', function () {
+            if (!urlInput.value) return;
+
+            preview.src = urlInput.value;
+            preview.style.display = 'block';
+            if (fallback) fallback.style.display = 'none';
+        });
+    }
 });
 </script>
 @endpush

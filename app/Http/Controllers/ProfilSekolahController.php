@@ -25,28 +25,41 @@ class ProfilSekolahController extends Controller
             'kepala_sekolah'      => 'nullable|string|max:255',
             'nip_kepala_sekolah'  => 'nullable|string|max:30',
             'logo'                => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
+            'logo_url'            => 'nullable|url|max:2048',
         ]);
 
         $pengaturan = $this->settings();
         $data = $request->only(['nama_sekolah', 'nama_sistem', 'nama_lengkap_sistem', 'alamat', 'kepala_sekolah', 'nip_kepala_sekolah']);
         $logoChanged = false;
+        $logoAction = null;
 
         if ($request->hasFile('logo')) {
             $oldLogo = $pengaturan->logo;
             $path = $request->file('logo')->store('logo-sekolah', 'public');
             $data['logo'] = $path;
+            $data['logo_url'] = null;
             $logoChanged = true;
+            $logoAction = 'Upload / ganti logo sekolah';
 
-            if ($oldLogo && $oldLogo !== $path && Storage::disk('public')->exists($oldLogo)) {
-                Storage::disk('public')->delete($oldLogo);
-            }
+            $this->deleteLocalLogo($oldLogo);
+        } elseif ($request->filled('logo_url')) {
+            $data['logo'] = null;
+            $data['logo_url'] = $request->string('logo_url')->trim()->toString();
+            $logoChanged = $data['logo_url'] !== $pengaturan->logo_url || (bool) $pengaturan->logo;
+            $logoAction = 'Menggunakan URL logo sekolah';
+
+            $this->deleteLocalLogo($pengaturan->logo);
+        } elseif ($request->has('logo_url') && $pengaturan->logo_url) {
+            $data['logo_url'] = null;
+            $logoChanged = true;
+            $logoAction = 'Menghapus URL logo sekolah';
         }
 
         $pengaturan->update($data);
         LogAktivitas::catat(
             $logoChanged ? 'Upload logo sekolah' : 'Update profil sekolah',
             'Profil Sekolah',
-            $logoChanged ? 'Upload / ganti logo sekolah' : 'Mengubah profil sekolah'
+            $logoChanged ? $logoAction : 'Mengubah profil sekolah'
         );
 
         return redirect()->route('profil-sekolah.edit')->with('success', 'Profil sekolah berhasil diperbarui.');
@@ -74,5 +87,16 @@ class ProfilSekolahController extends Controller
                 'nama_lengkap_sistem' => 'Sistem Informasi Analisis Butir Soal Berbasis Web SMPN 2 Tasikmalaya',
             ]
         );
+    }
+
+    private function deleteLocalLogo(?string $path): void
+    {
+        if (! $path || filter_var($path, FILTER_VALIDATE_URL)) {
+            return;
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
     }
 }
