@@ -3,7 +3,7 @@
 ## Ringkasan
 
 - Project: SIABSoal SMPN 2 Tasikmalaya
-- URL production: https://siabsoal-smpn2-tasikmalaya-taupe.vercel.app/
+- URL production: https://DOMAIN_BARU_VERCEL.vercel.app/
 - Platform: Vercel
 - Repository: https://github.com/rhnvlys/SIABSoal-SMPN-2-Tasikmalaya
 - Branch production: `work/siabsoal-build`
@@ -47,7 +47,7 @@ APP_NAME="SIABSoal SMPN 2 Tasikmalaya"
 APP_ENV=production
 APP_KEY=base64:ISI_APP_KEY_PRODUCTION
 APP_DEBUG=false
-APP_URL=https://siabsoal-smpn2-tasikmalaya-taupe.vercel.app
+APP_URL=https://DOMAIN_BARU_VERCEL.vercel.app
 
 LOG_CHANNEL=stack
 LOG_LEVEL=error
@@ -148,7 +148,7 @@ Pastikan:
 
 ## Checklist Setelah Deploy
 
-1. Buka https://siabsoal-smpn2-tasikmalaya-taupe.vercel.app/
+1. Buka https://DOMAIN_BARU_VERCEL.vercel.app/
 2. Pastikan landing page tampil.
 3. Klik Login.
 4. Login role Admin, Guru, dan Kepala Sekolah.
