@@ -198,7 +198,7 @@ File berikut tidak boleh dipush ke GitHub:
 - File backup seperti `.zip`, `.rar`, `.7z`, `.bak`, dan `.backup`.
 - Folder dependency seperti `vendor/` dan `node_modules/`.
 - File runtime seperti `storage/logs/`, cache, session, dan `public/storage/`.
-- File AI, agent, skill, prompt internal, dan script RPC lokal.
+
 
 Seluruh credential production harus disimpan melalui dashboard hosting atau environment variable yang aman.
 
@@ -230,7 +230,7 @@ Contoh penggunaan setelah screenshot tersedia:
 
 ## Pengembang
 
-**Kaka**  
+**Raihan Nouval Yashir**  
 Mahasiswa Teknik Informatika  
 Kerja Praktik di SMPN 2 Tasikmalaya
 
