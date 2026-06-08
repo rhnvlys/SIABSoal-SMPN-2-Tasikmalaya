@@ -167,9 +167,13 @@ class DummyDataSeeder extends Seeder
                 'mapel_id'         => $mtk->id,
                 'tahun_ajaran_id'  => $ta->id,
                 'jenis_ujian'      => 'UH',
+                'jenis_penilaian'  => 'Ulangan Harian',
+                'tujuan_pembelajaran' => 'Peserta didik mampu menyelesaikan soal matematika sesuai materi yang diujikan.',
+                'lingkup_materi'   => 'Bilangan, aljabar, geometri, dan pengolahan data.',
                 'tanggal_ujian'    => '2025-09-15',
                 'jumlah_soal'      => 20,
                 'kkm'              => 75.00,
+                'kktp'             => 75.00,
                 'metode_kelompok'  => 'persen_50',
                 'status'           => 'draft',
             ]

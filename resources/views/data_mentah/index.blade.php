@@ -31,12 +31,15 @@
     <div class="card-body">
         <div class="info-grid">
             <div><strong>Nama Ujian:</strong> {{ $ujian->nama_ujian }}</div>
+            <div><strong>Jenis Penilaian:</strong> {{ $ujian->jenis_penilaian_label }}</div>
             <div><strong>Mata Pelajaran:</strong> {{ $ujian->mapel->nama_mapel ?? '-' }}</div>
             <div><strong>Kelas:</strong> {{ $ujian->kelas->pluck('nama_kelas')->join(', ') ?: '-' }}</div>
             <div><strong>Guru:</strong> {{ $ujian->guru->nama_guru ?? '-' }}</div>
             <div><strong>Tahun Ajaran:</strong> {{ $ujian->tahunAjaran->tahun_ajaran ?? '-' }} — Semester {{ $ujian->tahunAjaran->semester ?? '-' }}</div>
             <div><strong>Jumlah Soal:</strong> {{ $ujian->jumlah_soal }}</div>
-            <div><strong>KKTP/KKM:</strong> {{ $ujian->kkm }}</div>
+            <div><strong>KKTP/KKM:</strong> {{ $ujian->kktp_value }}</div>
+            <div><strong>Tujuan Pembelajaran:</strong> {{ $ujian->tujuan_pembelajaran ?: '-' }}</div>
+            <div><strong>Lingkup Materi:</strong> {{ $ujian->lingkup_materi ?: '-' }}</div>
             <div><strong>Status:</strong> @include('components.badge', ['type' => $ujian->status])</div>
         </div>
     </div>

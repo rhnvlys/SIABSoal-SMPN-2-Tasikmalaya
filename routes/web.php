@@ -18,6 +18,7 @@ use App\Http\Controllers\ProfilSekolahController;
 use App\Http\Controllers\RekapNilaiController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunAjaranController;
+use App\Http\Controllers\TemplateExcelController;
 use App\Http\Controllers\UjianController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -113,6 +114,11 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('ujian', [UjianController::class, 'index'])->middleware('role:Admin,Guru,Kepala Sekolah')->name('ujian.index');
+    Route::middleware(['role:Admin,Guru,Kepala Sekolah'])->prefix('template-excel')->name('template-excel.')->group(function () {
+        Route::get('/', [TemplateExcelController::class, 'index'])->name('index');
+        Route::get('/download/{type}', [TemplateExcelController::class, 'download'])->name('download');
+    });
+
     Route::middleware(['role:Admin,Guru'])->group(function () {
         Route::get('ujian/create', [UjianController::class, 'create'])->name('ujian.create');
         Route::post('ujian', [UjianController::class, 'store'])->name('ujian.store');

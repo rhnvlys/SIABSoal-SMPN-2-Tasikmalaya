@@ -104,7 +104,7 @@ class ScoringService
                     }
                 }
 
-                $this->hitungNilaiPeserta($peserta, $ujian->jumlah_soal, $jumlahBenar, $ujian->kkm);
+                $this->hitungNilaiPeserta($peserta, $ujian->jumlah_soal, $jumlahBenar, $ujian->kktp_value);
                 $hasilProses[] = $peserta->fresh();
             }
 
@@ -182,7 +182,7 @@ class ScoringService
                     $jumlahBenar += $skorBiner;
                 }
 
-                $this->hitungNilaiPeserta($peserta, $ujian->jumlah_soal, $jumlahBenar, $ujian->kkm);
+                $this->hitungNilaiPeserta($peserta, $ujian->jumlah_soal, $jumlahBenar, $ujian->kktp_value);
                 $hasilProses[] = $peserta->fresh();
             }
 

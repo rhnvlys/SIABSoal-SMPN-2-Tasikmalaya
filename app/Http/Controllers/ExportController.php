@@ -211,7 +211,7 @@ class ExportController extends Controller
         $data = $this->reportService->getDaftarNilai($ujian->id);
         $peserta = $data['peserta'];
 
-        $header = ['No', 'NIS', 'NISN', 'Nama Peserta Didik', 'L/P', 'Status Kehadiran', 'Jumlah Benar', 'Jumlah Salah', 'Nilai', 'Keterangan'];
+        $header = ['No', 'NIS', 'NISN', 'Nama Siswa', 'L/P', 'Status Kehadiran', 'Jumlah Benar', 'Jumlah Salah', 'Nilai', 'Keterangan'];
         $rows = [];
         foreach ($peserta as $idx => $p) {
             $keterangan = match($p->keterangan) {
@@ -261,45 +261,34 @@ class ExportController extends Controller
         $ketuntasan = $data['ketuntasan'];
         $analisis = $data['analisis_ringkasan'];
 
-        $header = [
-            'Jumlah Siswa',
-            'Hadir',
-            'Tidak Hadir',
-            'Nilai Tertinggi',
-            'Nilai Terendah',
-            'Rata-rata',
-            'Nilai < KKM',
-            'Nilai = KKM',
-            'Nilai > KKM',
-            'Tuntas',
-            'Belum Tuntas',
-            'Soal Baik',
-            'Soal Revisi',
-            'Soal Buang',
-            'Soal Mudah',
-            'Soal Sedang',
-            'Soal Sukar',
-        ];
+        $header = ['Bagian', 'Komponen', 'Nilai'];
 
-        $rows = [[
-            $r['jumlah_siswa'],
-            $r['hadir'],
-            $r['tidak_hadir'],
-            $r['nilai_tertinggi'],
-            $r['nilai_terendah'],
-            $r['rata_rata'],
-            $rentang['bawah_kkm'],
-            $rentang['sama_kkm'],
-            $rentang['atas_kkm'],
-            $ketuntasan['tuntas'],
-            $ketuntasan['belum_tuntas'],
-            $analisis['soal_baik'],
-            $analisis['soal_revisi'],
-            $analisis['soal_buang'],
-            $analisis['soal_mudah'],
-            $analisis['soal_sedang'],
-            $analisis['soal_sukar'],
-        ]];
+        $rows = [
+            ['Identitas Ujian', 'Nama Ujian', $data['ujian']->nama_ujian],
+            ['Identitas Ujian', 'Jenis Penilaian', $data['ujian']->jenis_penilaian_label],
+            ['Identitas Ujian', 'Guru', $data['ujian']->guru->nama_guru ?? '-'],
+            ['Identitas Ujian', 'Mata Pelajaran', $data['ujian']->mapel->nama_mapel ?? '-'],
+            ['Identitas Ujian', 'Kelas', $data['ujian']->kelas->pluck('nama_kelas')->join(', ') ?: '-'],
+            ['Identitas Ujian', 'KKTP/KKM', $data['ujian']->kktp_value],
+            ['Rekap Kehadiran', 'Jumlah Siswa', $r['jumlah_siswa']],
+            ['Rekap Kehadiran', 'Hadir', $r['hadir']],
+            ['Rekap Kehadiran', 'Tidak Hadir', $r['tidak_hadir']],
+            ['Statistik Nilai', 'Nilai Tertinggi', $r['nilai_tertinggi']],
+            ['Statistik Nilai', 'Nilai Terendah', $r['nilai_terendah']],
+            ['Statistik Nilai', 'Rata-rata', $r['rata_rata']],
+            ['Rentang KKTP/KKM', 'Jumlah nilai di bawah KKTP', $rentang['bawah_kkm']],
+            ['Rentang KKTP/KKM', 'Jumlah nilai sama dengan KKTP', $rentang['sama_kkm']],
+            ['Rentang KKTP/KKM', 'Jumlah nilai di atas KKTP', $rentang['atas_kkm']],
+            ['Ketuntasan', 'Jumlah Tuntas', $ketuntasan['tuntas']],
+            ['Ketuntasan', 'Jumlah Belum Tuntas', $ketuntasan['belum_tuntas']],
+            ['Ringkasan DP', 'Soal Baik', $analisis['soal_baik']],
+            ['Ringkasan DP', 'Soal Revisi', $analisis['soal_revisi']],
+            ['Ringkasan DP', 'Soal Buang', $analisis['soal_buang']],
+            ['Ringkasan TK', 'Soal Mudah', $analisis['soal_mudah']],
+            ['Ringkasan TK', 'Soal Sedang', $analisis['soal_sedang']],
+            ['Ringkasan TK', 'Soal Sukar', $analisis['soal_sukar']],
+            ['Kesimpulan', 'Kesimpulan Singkat', $data['kesimpulan']],
+        ];
 
         return $this->downloadReport($data['ujian'], $header, $rows, "rekap_nilai_{$data['ujian']->nama_ujian}", 'REKAP_NILAI_T5', 'REKAP NILAI T5');
     }
@@ -332,12 +321,16 @@ class ExportController extends Controller
             ['SIABSoal SMPN 2 Tasikmalaya'],
             ['Nama Laporan', $namaLaporan],
             ['Nama Ujian', $ujian->nama_ujian],
+            ['Nama Guru', $ujian->guru->nama_guru ?? '-'],
             ['Mata Pelajaran', $ujian->mapel->nama_mapel ?? '-'],
             ['Kelas', $ujian->kelas->pluck('nama_kelas')->join(', ') ?: '-'],
             ['Semester', $ujian->tahunAjaran->semester ?? '-'],
-            ['Tahun Pelajaran', $ujian->tahunAjaran->tahun_ajaran ?? '-'],
-            ['Guru', $ujian->guru->nama_guru ?? '-'],
-            ['Tanggal Export', now()->format('d/m/Y H:i')],
+            ['Tahun Ajaran', $ujian->tahunAjaran->tahun_ajaran ?? '-'],
+            ['Jenis Penilaian', $ujian->jenis_penilaian_label],
+            ['Tujuan Pembelajaran', $ujian->tujuan_pembelajaran ?: '-'],
+            ['Lingkup Materi', $ujian->lingkup_materi ?: '-'],
+            ['KKTP/KKM', $ujian->kktp_value],
+            ['Tanggal Cetak', now()->format('d/m/Y H:i')],
         ];
     }
 

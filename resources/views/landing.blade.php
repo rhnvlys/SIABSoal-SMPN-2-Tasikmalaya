@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="SIABSoal SMPN 2 Tasikmalaya - Sistem Informasi Analisis Butir Soal Berbasis Web untuk DP, TK, daftar nilai, dan rekap nilai.">
+    <meta name="description" content="SIABSoal SMPN 2 Tasikmalaya - Sistem informasi penilaian, template Excel, analisis butir soal, daftar nilai, dan rekap nilai.">
     <title>SIABSoal SMPN 2 Tasikmalaya - Sistem Informasi Analisis Butir Soal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -55,9 +55,10 @@
                         <h1>SIABSoal SMPN 2 Tasikmalaya</h1>
                         <h2>Sistem Informasi Analisis Butir Soal Berbasis Web SMPN 2 Tasikmalaya</h2>
                         <p>
-                            Membantu guru mengolah jawaban siswa, membentuk kelompok atas dan bawah,
-                            menghitung daya pembeda dan tingkat kesukaran, serta menyusun daftar nilai
-                            dan rekap nilai secara cepat dan terpusat.
+                            SIABSoal SMPN 2 Tasikmalaya adalah sistem informasi berbasis web untuk membantu guru
+                            dalam administrasi penilaian, pengolahan jawaban siswa, analisis butir soal,
+                            daftar nilai, dan rekap nilai. Sistem mendukung template Excel agar guru dapat
+                            mengisi data dengan format yang familiar, kemudian data diproses otomatis oleh sistem.
                         </p>
                         <div class="landing-cta">
                             @auth
@@ -77,8 +78,8 @@
 
                     <div class="landing-feature-panel" aria-label="Fitur utama SIABSoal">
                         @foreach([
-                            ['icon' => 'bi-table', 'label' => 'Data Mentah 0/1'],
-                            ['icon' => 'bi-diagram-3-fill', 'label' => 'Olah Kelompok Atas & Bawah'],
+                            ['icon' => 'bi-file-earmark-spreadsheet', 'label' => 'Template Excel Guru'],
+                            ['icon' => 'bi-upload', 'label' => 'Import Jawaban'],
                             ['icon' => 'bi-clipboard-data-fill', 'label' => 'Analisis DP dan TK'],
                             ['icon' => 'bi-journal-text', 'label' => 'Daftar Nilai'],
                             ['icon' => 'bi-file-earmark-bar-graph-fill', 'label' => 'Rekap Nilai'],
@@ -100,12 +101,12 @@
                 </div>
                 <div class="landing-card-grid">
                     @foreach([
-                        ['icon' => 'bi-table', 'title' => 'Data Mentah T1', 'desc' => 'Input atau import jawaban siswa dalam format A/B/C/D/E atau skor 0/1.'],
-                        ['icon' => 'bi-bar-chart-line-fill', 'title' => 'Olah Data T2', 'desc' => 'Mengurutkan nilai dan membentuk kelompok atas serta bawah tanpa overlap.'],
-                        ['icon' => 'bi-clipboard-data-fill', 'title' => 'Analisis Data T3', 'desc' => 'Menghitung Daya Pembeda (DP) dan Tingkat Kesukaran (TK).'],
-                        ['icon' => 'bi-journal-text', 'title' => 'Daftar Nilai T4', 'desc' => 'Menyajikan nilai peserta didik secara rapi untuk guru.'],
-                        ['icon' => 'bi-file-earmark-bar-graph-fill', 'title' => 'Rekap Nilai T5', 'desc' => 'Merangkum kehadiran, rentang nilai, ketuntasan, dan kualitas soal.'],
-                        ['icon' => 'bi-file-earmark-arrow-down', 'title' => 'Export Laporan', 'desc' => 'Mengunduh laporan PDF dan Excel untuk dokumentasi sekolah.'],
+                        ['icon' => 'bi-file-earmark-spreadsheet', 'title' => 'Template Excel Guru', 'desc' => 'Guru dapat mengisi data melalui template Excel dengan kolom yang familiar.'],
+                        ['icon' => 'bi-upload', 'title' => 'Import Jawaban', 'desc' => 'Import jawaban A/B/C/D/E atau skor 0/1 untuk diproses otomatis.'],
+                        ['icon' => 'bi-clipboard-data-fill', 'title' => 'Analisis DP/TK', 'desc' => 'Menghitung Daya Pembeda (DP) dan Tingkat Kesukaran (TK).'],
+                        ['icon' => 'bi-journal-text', 'title' => 'Rekap Nilai', 'desc' => 'Menyajikan daftar nilai dan ringkasan ketuntasan secara rapi.'],
+                        ['icon' => 'bi-file-earmark-arrow-down', 'title' => 'Export PDF/Excel', 'desc' => 'Mengunduh laporan PDF dan Excel untuk dokumentasi sekolah.'],
+                        ['icon' => 'bi-shield-check', 'title' => 'Akses Berbasis Role', 'desc' => 'Data siswa dan nilai tetap terlindungi untuk Admin, Guru, dan Kepala Sekolah.'],
                     ] as $item)
                         <article class="landing-info-card">
                             <div class="landing-info-icon"><i class="bi {{ $item['icon'] }}"></i></div>
@@ -143,8 +144,8 @@
                         <span class="landing-kicker">Manfaat Sistem</span>
                         <h2>Dirancang untuk kebutuhan evaluasi guru dan laporan sekolah</h2>
                         <p>
-                            SIABSoal membantu proses analisis butir soal tetap sederhana, terpusat,
-                            dan mudah ditelusuri dari data mentah sampai rekap akhir.
+                            Guru dapat mengisi data melalui template Excel, kemudian mengimportnya ke sistem
+                            untuk diproses menjadi analisis soal, daftar nilai, dan rekap nilai.
                         </p>
                     </div>
                     <ul>

@@ -49,8 +49,9 @@ class UjianController extends Controller
         $mapelList = Mapel::orderBy('nama_mapel')->get();
         $tahunAjaranList = TahunAjaran::orderByDesc('tahun_ajaran')->get();
         $kelasList = Kelas::with('tahunAjaran')->orderBy('tingkat')->orderBy('nama_kelas')->get();
+        $jenisPenilaianList = Ujian::jenisPenilaianOptions();
 
-        return view('ujian.create', compact('guruList', 'mapelList', 'tahunAjaranList', 'kelasList'));
+        return view('ujian.create', compact('guruList', 'mapelList', 'tahunAjaranList', 'kelasList', 'jenisPenilaianList'));
     }
 
     public function store(Request $request)
@@ -67,10 +68,12 @@ class UjianController extends Controller
             'mapel_id'         => 'required|exists:mapel,id',
             'tahun_ajaran_id'  => 'required|exists:tahun_ajaran,id',
             'nama_ujian'       => 'required|string|max:255',
-            'jenis_ujian'      => 'required|in:UH,STS,SAS,ASAJ,PAS,PAT,UTS,UAS,Lainnya',
+            'jenis_penilaian'  => 'required|in:' . implode(',', Ujian::jenisPenilaianOptions()),
+            'tujuan_pembelajaran' => 'nullable|string|max:5000',
+            'lingkup_materi'   => 'nullable|string|max:5000',
             'tanggal_ujian'    => 'required|date',
             'jumlah_soal'      => 'required|integer|min:1|max:50',
-            'kkm'              => 'required|numeric|min:0|max:100',
+            'kktp'             => 'required|numeric|min:0|max:100',
             'metode_kelompok'  => 'required|in:persen_50,manual',
             'jumlah_kelompok_manual' => 'nullable|required_if:metode_kelompok,manual|integer|min:1',
             'kelas_ids'        => 'required|array|min:1',
@@ -82,10 +85,27 @@ class UjianController extends Controller
         ]);
 
         DB::transaction(function () use ($request) {
-            $ujian = Ujian::create($request->only([
-                'guru_id', 'mapel_id', 'tahun_ajaran_id', 'nama_ujian', 'jenis_ujian',
-                'tanggal_ujian', 'jumlah_soal', 'kkm', 'metode_kelompok', 'jumlah_kelompok_manual'
-            ]));
+            $ujianData = $request->only([
+                'guru_id',
+                'mapel_id',
+                'tahun_ajaran_id',
+                'nama_ujian',
+                'jenis_penilaian',
+                'tujuan_pembelajaran',
+                'lingkup_materi',
+                'tanggal_ujian',
+                'jumlah_soal',
+                'kktp',
+                'metode_kelompok',
+                'jumlah_kelompok_manual',
+            ]);
+            $ujianData['jenis_ujian'] = Ujian::legacyJenisUjianFor($request->input('jenis_penilaian'));
+            $ujianData['kkm'] = $request->input('kktp');
+            $ujianData['jumlah_kelompok_manual'] = $request->input('metode_kelompok') === 'manual'
+                ? $request->input('jumlah_kelompok_manual')
+                : null;
+
+            $ujian = Ujian::create($ujianData);
 
             // Assign kelas
             foreach ($request->kelas_ids as $kelasId) {
@@ -102,7 +122,13 @@ class UjianController extends Controller
                 ]);
             }
 
-            LogAktivitas::catat("Membuat ujian: {$ujian->nama_ujian}", 'Ujian');
+            LogAktivitas::catat(
+                "Membuat ujian dengan administrasi penilaian: {$ujian->nama_ujian}",
+                'Ujian',
+                "Menambahkan ujian {$ujian->nama_ujian} dengan jenis penilaian {$ujian->jenis_penilaian_label}, TP/LM, dan KKTP {$ujian->kktp_value}.",
+                Ujian::class,
+                $ujian->id
+            );
         });
 
         return redirect()->route('ujian.index')->with('success', 'Ujian berhasil dibuat. Silakan isi kunci jawaban.');
@@ -126,8 +152,9 @@ class UjianController extends Controller
         $tahunAjaranList = TahunAjaran::orderByDesc('tahun_ajaran')->get();
         $kelasList = Kelas::with('tahunAjaran')->orderBy('tingkat')->orderBy('nama_kelas')->get();
         $selectedKelas = $ujian->kelas->pluck('id')->toArray();
+        $jenisPenilaianList = Ujian::jenisPenilaianOptions();
 
-        return view('ujian.edit', compact('ujian', 'guruList', 'mapelList', 'tahunAjaranList', 'kelasList', 'selectedKelas'));
+        return view('ujian.edit', compact('ujian', 'guruList', 'mapelList', 'tahunAjaranList', 'kelasList', 'selectedKelas', 'jenisPenilaianList'));
     }
 
     public function update(Request $request, Ujian $ujian)
@@ -144,18 +171,38 @@ class UjianController extends Controller
             'mapel_id'         => 'required|exists:mapel,id',
             'tahun_ajaran_id'  => 'required|exists:tahun_ajaran,id',
             'nama_ujian'       => 'required|string|max:255',
-            'jenis_ujian'      => 'required|in:UH,STS,SAS,ASAJ,PAS,PAT,UTS,UAS,Lainnya',
+            'jenis_penilaian'  => 'required|in:' . implode(',', Ujian::jenisPenilaianOptions()),
+            'tujuan_pembelajaran' => 'nullable|string|max:5000',
+            'lingkup_materi'   => 'nullable|string|max:5000',
             'tanggal_ujian'    => 'required|date',
-            'kkm'              => 'required|numeric|min:0|max:100',
+            'kktp'             => 'required|numeric|min:0|max:100',
             'metode_kelompok'  => 'required|in:persen_50,manual',
+            'jumlah_kelompok_manual' => 'nullable|required_if:metode_kelompok,manual|integer|min:1',
             'kelas_ids'        => 'required|array|min:1',
+            'kelas_ids.*'      => 'exists:kelas,id',
         ]);
 
         DB::transaction(function () use ($request, $ujian) {
-            $ujian->update($request->only([
-                'guru_id', 'mapel_id', 'tahun_ajaran_id', 'nama_ujian', 'jenis_ujian',
-                'tanggal_ujian', 'kkm', 'metode_kelompok', 'jumlah_kelompok_manual'
-            ]));
+            $ujianData = $request->only([
+                'guru_id',
+                'mapel_id',
+                'tahun_ajaran_id',
+                'nama_ujian',
+                'jenis_penilaian',
+                'tujuan_pembelajaran',
+                'lingkup_materi',
+                'tanggal_ujian',
+                'kktp',
+                'metode_kelompok',
+                'jumlah_kelompok_manual',
+            ]);
+            $ujianData['jenis_ujian'] = Ujian::legacyJenisUjianFor($request->input('jenis_penilaian'));
+            $ujianData['kkm'] = $request->input('kktp');
+            $ujianData['jumlah_kelompok_manual'] = $request->input('metode_kelompok') === 'manual'
+                ? $request->input('jumlah_kelompok_manual')
+                : null;
+
+            $ujian->update($ujianData);
 
             // Sync kelas
             $ujian->ujianKelas()->delete();
@@ -163,7 +210,13 @@ class UjianController extends Controller
                 UjianKelas::create(['ujian_id' => $ujian->id, 'kelas_id' => $kelasId]);
             }
 
-            LogAktivitas::catat("Mengubah ujian: {$ujian->nama_ujian}", 'Ujian');
+            LogAktivitas::catat(
+                "Mengubah ujian dengan administrasi penilaian: {$ujian->nama_ujian}",
+                'Ujian',
+                "Memperbarui ujian {$ujian->nama_ujian} dengan jenis penilaian {$ujian->jenis_penilaian_label}, TP/LM, dan KKTP {$ujian->kktp_value}.",
+                Ujian::class,
+                $ujian->id
+            );
         });
 
         return redirect()->route('ujian.show', $ujian)->with('success', 'Ujian berhasil diperbarui.');

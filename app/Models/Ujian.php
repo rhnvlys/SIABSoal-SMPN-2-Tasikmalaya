@@ -9,6 +9,40 @@ class Ujian extends Model
 {
     use HasFactory;
 
+    public const JENIS_PENILAIAN = [
+        'Ulangan Harian',
+        'Penilaian Harian',
+        'STS',
+        'SAS',
+        'PAS',
+        'PAT',
+        'Asesmen Sumatif',
+        'Latihan',
+    ];
+
+    public const JENIS_UJIAN_LABELS = [
+        'UH' => 'Ulangan Harian',
+        'STS' => 'STS',
+        'SAS' => 'SAS',
+        'ASAJ' => 'Asesmen Sumatif',
+        'PAS' => 'PAS',
+        'PAT' => 'PAT',
+        'UTS' => 'STS',
+        'UAS' => 'SAS',
+        'Lainnya' => 'Latihan',
+    ];
+
+    public const JENIS_PENILAIAN_TO_JENIS_UJIAN = [
+        'Ulangan Harian' => 'UH',
+        'Penilaian Harian' => 'UH',
+        'STS' => 'STS',
+        'SAS' => 'SAS',
+        'PAS' => 'PAS',
+        'PAT' => 'PAT',
+        'Asesmen Sumatif' => 'ASAJ',
+        'Latihan' => 'Lainnya',
+    ];
+
     protected $table = 'ujian';
 
     protected $fillable = [
@@ -17,9 +51,13 @@ class Ujian extends Model
         'tahun_ajaran_id',
         'nama_ujian',
         'jenis_ujian',
+        'jenis_penilaian',
+        'tujuan_pembelajaran',
+        'lingkup_materi',
         'tanggal_ujian',
         'jumlah_soal',
         'kkm',
+        'kktp',
         'metode_kelompok',
         'jumlah_kelompok_manual',
         'status',
@@ -28,7 +66,29 @@ class Ujian extends Model
     protected $casts = [
         'tanggal_ujian' => 'date',
         'kkm' => 'decimal:2',
+        'kktp' => 'decimal:2',
     ];
+
+    public static function jenisPenilaianOptions(): array
+    {
+        return self::JENIS_PENILAIAN;
+    }
+
+    public static function legacyJenisUjianFor(?string $jenisPenilaian): string
+    {
+        return self::JENIS_PENILAIAN_TO_JENIS_UJIAN[$jenisPenilaian] ?? 'Lainnya';
+    }
+
+    public function getJenisPenilaianLabelAttribute(): string
+    {
+        return $this->jenis_penilaian
+            ?: (self::JENIS_UJIAN_LABELS[$this->jenis_ujian] ?? $this->jenis_ujian ?? '-');
+    }
+
+    public function getKktpValueAttribute(): float
+    {
+        return (float) ($this->kktp ?? $this->kkm ?? 0);
+    }
 
     public function guru()
     {

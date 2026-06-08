@@ -31,9 +31,12 @@
     <div class="card-body">
         <div class="info-grid">
             <div><strong>Nama Ujian:</strong> {{ $ujian->nama_ujian }}</div>
+            <div><strong>Jenis Penilaian:</strong> {{ $ujian->jenis_penilaian_label }}</div>
             <div><strong>Mata Pelajaran:</strong> {{ $ujian->mapel->nama_mapel ?? '-' }}</div>
             <div><strong>Jumlah Soal:</strong> {{ $ujian->jumlah_soal }}</div>
-            <div><strong>KKTP/KKM:</strong> {{ $ujian->kkm }}</div>
+            <div><strong>KKTP/KKM:</strong> {{ $ujian->kktp_value }}</div>
+            <div><strong>Tujuan Pembelajaran:</strong> {{ $ujian->tujuan_pembelajaran ?: '-' }}</div>
+            <div><strong>Lingkup Materi:</strong> {{ $ujian->lingkup_materi ?: '-' }}</div>
             <div><strong>Status:</strong> @include('components.badge', ['type' => $ujian->status])</div>
             <div><strong>Metode Kelompok:</strong> {{ $ujian->metode_kelompok === 'persen_50' ? 'Otomatis 50%' : 'Manual' }}</div>
         </div>

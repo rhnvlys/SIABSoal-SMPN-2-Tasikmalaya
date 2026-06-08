@@ -87,7 +87,8 @@ class ArrayReportExport implements FromArray, WithTitle, ShouldAutoSize, WithSty
 
                 $sheet->getStyle("A1:{$highestColumn}{$highestRow}")
                     ->getAlignment()
-                    ->setVertical(Alignment::VERTICAL_CENTER);
+                    ->setVertical(Alignment::VERTICAL_CENTER)
+                    ->setWrapText(true);
             },
         ];
     }

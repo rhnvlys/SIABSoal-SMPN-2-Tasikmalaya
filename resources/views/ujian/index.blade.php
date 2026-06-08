@@ -19,15 +19,17 @@
     </form>
 </div></div>
 <div class="card"><div class="table-responsive"><table class="table">
-    <thead><tr><th>No</th><th>Nama Ujian</th><th>Mapel</th><th>Guru</th><th>Kelas</th><th>Soal</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
+    <thead><tr><th>No</th><th>Nama Ujian</th><th>Jenis Penilaian</th><th>Mapel</th><th>Guru</th><th>Kelas</th><th>KKTP/KKM</th><th>Soal</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
     <tbody>
         @forelse($ujian as $i => $u)
         <tr>
             <td>{{ $ujian->firstItem() + $i }}</td>
             <td><a href="{{ route('ujian.show', $u) }}" class="fw-semibold">{{ $u->nama_ujian }}</a></td>
+            <td>{{ $u->jenis_penilaian_label }}</td>
             <td>{{ $u->mapel->nama_mapel ?? '-' }}</td>
             <td>{{ $u->guru->nama_guru ?? '-' }}</td>
             <td>{{ $u->kelas->pluck('nama_kelas')->join(', ') ?: '-' }}</td>
+            <td>{{ $u->kktp_value }}</td>
             <td>{{ $u->jumlah_soal }}</td>
             <td>@include('components.badge', ['type' => $u->status])</td>
             <td>{{ $u->tanggal_ujian?->format('d/m/Y') ?? '-' }}</td>
@@ -40,7 +42,7 @@
                 @endif
             </div></td>
         </tr>
-        @empty<tr><td colspan="9" class="text-center text-muted" style="padding:24px">Belum ada data ujian.</td></tr>@endforelse
+        @empty<tr><td colspan="11" class="text-center text-muted" style="padding:24px">Belum ada data ujian.</td></tr>@endforelse
     </tbody>
 </table></div>
 @if($ujian->hasPages())<div class="pagination-wrapper">{!! $ujian->links('components.pagination') !!}</div>@endif</div>

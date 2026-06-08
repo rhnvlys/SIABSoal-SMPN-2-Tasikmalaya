@@ -77,7 +77,13 @@ class KunciJawabanController extends Controller
                 $this->importFromArray($this->selectImportSheetRows($data), $ujian);
             }
 
-            LogAktivitas::catat("Import kunci jawaban ujian: {$ujian->nama_ujian}", 'Kunci Jawaban');
+            LogAktivitas::catat(
+                "Import template kunci jawaban ujian: {$ujian->nama_ujian}",
+                'Kunci Jawaban',
+                "Import template Excel kunci jawaban untuk ujian: {$ujian->nama_ujian}",
+                Ujian::class,
+                $ujian->id
+            );
 
             return redirect()->route('kunci-jawaban.index', $ujian)->with('success', 'Kunci jawaban berhasil diimport.');
         } catch (\Exception $e) {

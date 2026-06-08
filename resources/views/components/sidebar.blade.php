@@ -25,6 +25,7 @@
         ['label' => 'UJIAN', 'type' => 'section', 'roles' => ['Admin','Guru']],
         ['route' => 'ujian.index', 'label' => 'Data Ujian', 'icon' => 'bi-file-earmark-text-fill', 'roles' => ['Admin','Guru']],
         ['route' => 'ujian.index', 'label' => 'Kunci Jawaban', 'icon' => 'bi-key-fill', 'roles' => ['Admin','Guru'], 'customActive' => 'kunci-jawaban'],
+        ['route' => 'template-excel.index', 'label' => 'Template Excel', 'icon' => 'bi-file-earmark-spreadsheet-fill', 'roles' => ['Admin','Guru'], 'activeRoutes' => ['template-excel.*']],
 
         ['label' => 'PROSES ANALISIS', 'type' => 'section', 'roles' => ['Admin','Guru']],
         ['route' => 'ujian.index', 'label' => 'Data Mentah T1', 'icon' => 'bi-table', 'roles' => ['Admin','Guru'], 'customActive' => 'data-mentah'],
@@ -36,6 +37,7 @@
         ['route' => 'ujian.index', 'label' => 'Daftar Nilai T4', 'icon' => 'bi-journal-text', 'roles' => ['Admin','Guru','Kepala Sekolah'], 'customActive' => 'daftar-nilai'],
         ['route' => 'ujian.index', 'label' => 'Rekap Nilai T5', 'icon' => 'bi-file-earmark-bar-graph-fill', 'roles' => ['Admin','Guru','Kepala Sekolah'], 'customActive' => 'rekap-nilai'],
         ['route' => 'ujian.index', 'label' => 'Laporan Export', 'icon' => 'bi-download', 'roles' => ['Admin','Guru','Kepala Sekolah'], 'customActive' => 'export'],
+        ['route' => 'template-excel.index', 'label' => 'Template Excel', 'icon' => 'bi-file-earmark-spreadsheet-fill', 'roles' => ['Kepala Sekolah'], 'activeRoutes' => ['template-excel.*']],
         ['route' => 'audit-log.index', 'label' => 'Riwayat Aktivitas', 'icon' => 'bi-clock-history', 'roles' => ['Admin','Kepala Sekolah'], 'activeRoutes' => ['audit-log.*', 'audit-trail.*']],
 
         ['label' => 'DATA READ-ONLY', 'type' => 'section', 'roles' => ['Kepala Sekolah']],

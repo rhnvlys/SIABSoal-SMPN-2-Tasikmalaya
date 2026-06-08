@@ -6,7 +6,7 @@
 @section('content')
 <div class="page-header">
     <h1>Dashboard Kepala Sekolah</h1>
-    <p>Monitoring ringkasan laporan ujian dan kualitas soal seluruh sekolah.</p>
+    <p>Monitoring administrasi penilaian, template Excel, analisis butir soal, daftar nilai, dan rekap nilai seluruh sekolah.</p>
 </div>
 
 <div class="stats-grid">
@@ -29,6 +29,7 @@
     <a href="{{ route('ujian.index') }}" class="btn btn-primary"><i class="bi bi-clipboard-data-fill"></i> Lihat Analisis Data T3</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-journal-text"></i> Daftar Nilai T4</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-file-earmark-bar-graph-fill"></i> Rekap Nilai T5</a>
+    <a href="{{ route('template-excel.index') }}" class="btn btn-outline"><i class="bi bi-file-earmark-spreadsheet"></i> Template Excel</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-download"></i> Export Laporan</a>
     <a href="{{ route('audit-log.index') }}" class="btn btn-outline"><i class="bi bi-clock-history"></i> Audit Log</a>
 </div>

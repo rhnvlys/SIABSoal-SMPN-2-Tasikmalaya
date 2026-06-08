@@ -63,7 +63,7 @@ class ReportService
         $ujian       = $daftarNilai['ujian'];
         $peserta     = $daftarNilai['peserta'];
         $hadir       = $peserta->where('status_kehadiran', 'hadir');
-        $kkm         = (float) $ujian->kkm;
+        $kkm         = (float) $ujian->kktp_value;
 
         // Rentang nilai
         $nilaiHadir  = $hadir->pluck('nilai');
@@ -78,6 +78,8 @@ class ReportService
         // Ringkasan analisis soal (hanya DP & TK)
         $analisisRingkasan = $this->getRingkasanAnalisis($ujianId);
 
+        $kesimpulan = $this->buildKesimpulan($tuntas, $belumTuntas, $analisisRingkasan);
+
         return array_merge($daftarNilai, [
             'rentang_nilai' => [
                 'bawah_kkm' => $bawahKkm,
@@ -90,6 +92,7 @@ class ReportService
                 'belum_tuntas'        => $belumTuntas,
             ],
             'analisis_ringkasan' => $analisisRingkasan,
+            'kesimpulan' => $kesimpulan,
         ]);
     }
 
@@ -116,5 +119,18 @@ class ReportService
             'rekomendasi_revisi'  => $analisis->where('keputusan', 'Revisi')->count(),
             'rekomendasi_buang'   => $analisis->where('keputusan', 'Buang')->count(),
         ];
+    }
+
+    private function buildKesimpulan(int $tuntas, int $belumTuntas, array $analisisRingkasan): string
+    {
+        $ketuntasan = $belumTuntas === 0
+            ? 'seluruh siswa hadir sudah mencapai KKTP/KKM'
+            : "{$belumTuntas} siswa masih perlu peningkatan";
+
+        if (($analisisRingkasan['total'] ?? 0) === 0) {
+            return "Rekap nilai menunjukkan {$ketuntasan}. Analisis butir soal belum tersedia.";
+        }
+
+        return "Rekap nilai menunjukkan {$ketuntasan}. Hasil analisis menemukan {$analisisRingkasan['soal_baik']} soal baik, {$analisisRingkasan['soal_revisi']} soal revisi, dan {$analisisRingkasan['soal_buang']} soal buang.";
     }
 }

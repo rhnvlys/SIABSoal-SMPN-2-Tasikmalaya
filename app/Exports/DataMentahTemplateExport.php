@@ -15,15 +15,14 @@ class DataMentahTemplateExport implements WithMultipleSheets
 
     public function sheets(): array
     {
-        $templateTitle = $this->mode === 'biner' ? 'IMPORT_SKOR_01' : 'IMPORT_JAWABAN_ABCD';
-
         return [
             new StyledArraySheet('PETUNJUK', $this->instructionRows(), 1),
-            new StyledArraySheet($templateTitle, $this->templateRows()),
+            new StyledArraySheet('DATA_INPUT', $this->templateRows(false), 1),
+            new StyledArraySheet('CONTOH', $this->templateRows(true), 1),
         ];
     }
 
-    private function templateRows(): array
+    private function templateRows(bool $withExample): array
     {
         $this->ujian->loadMissing('soal');
         $prefix = $this->mode === 'biner' ? 'skor_' : 'soal_';
@@ -33,12 +32,14 @@ class DataMentahTemplateExport implements WithMultipleSheets
             $headings[] = $prefix . $soal->nomor_soal;
         }
 
-        $example = ['2025001', '3200000001', 'Contoh Siswa', 'L', 'hadir'];
+        $row = $withExample
+            ? ['2025001', '3200000001', 'Contoh Siswa', 'L', 'hadir']
+            : ['', '', '', '', 'hadir'];
         foreach ($this->ujian->soal->sortBy('nomor_soal') as $soal) {
-            $example[] = $this->mode === 'biner' ? '1' : 'A';
+            $row[] = $withExample ? ($this->mode === 'biner' ? '1' : 'A') : '';
         }
 
-        return [$headings, $example];
+        return [$headings, $row];
     }
 
     private function instructionRows(): array
@@ -49,11 +50,11 @@ class DataMentahTemplateExport implements WithMultipleSheets
 
         return [
             ['PETUNJUK IMPORT DATA MENTAH T1'],
-            ['1', 'Gunakan sheet ' . ($this->mode === 'biner' ? 'IMPORT_SKOR_01' : 'IMPORT_JAWABAN_ABCD') . ' untuk mengisi data.'],
+            ['1', 'Gunakan sheet DATA_INPUT untuk mengisi data.'],
             ['2', 'Kolom nis wajib sesuai NIS yang sudah ada di database.'],
             ['3', 'Kolom status_kehadiran diisi hadir atau tidak_hadir.'],
             ['4', $answerFormat],
-            ['5', 'Baris contoh boleh dihapus sebelum file diimport.'],
+            ['5', 'Sheet CONTOH berisi contoh dummy dan tidak perlu diupload.'],
             ['6', 'Jangan mengubah nama header kolom karena sistem membaca header tersebut saat validasi.'],
         ];
     }

@@ -25,6 +25,14 @@ class DaftarNilaiController extends Controller
     {
         $data = $this->reportService->getDaftarNilai($ujian->id);
 
+        LogAktivitas::catat(
+            "Melihat Daftar Nilai T4 ujian: {$ujian->nama_ujian}",
+            'Daftar Nilai',
+            "Melihat Daftar Nilai T4 untuk ujian: {$ujian->nama_ujian}",
+            Ujian::class,
+            $ujian->id
+        );
+
         return view('daftar_nilai.index', $data);
     }
 
@@ -67,7 +75,7 @@ class DaftarNilaiController extends Controller
                     $peserta->update([
                         'status_kehadiran' => 'hadir',
                         'nilai' => $nilai,
-                        'keterangan' => $nilai >= (float) $ujian->kkm ? 'tercapai' : 'perlu_peningkatan',
+                        'keterangan' => $nilai >= (float) $ujian->kktp_value ? 'tercapai' : 'perlu_peningkatan',
                     ]);
                 }
 

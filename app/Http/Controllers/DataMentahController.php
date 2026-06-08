@@ -232,7 +232,13 @@ class DataMentahController extends Controller
             // Clear session
             session()->forget(['import_preview_data', 'import_preview_mode', 'import_preview_ujian_id', 'import_preview_error_count']);
 
-            LogAktivitas::catat("Import Data Mentah T1 ({$mode}) ujian: {$ujian->nama_ujian} — {$imported} siswa", 'Data Mentah');
+            LogAktivitas::catat(
+                "Import template Data Mentah T1 ({$mode}) ujian: {$ujian->nama_ujian}",
+                'Data Mentah',
+                "Import template Excel Data Mentah T1 ({$mode}) untuk ujian: {$ujian->nama_ujian} - {$imported} siswa",
+                Ujian::class,
+                $ujian->id
+            );
 
             return redirect()->route('data-mentah.index', $ujian)
                              ->with('success', "Import berhasil. {$imported} data siswa tersimpan. Silakan proses scoring.");

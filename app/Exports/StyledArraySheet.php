@@ -34,6 +34,16 @@ class StyledArraySheet implements FromArray, WithTitle, ShouldAutoSize, WithStyl
 
     public function styles(Worksheet $sheet): array
     {
+        if (count($this->rows[0] ?? []) === 1) {
+            $sheet->getStyle('A1')->applyFromArray([
+                'font' => ['bold' => true, 'size' => 14, 'color' => ['rgb' => '1F2937']],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => 'DDEBFA'],
+                ],
+            ]);
+        }
+
         if ($this->headerRow) {
             $sheet->getStyle("A{$this->headerRow}:{$sheet->getHighestColumn()}{$this->headerRow}")->applyFromArray([
                 'font' => ['bold' => true, 'color' => ['rgb' => '1F2937']],

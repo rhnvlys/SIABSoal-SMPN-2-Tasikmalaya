@@ -35,12 +35,15 @@
     <div class="card-body">
         <div class="info-grid">
             <div><strong>Nama Ujian:</strong> {{ $ujian->nama_ujian }}</div>
+            <div><strong>Jenis Penilaian:</strong> {{ $ujian->jenis_penilaian_label }}</div>
             <div><strong>Mata Pelajaran:</strong> {{ $ujian->mapel->nama_mapel ?? '-' }}</div>
             <div><strong>Kelas:</strong> {{ $ujian->kelas->pluck('nama_kelas')->join(', ') ?: '-' }}</div>
             <div><strong>Semester:</strong> {{ $ujian->tahunAjaran->semester ?? '-' }}</div>
-            <div><strong>Tahun Pelajaran:</strong> {{ $ujian->tahunAjaran->tahun_ajaran ?? '-' }}</div>
-            <div><strong>Guru Mata Pelajaran:</strong> {{ $ujian->guru->nama_guru ?? '-' }}</div>
-            <div><strong>KKTP/KKM:</strong> {{ $ujian->kkm }}</div>
+            <div><strong>Tahun Ajaran:</strong> {{ $ujian->tahunAjaran->tahun_ajaran ?? '-' }}</div>
+            <div><strong>Nama Guru:</strong> {{ $ujian->guru->nama_guru ?? '-' }}</div>
+            <div><strong>KKTP/KKM:</strong> {{ $ujian->kktp_value }}</div>
+            <div><strong>Tujuan Pembelajaran:</strong> {{ $ujian->tujuan_pembelajaran ?: '-' }}</div>
+            <div><strong>Lingkup Materi:</strong> {{ $ujian->lingkup_materi ?: '-' }}</div>
         </div>
     </div>
 </div>
@@ -76,11 +79,11 @@
                     <th>No</th>
                     <th>NIS</th>
                     <th>NISN</th>
-                    <th>Nama Peserta Didik</th>
+                    <th>Nama Siswa</th>
                     <th>L/P</th>
-                    <th>Kehadiran</th>
-                    <th class="text-center">Skor PG</th>
-                    <th class="text-center">Salah</th>
+                    <th>Status Kehadiran</th>
+                    <th class="text-center">Jumlah Benar</th>
+                    <th class="text-center">Jumlah Salah</th>
                     <th class="text-center">Nilai</th>
                     <th>Keterangan</th>
                 </tr>

@@ -46,11 +46,15 @@
     {{-- Info Ujian --}}
     <table class="info-table">
         <tr><td>Nama Ujian</td><td>: {{ $ujian->nama_ujian }}</td></tr>
+        <tr><td>Nama Guru</td><td>: {{ $ujian->guru->nama_guru ?? '-' }}</td></tr>
         <tr><td>Mata Pelajaran</td><td>: {{ $ujian->mapel->nama_mapel ?? '-' }}</td></tr>
         <tr><td>Kelas</td><td>: {{ $ujian->kelas->pluck('nama_kelas')->join(', ') ?: '-' }}</td></tr>
         <tr><td>Semester</td><td>: {{ $ujian->tahunAjaran->semester ?? '-' }}</td></tr>
-        <tr><td>Tahun Pelajaran</td><td>: {{ $ujian->tahunAjaran->tahun_ajaran ?? '-' }}</td></tr>
-        <tr><td>Guru</td><td>: {{ $ujian->guru->nama_guru ?? '-' }}</td></tr>
+        <tr><td>Tahun Ajaran</td><td>: {{ $ujian->tahunAjaran->tahun_ajaran ?? '-' }}</td></tr>
+        <tr><td>Jenis Penilaian</td><td>: {{ $ujian->jenis_penilaian_label }}</td></tr>
+        <tr><td>Tujuan Pembelajaran</td><td>: {{ $ujian->tujuan_pembelajaran ?: '-' }}</td></tr>
+        <tr><td>Lingkup Materi</td><td>: {{ $ujian->lingkup_materi ?: '-' }}</td></tr>
+        <tr><td>KKTP/KKM</td><td>: {{ $ujian->kktp_value }}</td></tr>
         <tr><td>Tanggal Cetak</td><td>: {{ now()->format('d F Y') }}</td></tr>
     </table>
 

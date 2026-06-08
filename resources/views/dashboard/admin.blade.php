@@ -6,7 +6,7 @@
 @section('content')
 <div class="page-header">
     <h1>Dashboard Admin</h1>
-    <p>Ringkasan seluruh data SIABSoal SMPN 2 Tasikmalaya.</p>
+    <p>SIABSoal membantu administrasi penilaian, template Excel, analisis butir soal, daftar nilai, dan rekap nilai secara terpusat.</p>
 </div>
 
 <div class="stats-grid">
@@ -53,6 +53,7 @@
     <a href="{{ route('guru.index') }}" class="btn btn-outline"><i class="bi bi-person-badge-fill"></i> Data Guru</a>
     <a href="{{ route('siswa.index') }}" class="btn btn-outline"><i class="bi bi-mortarboard-fill"></i> Data Siswa</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-file-earmark-text-fill"></i> Data Ujian</a>
+    <a href="{{ route('template-excel.index') }}" class="btn btn-outline"><i class="bi bi-file-earmark-spreadsheet"></i> Template Excel</a>
     <a href="{{ route('audit-log.index') }}" class="btn btn-outline"><i class="bi bi-clock-history"></i> Audit Log</a>
     <a href="{{ route('ujian.index') }}" class="btn btn-outline"><i class="bi bi-download"></i> Laporan Export</a>
 </div>

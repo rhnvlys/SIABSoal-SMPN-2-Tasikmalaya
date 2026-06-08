@@ -71,6 +71,7 @@ docs/superpowers/
 .deploy-vercel/
 /.codex
 /.codex/
+/.codegraph/
 /.skills
 /.skills/
 /skills

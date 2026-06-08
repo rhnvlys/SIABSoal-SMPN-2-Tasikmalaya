@@ -37,10 +37,13 @@
     </div>
 
     <table class="info">
-        <tr><td class="label">Ujian</td><td>: {{ $ujian->nama_ujian }}</td><td class="label" style="padding-left:20px">Guru</td><td>: {{ $ujian->guru->nama_guru ?? '-' }}</td></tr>
-        <tr><td class="label">Mata Pelajaran</td><td>: {{ $ujian->mapel->nama_mapel ?? '-' }}</td><td class="label" style="padding-left:20px">Tahun Ajaran</td><td>: {{ $ujian->tahunAjaran->label ?? '-' }}</td></tr>
-        <tr><td class="label">Metode</td><td>: {{ $ujian->metode_kelompok === 'persen_50' ? '50% Atas / 50% Bawah' : 'Manual' }}</td><td class="label" style="padding-left:20px">Kelas</td><td>: {{ $ujian->kelas->pluck('nama_kelas')->join(', ') ?: '-' }}</td></tr>
-        <tr><td class="label">Tanggal Cetak</td><td>: {{ now()->format('d/m/Y H:i') }}</td><td></td><td></td></tr>
+        <tr><td class="label">Nama Ujian</td><td>: {{ $ujian->nama_ujian }}</td><td class="label" style="padding-left:20px">Nama Guru</td><td>: {{ $ujian->guru->nama_guru ?? '-' }}</td></tr>
+        <tr><td class="label">Mata Pelajaran</td><td>: {{ $ujian->mapel->nama_mapel ?? '-' }}</td><td class="label" style="padding-left:20px">Kelas</td><td>: {{ $ujian->kelas->pluck('nama_kelas')->join(', ') ?: '-' }}</td></tr>
+        <tr><td class="label">Semester</td><td>: {{ $ujian->tahunAjaran->semester ?? '-' }}</td><td class="label" style="padding-left:20px">Tahun Ajaran</td><td>: {{ $ujian->tahunAjaran->tahun_ajaran ?? '-' }}</td></tr>
+        <tr><td class="label">Jenis Penilaian</td><td>: {{ $ujian->jenis_penilaian_label }}</td><td class="label" style="padding-left:20px">KKTP/KKM</td><td>: {{ $ujian->kktp_value }}</td></tr>
+        <tr><td class="label">Tujuan Pembelajaran</td><td colspan="3">: {{ $ujian->tujuan_pembelajaran ?: '-' }}</td></tr>
+        <tr><td class="label">Lingkup Materi</td><td colspan="3">: {{ $ujian->lingkup_materi ?: '-' }}</td></tr>
+        <tr><td class="label">Metode</td><td>: {{ $ujian->metode_kelompok === 'persen_50' ? '50% Atas / 50% Bawah' : 'Manual' }}</td><td class="label" style="padding-left:20px">Tanggal Cetak</td><td>: {{ now()->format('d/m/Y H:i') }}</td></tr>
     </table>
 
     <table class="data">

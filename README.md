@@ -25,7 +25,7 @@
 
 ## Ringkasan Project
 
-**SIABSoal SMPN 2 Tasikmalaya** adalah aplikasi web yang membantu sekolah melakukan analisis butir soal, evaluasi kualitas soal, dan rekapitulasi nilai siswa. Sistem ini mendukung guru dalam mengolah jawaban siswa, menghitung indikator kualitas soal, serta menyajikan laporan nilai secara lebih rapi dan terpusat.
+**SIABSoal SMPN 2 Tasikmalaya** adalah sistem informasi berbasis web untuk membantu guru dalam administrasi penilaian, pengolahan jawaban siswa, analisis butir soal, daftar nilai, dan rekap nilai. Sistem mendukung template Excel agar guru dapat mengisi data dengan format yang familiar, kemudian data diproses otomatis oleh sistem.
 
 Project ini dikembangkan sebagai website Kerja Praktik dengan fokus pada alur analisis T1 sampai T5: Data Mentah, Olah Data, Analisis DP dan TK, Daftar Nilai, dan Rekap Nilai.
 
@@ -60,8 +60,9 @@ SIABSoal dibuat sebagai alternatif berbasis web agar proses input jawaban, pengo
 - Manajemen data kelas.
 - Manajemen mata pelajaran.
 - Manajemen tahun ajaran.
-- Manajemen ujian.
+- Manajemen ujian dengan jenis penilaian, tujuan pembelajaran, lingkup materi, dan KKTP/KKM.
 - Pengelolaan kunci jawaban.
+- Menu Template Excel untuk data siswa, kunci jawaban, jawaban A/B/C/D/E, skor 0/1, daftar nilai, dan rekap nilai.
 - Data Mentah T1.
 - Olah Data T2.
 - Analisis Data T3.
@@ -71,7 +72,7 @@ SIABSoal dibuat sebagai alternatif berbasis web agar proses input jawaban, pengo
 - Manajemen user.
 - Audit trail atau riwayat aktivitas.
 - Export laporan PDF dan Excel.
-- Template import Excel.
+- Template import dan export Excel.
 
 ---
 
@@ -87,16 +88,17 @@ SIABSoal dibuat sebagai alternatif berbasis web agar proses input jawaban, pengo
 
 ## Konsep Analisis
 
-1. Guru membuat ujian dan mengisi kunci jawaban.
-2. Jawaban siswa diinput manual atau diimport dari Excel.
-3. Sistem mengonversi jawaban menjadi skor `1` untuk benar dan `0` untuk salah.
-4. Sistem menghitung nilai siswa dan mengurutkan hasil.
-5. Siswa dikelompokkan menjadi kelompok atas dan kelompok bawah berdasarkan nilai.
-6. Sistem menghitung Daya Pembeda (DP).
-7. Sistem menghitung Tingkat Kesukaran (TK).
-8. Hasil analisis ditampilkan sebagai Analisis Data T3.
-9. Nilai siswa disajikan pada Daftar Nilai T4.
-10. Ringkasan nilai dan kualitas soal disajikan pada Rekap Nilai T5.
+1. Guru membuat ujian lengkap dengan jenis penilaian, tujuan pembelajaran, lingkup materi, dan KKTP/KKM.
+2. Guru mengisi kunci jawaban.
+3. Guru download template Excel yang sesuai dengan ujian.
+4. Jawaban siswa diinput manual atau diimport dari Excel.
+5. Sistem mengonversi jawaban menjadi skor `1` untuk benar dan `0` untuk salah.
+6. Sistem menghitung nilai siswa dan mengurutkan hasil.
+7. Siswa dikelompokkan menjadi kelompok atas dan kelompok bawah berdasarkan nilai.
+8. Sistem menghitung Daya Pembeda (DP) dan Tingkat Kesukaran (TK).
+9. Hasil analisis ditampilkan sebagai Analisis Data T3.
+10. Nilai siswa disajikan pada Daftar Nilai T4.
+11. Ringkasan nilai dan kualitas soal disajikan pada Rekap Nilai T5.
 
 ---
 
