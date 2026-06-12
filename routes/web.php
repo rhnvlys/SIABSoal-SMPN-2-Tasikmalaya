@@ -23,38 +23,6 @@ use App\Http\Controllers\UjianController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/vercel-migrate-7812', function() {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Database migrated successfully!',
-            'output' => \Illuminate\Support\Facades\Artisan::output()
-        ]);
-    } catch (\Throwable $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => $e->getMessage()
-        ], 500);
-    }
-});
-
-Route::get('/vercel-seed-7812', function() {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Database seeded successfully!',
-            'output' => \Illuminate\Support\Facades\Artisan::output()
-        ]);
-    } catch (\Throwable $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => $e->getMessage()
-        ], 500);
-    }
-});
-
 Route::get('/', LandingController::class)->name('landing');
 Route::get('/logo-sekolah/{path}', [ProfilSekolahController::class, 'logo'])
     ->where('path', '.*')

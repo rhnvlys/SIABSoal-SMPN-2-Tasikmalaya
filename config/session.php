@@ -18,9 +18,7 @@ return [
     |
     */
 
-    'driver' => (isset($_SERVER['REQUEST_URI']) && str_contains($_SERVER['REQUEST_URI'], 'vercel-'))
-        ? 'cookie'
-        : env('SESSION_DRIVER', 'file'),
+    'driver' => env('SESSION_DRIVER', 'file'),
 
     /*
     |--------------------------------------------------------------------------
