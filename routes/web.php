@@ -65,6 +65,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('siswa', [SiswaController::class, 'store'])->name('siswa.store');
     });
     Route::middleware(['role:Admin,Guru'])->group(function () {
+        Route::get('siswa/import/template/{filename?}', [SiswaController::class, 'downloadTemplate'])->name('siswa.template');
+        Route::post('siswa/import/preview', [SiswaController::class, 'preview'])->name('siswa.import.preview');
+        Route::post('siswa/import/confirm', [SiswaController::class, 'confirmImport'])->name('siswa.import.confirm');
         Route::get('siswa/{siswa}/edit', [SiswaController::class, 'edit'])->name('siswa.edit');
         Route::put('siswa/{siswa}', [SiswaController::class, 'update'])->name('siswa.update');
         Route::patch('siswa/{siswa}', [SiswaController::class, 'update']);
@@ -104,19 +107,25 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['role:Admin,Kepala Sekolah'])->prefix('audit-log')->name('audit-log.')->group(function () {
         Route::get('/', [AuditLogController::class, 'index'])->name('index');
-        Route::get('/export/excel', [AuditLogController::class, 'exportExcel'])->name('export.excel');
-        Route::get('/export/pdf', [AuditLogController::class, 'exportPdf'])->name('export.pdf');
+        Route::get('/export/excel/{filename?}', [AuditLogController::class, 'exportExcel'])->name('export.excel');
+        Route::get('/export/pdf/{filename?}', [AuditLogController::class, 'exportPdf'])->name('export.pdf');
     });
     Route::middleware(['role:Admin,Kepala Sekolah'])->prefix('audit-trail')->name('audit-trail.')->group(function () {
         Route::get('/', [AuditLogController::class, 'index'])->name('index');
-        Route::get('/export/excel', [AuditLogController::class, 'exportExcel'])->name('export.excel');
-        Route::get('/export/pdf', [AuditLogController::class, 'exportPdf'])->name('export.pdf');
+        Route::get('/export/excel/{filename?}', [AuditLogController::class, 'exportExcel'])->name('export.excel');
+        Route::get('/export/pdf/{filename?}', [AuditLogController::class, 'exportPdf'])->name('export.pdf');
     });
 
     Route::get('ujian', [UjianController::class, 'index'])->middleware('role:Admin,Guru,Kepala Sekolah')->name('ujian.index');
     Route::middleware(['role:Admin,Guru,Kepala Sekolah'])->prefix('template-excel')->name('template-excel.')->group(function () {
         Route::get('/', [TemplateExcelController::class, 'index'])->name('index');
-        Route::get('/download/{type}', [TemplateExcelController::class, 'download'])->name('download');
+        Route::post('/upload/preview', [TemplateExcelController::class, 'previewUpload'])
+            ->middleware('role:Admin,Guru')
+            ->name('upload.preview');
+        Route::post('/upload/confirm', [TemplateExcelController::class, 'confirmUpload'])
+            ->middleware('role:Admin,Guru')
+            ->name('upload.confirm');
+        Route::get('/download/{type}/{filename?}', [TemplateExcelController::class, 'download'])->name('download');
     });
 
     Route::middleware(['role:Admin,Guru'])->group(function () {
@@ -134,7 +143,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:Admin,Guru', 'ujian.access'])->group(function () {
         Route::get('/ujian/{ujian}/kunci-jawaban', [KunciJawabanController::class, 'index'])->name('kunci-jawaban.index');
         Route::post('/ujian/{ujian}/kunci-jawaban', [KunciJawabanController::class, 'store'])->name('kunci-jawaban.store');
-        Route::get('/ujian/{ujian}/kunci-jawaban/template', [KunciJawabanController::class, 'downloadTemplate'])->name('kunci-jawaban.template');
+        Route::get('/ujian/{ujian}/kunci-jawaban/template/{filename?}', [KunciJawabanController::class, 'downloadTemplate'])->name('kunci-jawaban.template');
         Route::post('/ujian/{ujian}/kunci-jawaban/import', [KunciJawabanController::class, 'import'])->name('kunci-jawaban.import');
     });
 
@@ -142,7 +151,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/ujian/{ujian}/data-mentah', [DataMentahController::class, 'index'])->name('data-mentah.index');
         Route::post('/ujian/{ujian}/data-mentah/manual', [DataMentahController::class, 'storeManual'])->name('data-mentah.manual');
         Route::post('/ujian/{ujian}/data-mentah/proses', [DataMentahController::class, 'proses'])->name('data-mentah.proses');
-        Route::get('/ujian/{ujian}/data-mentah/template/{type}', [DataMentahController::class, 'downloadTemplate'])->name('data-mentah.template');
+        Route::get('/ujian/{ujian}/data-mentah/template/{type}/{filename?}', [DataMentahController::class, 'downloadTemplate'])->name('data-mentah.template');
         Route::post('/ujian/{ujian}/data-mentah/import', [DataMentahController::class, 'import'])->name('data-mentah.import');
         Route::post('/ujian/{ujian}/data-mentah/preview', [DataMentahController::class, 'preview'])->name('data-mentah.preview');
         Route::post('/ujian/{ujian}/data-mentah/confirm-import', [DataMentahController::class, 'confirmImport'])->name('data-mentah.confirm-import');
@@ -175,15 +184,15 @@ Route::middleware(['auth'])->group(function () {
         ->prefix('ujian/{ujian}/export')
         ->name('export.')
         ->group(function () {
-            Route::get('/data-mentah/excel', [ExportController::class, 'dataMentahExcel'])->name('data-mentah.excel');
-            Route::get('/data-mentah/pdf', [ExportController::class, 'dataMentahPdf'])->name('data-mentah.pdf');
-            Route::get('/olah-data/excel', [ExportController::class, 'olahDataExcel'])->name('olah-data.excel');
-            Route::get('/olah-data/pdf', [ExportController::class, 'olahDataPdf'])->name('olah-data.pdf');
-            Route::get('/analisis/excel', [ExportController::class, 'analisisExcel'])->name('analisis.excel');
-            Route::get('/analisis/pdf', [ExportController::class, 'analisisPdf'])->name('analisis.pdf');
-            Route::get('/daftar-nilai/excel', [ExportController::class, 'daftarNilaiExcel'])->name('daftar-nilai.excel');
-            Route::get('/daftar-nilai/pdf', [ExportController::class, 'daftarNilaiPdf'])->name('daftar-nilai.pdf');
-            Route::get('/rekap-nilai/excel', [ExportController::class, 'rekapNilaiExcel'])->name('rekap-nilai.excel');
-            Route::get('/rekap-nilai/pdf', [ExportController::class, 'rekapNilaiPdf'])->name('rekap-nilai.pdf');
+            Route::get('/data-mentah/excel/{filename?}', [ExportController::class, 'dataMentahExcel'])->name('data-mentah.excel');
+            Route::get('/data-mentah/pdf/{filename?}', [ExportController::class, 'dataMentahPdf'])->name('data-mentah.pdf');
+            Route::get('/olah-data/excel/{filename?}', [ExportController::class, 'olahDataExcel'])->name('olah-data.excel');
+            Route::get('/olah-data/pdf/{filename?}', [ExportController::class, 'olahDataPdf'])->name('olah-data.pdf');
+            Route::get('/analisis/excel/{filename?}', [ExportController::class, 'analisisExcel'])->name('analisis.excel');
+            Route::get('/analisis/pdf/{filename?}', [ExportController::class, 'analisisPdf'])->name('analisis.pdf');
+            Route::get('/daftar-nilai/excel/{filename?}', [ExportController::class, 'daftarNilaiExcel'])->name('daftar-nilai.excel');
+            Route::get('/daftar-nilai/pdf/{filename?}', [ExportController::class, 'daftarNilaiPdf'])->name('daftar-nilai.pdf');
+            Route::get('/rekap-nilai/excel/{filename?}', [ExportController::class, 'rekapNilaiExcel'])->name('rekap-nilai.excel');
+            Route::get('/rekap-nilai/pdf/{filename?}', [ExportController::class, 'rekapNilaiPdf'])->name('rekap-nilai.pdf');
         });
 });

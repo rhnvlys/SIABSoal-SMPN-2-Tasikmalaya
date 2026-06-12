@@ -55,10 +55,13 @@
         <i class="bi bi-pencil-square"></i> Input Manual Nilai
     </button>
     @endif
-    <a href="{{ route('export.daftar-nilai.excel', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
+    @php
+        $cleanUjianName = str_replace(' ', '_', strtolower($ujian->nama_ujian));
+    @endphp
+    <a href="{{ route('export.daftar-nilai.excel', ['ujian' => $ujian, 'filename' => 'daftar_nilai_' . $cleanUjianName . '.xlsx']) }}" class="btn btn-outline">
         <i class="bi bi-file-earmark-spreadsheet"></i> Export Excel
     </a>
-    <a href="{{ route('export.daftar-nilai.pdf', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
+    <a href="{{ route('export.daftar-nilai.pdf', ['ujian' => $ujian, 'filename' => 'daftar_nilai_' . $cleanUjianName . '.pdf']) }}" class="btn btn-outline">
         <i class="bi bi-file-earmark-pdf"></i> Export PDF
     </a>
     <button onclick="window.print()" class="btn btn-outline">

@@ -106,9 +106,10 @@ class AssessmentAdministrationFeatureTest extends TestCase
             'status' => 'aktif',
         ]);
 
-        $tahunAjaran = TahunAjaran::create([
+        $tahunAjaran = TahunAjaran::firstOrCreate([
             'tahun_ajaran' => '2098/2099',
             'semester' => 'Ganjil',
+        ], [
             'status' => 'aktif',
         ]);
 

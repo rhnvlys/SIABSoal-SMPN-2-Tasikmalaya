@@ -23,12 +23,14 @@
     <strong>Tahap 5</strong> — Tahap ini menampilkan rekap nilai dan klasifikasi hasil ujian berdasarkan tabel sekolah.
 </div>
 
-{{-- Tombol Export --}}
 <div class="btn-group mb-3">
-    <a href="{{ route('export.rekap-nilai.excel', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
+    @php
+        $cleanUjianName = str_replace(' ', '_', strtolower($ujian->nama_ujian));
+    @endphp
+    <a href="{{ route('export.rekap-nilai.excel', ['ujian' => $ujian, 'filename' => 'rekap_nilai_' . $cleanUjianName . '.xlsx']) }}" class="btn btn-outline">
         <i class="bi bi-file-earmark-spreadsheet"></i> Export Excel
     </a>
-    <a href="{{ route('export.rekap-nilai.pdf', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
+    <a href="{{ route('export.rekap-nilai.pdf', ['ujian' => $ujian, 'filename' => 'rekap_nilai_' . $cleanUjianName . '.pdf']) }}" class="btn btn-outline">
         <i class="bi bi-file-earmark-pdf"></i> Export PDF
     </a>
     <button onclick="window.print()" class="btn btn-outline">

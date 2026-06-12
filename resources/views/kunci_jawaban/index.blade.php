@@ -10,7 +10,7 @@
         @csrf
         <input type="file" name="file" class="form-control" accept=".csv,.xlsx,.xls" style="max-width:300px" required>
         <button type="submit" class="btn btn-outline"><i class="bi bi-upload"></i> Import</button>
-        <a href="{{ route('kunci-jawaban.template', $ujian) }}" class="btn btn-outline"><i class="bi bi-download"></i> Download Template</a>
+        <a href="{{ route('kunci-jawaban.template', ['ujian' => $ujian, 'filename' => 'template_kunci_jawaban_' . str_replace(' ', '_', strtolower($ujian->nama_ujian)) . '.xlsx']) }}" class="btn btn-outline"><i class="bi bi-download"></i> Download Template</a>
     </form>
 </div></div>
 

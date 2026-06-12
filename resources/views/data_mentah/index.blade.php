@@ -88,10 +88,13 @@
     </button>
 
     {{-- Download Template --}}
-    <a href="{{ route('data-mentah.template', [$ujian, 'abcd']) }}" class="btn btn-outline">
+    @php
+        $cleanUjianName = str_replace(' ', '_', strtolower($ujian->nama_ujian));
+    @endphp
+    <a href="{{ route('data-mentah.template', ['ujian' => $ujian, 'type' => 'abcd', 'filename' => 'template_data_mentah_jawaban_abcd_' . $cleanUjianName . '.xlsx']) }}" class="btn btn-outline">
         <i class="bi bi-download"></i> Download Template Jawaban
     </a>
-    <a href="{{ route('data-mentah.template', [$ujian, 'biner']) }}" class="btn btn-outline">
+    <a href="{{ route('data-mentah.template', ['ujian' => $ujian, 'type' => 'biner', 'filename' => 'template_data_mentah_skor_01_' . $cleanUjianName . '.xlsx']) }}" class="btn btn-outline">
         <i class="bi bi-download"></i> Download Template Skor
     </a>
 
@@ -114,10 +117,10 @@
 
     {{-- Export --}}
     @if($peserta->count() > 0)
-    <a href="{{ route('export.data-mentah.excel', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
+    <a href="{{ route('export.data-mentah.excel', ['ujian' => $ujian, 'filename' => 'data_mentah_' . $cleanUjianName . '.xlsx']) }}" class="btn btn-outline">
         <i class="bi bi-file-earmark-spreadsheet"></i> Export Excel
     </a>
-    <a href="{{ route('export.data-mentah.pdf', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
+    <a href="{{ route('export.data-mentah.pdf', ['ujian' => $ujian, 'filename' => 'data_mentah_' . $cleanUjianName . '.pdf']) }}" class="btn btn-outline">
         <i class="bi bi-file-earmark-pdf"></i> Export PDF
     </a>
     @endif

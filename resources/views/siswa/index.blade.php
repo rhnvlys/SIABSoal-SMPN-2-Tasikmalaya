@@ -4,9 +4,16 @@
 @section('content')
 <div class="page-header d-flex justify-between align-center flex-wrap gap-2">
     <div><h1>{{ auth()->user()->isGuru() ? 'Siswa Kelas Saya' : 'Data Siswa' }}</h1><p>{{ auth()->user()->isGuru() ? 'Data siswa pada kelas yang Anda pegang' : 'Kelola data peserta didik' }}</p></div>
-    @if(auth()->user()->isAdmin())
-    <a href="{{ route('siswa.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Tambah Siswa</a>
-    @endif
+    <div class="d-flex gap-1 flex-wrap">
+        @if(!auth()->user()->isKepalaSekolah())
+        <button type="button" class="btn btn-outline" onclick="openModal('importSiswaModal')">
+            <i class="bi bi-file-earmark-excel"></i> Import Excel
+        </button>
+        @endif
+        @if(auth()->user()->isAdmin())
+        <a href="{{ route('siswa.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Tambah Siswa</a>
+        @endif
+    </div>
 </div>
 <div class="card mb-3"><div class="card-body">
     <form action="{{ route('siswa.index') }}" method="GET" class="d-flex gap-1 flex-wrap">
@@ -44,6 +51,40 @@
         @endforelse
     </tbody>
 </table></div>
+</div>
 @if($siswa->hasPages())<div class="pagination-wrapper">{!! $siswa->links('components.pagination') !!}</div>@endif
+</div>
+
+{{-- Modal Import Siswa --}}
+<div class="modal" id="importSiswaModal" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Import Data Siswa</h5>
+                <button type="button" class="close" onclick="closeModal('importSiswaModal')">&times;</button>
+            </div>
+            <form action="{{ route('siswa.import.preview') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <strong>Petunjuk:</strong> Unduh template Excel yang sudah berformat rapi, lengkapi data siswa, lalu unggah berkas di bawah.
+                    </div>
+                    <div class="mb-3">
+                        <a href="{{ route('siswa.template', ['filename' => 'template_data_siswa.xlsx']) }}" class="btn btn-sm btn-outline mb-2">
+                            <i class="bi bi-download"></i> Unduh Template Excel Siswa
+                        </a>
+                    </div>
+                    <div class="form-group">
+                        <label for="file_siswa" class="form-label">Berkas Excel (xlsx, xls, csv)</label>
+                        <input type="file" name="file" id="file_siswa" class="form-control" accept=".xlsx,.xls,.csv" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('importSiswaModal')">Batal</button>
+                    <button type="submit" class="btn btn-primary">Preview Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 @endsection

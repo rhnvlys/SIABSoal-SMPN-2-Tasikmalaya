@@ -28,7 +28,7 @@ class AuditLogController extends Controller
         return view('audit_log.index', compact('logs', 'filterOptions'));
     }
 
-    public function exportExcel(Request $request)
+    public function exportExcel(Request $request, ?string $filename = null)
     {
         $logs = $this->filteredQuery($request)->latest()->limit(1000)->get();
 
@@ -53,7 +53,7 @@ class AuditLogController extends Controller
         );
     }
 
-    public function exportPdf(Request $request)
+    public function exportPdf(Request $request, ?string $filename = null)
     {
         $logs = $this->filteredQuery($request)->latest()->limit(500)->get();
 

@@ -91,10 +91,13 @@
                 </button>
 
                 @if($pesertaHadir->count() > 0)
-                    <a href="{{ route('export.olah-data.excel', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
+                    @php
+                        $cleanUjianName = str_replace(' ', '_', strtolower($ujian->nama_ujian));
+                    @endphp
+                    <a href="{{ route('export.olah-data.excel', ['ujian' => $ujian, 'filename' => 'olah_data_' . $cleanUjianName . '.xlsx']) }}" class="btn btn-outline">
                         <i class="bi bi-file-earmark-spreadsheet"></i> Export Excel
                     </a>
-                    <a href="{{ route('export.olah-data.pdf', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
+                    <a href="{{ route('export.olah-data.pdf', ['ujian' => $ujian, 'filename' => 'olah_data_' . $cleanUjianName . '.pdf']) }}" class="btn btn-outline">
                         <i class="bi bi-file-earmark-pdf"></i> Export PDF
                     </a>
                 @endif

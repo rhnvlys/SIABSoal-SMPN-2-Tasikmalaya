@@ -7,7 +7,7 @@ use App\Models\PesertaUjian;
 use App\Models\JawabanSiswa;
 use App\Models\SiswaKelas;
 use App\Models\LogAktivitas;
-use App\Exports\DataMentahTemplateExport;
+use App\Exports\AssessmentTemplateExport;
 use App\Imports\SpreadsheetRowsImport;
 use App\Services\ScoringService;
 use App\Services\ImportService;
@@ -152,7 +152,7 @@ class DataMentahController extends Controller
     /**
      * Download template import (CSV) — dengan kolom nisn, jenis_kelamin sesuai spec F2/F3
      */
-    public function downloadTemplate(Ujian $ujian, $type = 'abcd')
+    public function downloadTemplate(Ujian $ujian, $type = 'abcd', ?string $filename = null)
     {
         $mode = in_array($type, ['biner', 'skor'], true) ? 'biner' : 'abcd';
         $filename = 'template_data_mentah_' . ($mode === 'biner' ? 'skor_01' : 'jawaban_abcd') . '_' .
@@ -160,7 +160,7 @@ class DataMentahController extends Controller
 
         LogAktivitas::catat('Download template Data Mentah T1', 'Data Mentah', "Download template Data Mentah T1 ({$mode}) ujian: {$ujian->nama_ujian}");
 
-        return Excel::download(new DataMentahTemplateExport($ujian, $mode), $filename);
+        return Excel::download(new AssessmentTemplateExport($mode === 'biner' ? 'skor-01' : 'jawaban-abcd', $ujian), $filename);
     }
 
     /**
@@ -268,24 +268,119 @@ class DataMentahController extends Controller
             return $this->filledRows($rows);
         }
 
-        $sheets = Excel::toArray(new SpreadsheetRowsImport(), $file);
-        foreach ($sheets as $sheetRows) {
-            $rows = $this->filledRows($sheetRows);
-            $header = $rows[0] ?? null;
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
+        $sheetNames = array_map(fn($name) => strtoupper(trim((string)$name)), $spreadsheet->getSheetNames());
 
+        $sheets = Excel::toArray(new SpreadsheetRowsImport(), $file);
+
+        // 1. Coba baca DATA_IMPORT_SYSTEM
+        $importIdx = array_search('DATA_IMPORT_SYSTEM', $sheetNames);
+        if ($importIdx !== false && isset($sheets[$importIdx])) {
+            $rows = $this->filledRows($sheets[$importIdx]);
+            $header = $rows[0] ?? null;
             if ($header && $this->importService->isHeaderValid($header, $ujian, $mode)) {
                 return $rows;
             }
         }
 
-        foreach ($sheets as $sheetRows) {
-            $rows = $this->filledRows($sheetRows);
-            if ($rows !== []) {
+        // 2. Coba baca DATA_INPUT
+        $inputIdx = array_search('DATA_INPUT', $sheetNames);
+        if ($inputIdx !== false && isset($sheets[$inputIdx])) {
+            $rows = $this->filledRows($sheets[$inputIdx]);
+            $header = $rows[0] ?? null;
+            if ($header && $this->importService->isHeaderValid($header, $ujian, $mode)) {
                 return $rows;
             }
         }
 
-        return [];
+        // 3. Fallback: Loop all sheets
+        foreach ($sheets as $idx => $sheetRows) {
+            if ($idx === $importIdx || $idx === $inputIdx) continue;
+            $rows = $this->filledRows($sheetRows);
+            $header = $rows[0] ?? null;
+            if ($header && $this->importService->isHeaderValid($header, $ujian, $mode)) {
+                return $rows;
+            }
+
+            $normalizedRows = $this->normalizeSpecificTemplateRows($rows, $ujian, $mode);
+            if ($normalizedRows) {
+                return $normalizedRows;
+            }
+        }
+
+        throw new \Exception("Template tidak valid. Gunakan template resmi dari SIABSoal.");
+    }
+
+    private function normalizeSpecificTemplateRows(array $rows, Ujian $ujian, string $mode): ?array
+    {
+        $prefix = $mode === 'biner' ? 'skor_' : 'soal_';
+        $headerRowIndex = null;
+        $header = [];
+
+        foreach ($rows as $idx => $row) {
+            $normalized = array_map(fn ($value) => $this->normalizeImportHeaderValue($value), $row);
+            if (in_array('nis', $normalized, true) && in_array('status_kehadiran', $normalized, true) && in_array($prefix . '1', $normalized, true)) {
+                $headerRowIndex = $idx;
+                $header = $normalized;
+                break;
+            }
+        }
+
+        if ($headerRowIndex === null) {
+            return null;
+        }
+
+        $expectedHeader = $this->importService->expectedHeader($ujian, $mode);
+        $normalizedRows = [$expectedHeader];
+
+        foreach (array_slice($rows, $headerRowIndex + 1) as $row) {
+            $assoc = [];
+            foreach ($header as $idx => $key) {
+                $assoc[$key] = $row[$idx] ?? null;
+            }
+
+            $nis = trim((string) ($assoc['nis'] ?? ''));
+            if ($nis === '') {
+                continue;
+            }
+
+            $converted = [
+                $nis,
+                trim((string) ($assoc['nisn'] ?? '')),
+                trim((string) ($assoc['nama_siswa'] ?? '')),
+                strtoupper(trim((string) ($assoc['jenis_kelamin'] ?? ''))),
+                $this->normalizeAttendanceForImport((string) ($assoc['status_kehadiran'] ?? 'hadir')),
+            ];
+
+            for ($i = 1; $i <= $ujian->jumlah_soal; $i++) {
+                $converted[] = $assoc[$prefix . $i] ?? '';
+            }
+
+            $normalizedRows[] = $converted;
+        }
+
+        return count($normalizedRows) > 1 ? $normalizedRows : null;
+    }
+
+    private function normalizeImportHeaderValue(mixed $value): string
+    {
+        $value = preg_replace('/^\xEF\xBB\xBF/', '', (string) $value);
+        $value = strtolower(trim($value));
+        $value = preg_replace('/[^a-z0-9]+/', '_', $value);
+        $value = trim($value, '_');
+
+        return match ($value) {
+            'nama_murid', 'nama' => 'nama_siswa',
+            'l_p', 'lp', 'jk' => 'jenis_kelamin',
+            'status_hadir' => 'status_kehadiran',
+            default => $value,
+        };
+    }
+
+    private function normalizeAttendanceForImport(string $status): string
+    {
+        $status = str_replace([' ', '-'], '_', strtolower(trim($status)));
+        return $status === 'hadir' ? 'hadir' : 'tidak_hadir';
     }
 
     private function filledRows(array $rows): array

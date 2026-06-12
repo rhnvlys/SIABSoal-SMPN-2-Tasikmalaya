@@ -58,10 +58,13 @@
     @endif
 
     @if($analisis->count() > 0)
-        <a href="{{ route('export.analisis.excel', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
+        @php
+            $cleanUjianName = str_replace(' ', '_', strtolower($ujian->nama_ujian));
+        @endphp
+        <a href="{{ route('export.analisis.excel', ['ujian' => $ujian, 'filename' => 'analisis_butir_' . $cleanUjianName . '.xlsx']) }}" class="btn btn-outline">
             <i class="bi bi-file-earmark-spreadsheet"></i> Export Excel
         </a>
-        <a href="{{ route('export.analisis.pdf', $ujian) }}" class="btn btn-outline" data-loading data-loading-text="Mengexport...">
+        <a href="{{ route('export.analisis.pdf', ['ujian' => $ujian, 'filename' => 'analisis_butir_' . $cleanUjianName . '.pdf']) }}" class="btn btn-outline">
             <i class="bi bi-file-earmark-pdf"></i> Export PDF
         </a>
     @endif

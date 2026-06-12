@@ -88,6 +88,11 @@ discord_rpc_*.py
 *.secret
 /.vercel
 
+# Local testing files
+template_uji_coba_jawaban.xlsx
+/laporan-output/
+/tests/inspect_excel.php
+
 # Deployment credentials and local hosting artifacts
 .koyeb*
 .turso*
@@ -95,3 +100,5 @@ discord_rpc_*.py
 .tidbcloud*
 render.yaml
 fly.toml
+
+.vercel

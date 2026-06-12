@@ -9,8 +9,10 @@ use App\Models\PesertaUjian;
 use App\Models\PengaturanSekolah;
 use App\Services\ReportService;
 use App\Services\ExportService;
+use App\Exports\AssessmentTemplateExport;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ExportController extends Controller
 {
@@ -26,60 +28,14 @@ class ExportController extends Controller
     // ===========================
     // DATA MENTAH T1
     // ===========================
-    public function dataMentahExcel(Ujian $ujian)
+    public function dataMentahExcel(Ujian $ujian, ?string $filename = null)
     {
-        $ujian->load(['soal', 'pesertaUjian.siswa', 'pesertaUjian.jawabanSiswa', 'guru', 'mapel']);
-
-        $peserta = PesertaUjian::where('ujian_id', $ujian->id)
-            ->with(['siswa', 'jawabanSiswa'])
-            ->join('siswa', 'peserta_ujian.siswa_id', '=', 'siswa.id')
-            ->orderBy('siswa.nama_siswa')
-            ->select('peserta_ujian.*')
-            ->get();
-
-        $soalList = $ujian->soal;
-
-        $header = ['No', 'NIS', 'NISN', 'Nama Siswa', 'L/P', 'Status Kehadiran'];
-        foreach ($soalList as $soal) {
-            $header[] = 'Soal ' . $soal->nomor_soal;
-        }
-        $header = array_merge($header, ['Jumlah Benar', 'Jumlah Salah', 'Nilai', 'Keterangan']);
-
-        $rows = [];
-        foreach ($peserta as $idx => $p) {
-            $keterangan = match($p->keterangan) {
-                'tercapai' => 'TERCAPAI',
-                'perlu_peningkatan' => 'PERLU PENINGKATAN',
-                'tidak_hadir' => 'TIDAK HADIR',
-                default => '-',
-            };
-
-            $row = [
-                $idx + 1,
-                $p->siswa->nis ?? '',
-                $p->siswa->nisn ?? '',
-                $p->siswa->nama_siswa ?? '',
-                $p->siswa->jenis_kelamin ?? '',
-                ucfirst(str_replace('_', ' ', $p->status_kehadiran)),
-            ];
-
-            $jawabanMap = $p->jawabanSiswa->keyBy('soal_id');
-            foreach ($soalList as $soal) {
-                $js = $jawabanMap->get($soal->id);
-                $row[] = $js ? $js->skor_biner : 0;
-            }
-
-            $row[] = $p->jumlah_benar;
-            $row[] = $p->jumlah_salah;
-            $row[] = $p->nilai;
-            $row[] = $keterangan;
-            $rows[] = $row;
-        }
-
-        return $this->downloadReport($ujian, $header, $rows, "data_mentah_{$ujian->nama_ujian}", 'DATA_MENTAH_T1', 'DATA MENTAH T1');
+        $this->catatExport($ujian, 'Data Mentah T1', 'Excel');
+        $filename = "data_mentah_{$ujian->nama_ujian}.xlsx";
+        return Excel::download(new AssessmentTemplateExport('skor-01', $ujian), $filename);
     }
 
-    public function dataMentahPdf(Ujian $ujian)
+    public function dataMentahPdf(Ujian $ujian, ?string $filename = null)
     {
         $ujian->load(['soal', 'guru', 'mapel', 'tahunAjaran', 'kelas']);
 
@@ -103,34 +59,14 @@ class ExportController extends Controller
     // ===========================
     // OLAH DATA T2
     // ===========================
-    public function olahDataExcel(Ujian $ujian)
+    public function olahDataExcel(Ujian $ujian, ?string $filename = null)
     {
-        $peserta = PesertaUjian::where('ujian_id', $ujian->id)
-            ->where('status_kehadiran', 'hadir')
-            ->with('siswa')
-            ->orderBy('ranking')
-            ->get();
-
-        $header = ['Ranking', 'NIS', 'NISN', 'Nama Siswa', 'L/P', 'Benar', 'Salah', 'Nilai', 'Kelompok'];
-        $rows = [];
-        foreach ($peserta as $p) {
-            $rows[] = [
-                $p->ranking,
-                $p->siswa->nis ?? '',
-                $p->siswa->nisn ?? '',
-                $p->siswa->nama_siswa ?? '',
-                $p->siswa->jenis_kelamin ?? '',
-                $p->jumlah_benar,
-                $p->jumlah_salah,
-                $p->nilai,
-                strtoupper($p->kelompok ?? ''),
-            ];
-        }
-
-        return $this->downloadReport($ujian, $header, $rows, "olah_data_{$ujian->nama_ujian}", 'OLAH_DATA_T2', 'OLAH DATA T2');
+        $this->catatExport($ujian, 'Olah Data T2', 'Excel');
+        $filename = "olah_data_{$ujian->nama_ujian}.xlsx";
+        return Excel::download(new AssessmentTemplateExport('skor-01', $ujian), $filename);
     }
 
-    public function olahDataPdf(Ujian $ujian)
+    public function olahDataPdf(Ujian $ujian, ?string $filename = null)
     {
         $ujian->load(['guru', 'mapel', 'tahunAjaran', 'kelas']);
 
@@ -153,42 +89,14 @@ class ExportController extends Controller
     // ===========================
     // ANALISIS T3 — Hanya DP & TK
     // ===========================
-    public function analisisExcel(Ujian $ujian)
+    public function analisisExcel(Ujian $ujian, ?string $filename = null)
     {
-        $analisis = AnalisisButir::where('ujian_id', $ujian->id)->orderBy('nomor_soal')->get();
-
-        $header = [
-            'No Soal',
-            'BA',
-            'BB',
-            'JA',
-            'JB',
-            'DP',
-            'Kategori DP',
-            'TK',
-            'Kategori TK',
-            'Keputusan',
-        ];
-        $rows = [];
-        foreach ($analisis as $a) {
-            $rows[] = [
-                $a->nomor_soal,
-                $a->ba,
-                $a->bb,
-                $a->ja,
-                $a->jb,
-                $a->dp,
-                $a->kategori_dp,
-                $a->tk,
-                $a->kategori_tk,
-                $a->keputusan,
-            ];
-        }
-
-        return $this->downloadReport($ujian, $header, $rows, "analisis_butir_{$ujian->nama_ujian}", 'ANALISIS_DATA_T3', 'ANALISIS DATA T3');
+        $this->catatExport($ujian, 'Analisis Data T3', 'Excel');
+        $filename = "analisis_butir_{$ujian->nama_ujian}.xlsx";
+        return Excel::download(new AssessmentTemplateExport('skor-01', $ujian), $filename);
     }
 
-    public function analisisPdf(Ujian $ujian)
+    public function analisisPdf(Ujian $ujian, ?string $filename = null)
     {
         $ujian->load(['guru', 'mapel', 'tahunAjaran', 'kelas']);
         $analisis = AnalisisButir::where('ujian_id', $ujian->id)->orderBy('nomor_soal')->get();
@@ -206,39 +114,14 @@ class ExportController extends Controller
     // ===========================
     // DAFTAR NILAI T4
     // ===========================
-    public function daftarNilaiExcel(Ujian $ujian)
+    public function daftarNilaiExcel(Ujian $ujian, ?string $filename = null)
     {
-        $data = $this->reportService->getDaftarNilai($ujian->id);
-        $peserta = $data['peserta'];
-
-        $header = ['No', 'NIS', 'NISN', 'Nama Siswa', 'L/P', 'Status Kehadiran', 'Jumlah Benar', 'Jumlah Salah', 'Nilai', 'Keterangan'];
-        $rows = [];
-        foreach ($peserta as $idx => $p) {
-            $keterangan = match($p->keterangan) {
-                'tercapai' => 'TERCAPAI',
-                'perlu_peningkatan' => 'PERLU PENINGKATAN',
-                'tidak_hadir' => 'TIDAK HADIR',
-                default => '-',
-            };
-
-            $rows[] = [
-                $idx + 1,
-                $p->siswa->nis ?? '',
-                $p->siswa->nisn ?? '',
-                $p->siswa->nama_siswa ?? '',
-                $p->siswa->jenis_kelamin ?? '',
-                ucfirst(str_replace('_', ' ', $p->status_kehadiran)),
-                $p->jumlah_benar,
-                $p->jumlah_salah,
-                $p->nilai,
-                $keterangan,
-            ];
-        }
-
-        return $this->downloadReport($data['ujian'], $header, $rows, "daftar_nilai_{$data['ujian']->nama_ujian}", 'DAFTAR_NILAI_T4', 'DAFTAR NILAI T4');
+        $this->catatExport($ujian, 'Daftar Nilai T4', 'Excel');
+        $filename = "daftar_nilai_{$ujian->nama_ujian}.xlsx";
+        return Excel::download(new AssessmentTemplateExport('skor-01', $ujian), $filename);
     }
 
-    public function daftarNilaiPdf(Ujian $ujian)
+    public function daftarNilaiPdf(Ujian $ujian, ?string $filename = null)
     {
         $data = $this->reportService->getDaftarNilai($ujian->id);
 
@@ -253,47 +136,14 @@ class ExportController extends Controller
     // ===========================
     // REKAP NILAI T5
     // ===========================
-    public function rekapNilaiExcel(Ujian $ujian)
+    public function rekapNilaiExcel(Ujian $ujian, ?string $filename = null)
     {
-        $data = $this->reportService->getRekapNilai($ujian->id);
-        $r = $data['ringkasan'];
-        $rentang = $data['rentang_nilai'];
-        $ketuntasan = $data['ketuntasan'];
-        $analisis = $data['analisis_ringkasan'];
-
-        $header = ['Bagian', 'Komponen', 'Nilai'];
-
-        $rows = [
-            ['Identitas Ujian', 'Nama Ujian', $data['ujian']->nama_ujian],
-            ['Identitas Ujian', 'Jenis Penilaian', $data['ujian']->jenis_penilaian_label],
-            ['Identitas Ujian', 'Guru', $data['ujian']->guru->nama_guru ?? '-'],
-            ['Identitas Ujian', 'Mata Pelajaran', $data['ujian']->mapel->nama_mapel ?? '-'],
-            ['Identitas Ujian', 'Kelas', $data['ujian']->kelas->pluck('nama_kelas')->join(', ') ?: '-'],
-            ['Identitas Ujian', 'KKTP/KKM', $data['ujian']->kktp_value],
-            ['Rekap Kehadiran', 'Jumlah Siswa', $r['jumlah_siswa']],
-            ['Rekap Kehadiran', 'Hadir', $r['hadir']],
-            ['Rekap Kehadiran', 'Tidak Hadir', $r['tidak_hadir']],
-            ['Statistik Nilai', 'Nilai Tertinggi', $r['nilai_tertinggi']],
-            ['Statistik Nilai', 'Nilai Terendah', $r['nilai_terendah']],
-            ['Statistik Nilai', 'Rata-rata', $r['rata_rata']],
-            ['Rentang KKTP/KKM', 'Jumlah nilai di bawah KKTP', $rentang['bawah_kkm']],
-            ['Rentang KKTP/KKM', 'Jumlah nilai sama dengan KKTP', $rentang['sama_kkm']],
-            ['Rentang KKTP/KKM', 'Jumlah nilai di atas KKTP', $rentang['atas_kkm']],
-            ['Ketuntasan', 'Jumlah Tuntas', $ketuntasan['tuntas']],
-            ['Ketuntasan', 'Jumlah Belum Tuntas', $ketuntasan['belum_tuntas']],
-            ['Ringkasan DP', 'Soal Baik', $analisis['soal_baik']],
-            ['Ringkasan DP', 'Soal Revisi', $analisis['soal_revisi']],
-            ['Ringkasan DP', 'Soal Buang', $analisis['soal_buang']],
-            ['Ringkasan TK', 'Soal Mudah', $analisis['soal_mudah']],
-            ['Ringkasan TK', 'Soal Sedang', $analisis['soal_sedang']],
-            ['Ringkasan TK', 'Soal Sukar', $analisis['soal_sukar']],
-            ['Kesimpulan', 'Kesimpulan Singkat', $data['kesimpulan']],
-        ];
-
-        return $this->downloadReport($data['ujian'], $header, $rows, "rekap_nilai_{$data['ujian']->nama_ujian}", 'REKAP_NILAI_T5', 'REKAP NILAI T5');
+        $this->catatExport($ujian, 'Rekap Nilai T5', 'Excel');
+        $filename = "rekap_nilai_{$ujian->nama_ujian}.xlsx";
+        return Excel::download(new AssessmentTemplateExport('skor-01', $ujian), $filename);
     }
 
-    public function rekapNilaiPdf(Ujian $ujian)
+    public function rekapNilaiPdf(Ujian $ujian, ?string $filename = null)
     {
         $data = $this->reportService->getRekapNilai($ujian->id);
 

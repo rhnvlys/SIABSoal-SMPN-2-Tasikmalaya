@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\KunciJawabanTemplateExport;
+use App\Exports\AssessmentTemplateExport;
 use App\Models\Ujian;
 use App\Models\Soal;
 use App\Models\LogAktivitas;
@@ -50,13 +50,13 @@ class KunciJawabanController extends Controller
         return redirect()->route('kunci-jawaban.index', $ujian)->with('success', 'Kunci jawaban berhasil disimpan.');
     }
 
-    public function downloadTemplate(Ujian $ujian)
+    public function downloadTemplate(Ujian $ujian, ?string $filename = null)
     {
         LogAktivitas::catat('Download template kunci jawaban', 'Kunci Jawaban', "Download template kunci jawaban ujian: {$ujian->nama_ujian}");
 
         $filename = 'template_kunci_jawaban_' . str_replace(' ', '_', $ujian->nama_ujian) . '.xlsx';
 
-        return Excel::download(new KunciJawabanTemplateExport($ujian), $filename);
+        return Excel::download(new AssessmentTemplateExport('kunci-jawaban', $ujian), $filename);
     }
 
     public function import(Request $request, Ujian $ujian)
@@ -73,8 +73,23 @@ class KunciJawabanController extends Controller
                 $this->importFromCsv($file, $ujian);
             } else {
                 // Use Laravel Excel for xlsx/xls
+                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
+                $sheetNames = array_map(fn($name) => strtoupper(trim((string)$name)), $spreadsheet->getSheetNames());
+
                 $data = \Maatwebsite\Excel\Facades\Excel::toArray(new SpreadsheetRowsImport(), $file);
-                $this->importFromArray($this->selectImportSheetRows($data), $ujian);
+                
+                $rows = $this->selectImportSheetRows($data, $sheetNames);
+                if (empty($rows)) {
+                    throw new \Exception("Template tidak valid. Gunakan template resmi dari SIABSoal.");
+                }
+
+                // Remove header row if present
+                $firstRow = $rows[0] ?? [];
+                if (isset($firstRow[0]) && (strtolower(trim((string)$firstRow[0])) === 'nomor_soal' || strtolower(trim((string)$firstRow[0])) === 'nomor soal')) {
+                    array_shift($rows);
+                }
+
+                $this->importFromArray($rows, $ujian);
             }
 
             LogAktivitas::catat(
@@ -102,8 +117,8 @@ class KunciJawabanController extends Controller
     {
         DB::transaction(function () use ($rows, $ujian, $isCsv) {
             foreach ($rows as $row) {
-                $nomorSoal = $isCsv ? ($row[0] ?? null) : ($row[0] ?? null);
-                $kunci = strtoupper(trim($row[1] ?? ''));
+                $nomorSoal = $row[0] ?? null;
+                $kunci = strtoupper(trim((string)($row[1] ?? '')));
                 $bobot = $row[2] ?? 1;
 
                 if (!$nomorSoal || !in_array($kunci, ['A','B','C','D','E',''])) continue;
@@ -123,10 +138,12 @@ class KunciJawabanController extends Controller
         });
     }
 
-    private function selectImportSheetRows(array $sheets): array
+    private function selectImportSheetRows(array $sheets, array $sheetNames): array
     {
-        foreach ($sheets as $sheetRows) {
-            $rows = $this->filledRows($sheetRows);
+        // 1. Coba baca DATA_IMPORT_SYSTEM
+        $importIdx = array_search('DATA_IMPORT_SYSTEM', $sheetNames);
+        if ($importIdx !== false && isset($sheets[$importIdx])) {
+            $rows = $this->filledRows($sheets[$importIdx]);
             $header = array_map(
                 fn ($value) => strtolower(trim((string) $value)),
                 $rows[0] ?? []
@@ -137,9 +154,16 @@ class KunciJawabanController extends Controller
             }
         }
 
-        foreach ($sheets as $sheetRows) {
-            $rows = $this->filledRows($sheetRows);
-            if ($rows !== []) {
+        // 2. Coba baca DATA_INPUT
+        $inputIdx = array_search('DATA_INPUT', $sheetNames);
+        if ($inputIdx !== false && isset($sheets[$inputIdx])) {
+            $rows = $this->filledRows($sheets[$inputIdx]);
+            $header = array_map(
+                fn ($value) => strtolower(trim((string) $value)),
+                $rows[0] ?? []
+            );
+
+            if (array_slice($header, 0, 3) === ['nomor_soal', 'kunci_jawaban', 'bobot']) {
                 return $rows;
             }
         }

@@ -36,20 +36,23 @@ class StyledArraySheet implements FromArray, WithTitle, ShouldAutoSize, WithStyl
     {
         if (count($this->rows[0] ?? []) === 1) {
             $sheet->getStyle('A1')->applyFromArray([
-                'font' => ['bold' => true, 'size' => 14, 'color' => ['rgb' => '1F2937']],
+                'font' => ['bold' => true, 'size' => 14, 'color' => ['rgb' => '1B365D']],
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
                     'startColor' => ['rgb' => 'DDEBFA'],
+                ],
+                'alignment' => [
+                    'vertical' => Alignment::VERTICAL_CENTER,
                 ],
             ]);
         }
 
         if ($this->headerRow) {
             $sheet->getStyle("A{$this->headerRow}:{$sheet->getHighestColumn()}{$this->headerRow}")->applyFromArray([
-                'font' => ['bold' => true, 'color' => ['rgb' => '1F2937']],
+                'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF'], 'size' => 11],
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => 'E7F0FA'],
+                    'startColor' => ['rgb' => '1B365D'],
                 ],
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_CENTER,

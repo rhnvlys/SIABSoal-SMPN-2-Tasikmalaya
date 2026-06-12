@@ -68,11 +68,15 @@
     </div>
 </div>
 
+@php
+    $excelFilename = 'audit_log_' . now()->format('Y_m_d_H_i_s') . '.xlsx';
+    $pdfFilename = 'audit_log_' . now()->format('Y_m_d_H_i_s') . '.pdf';
+@endphp
 <div class="btn-group mb-3">
-    <a href="{{ route('audit-log.export.excel', request()->query()) }}" class="btn btn-success" data-loading data-loading-text="Mengexport...">
+    <a href="{{ route('audit-log.export.excel', array_merge(request()->query(), ['filename' => $excelFilename])) }}" class="btn btn-success">
         <i class="bi bi-file-earmark-excel"></i> Export Excel
     </a>
-    <a href="{{ route('audit-log.export.pdf', request()->query()) }}" class="btn btn-danger" data-loading data-loading-text="Mengexport...">
+    <a href="{{ route('audit-log.export.pdf', array_merge(request()->query(), ['filename' => $pdfFilename])) }}" class="btn btn-danger">
         <i class="bi bi-file-earmark-pdf"></i> Export PDF
     </a>
 </div>

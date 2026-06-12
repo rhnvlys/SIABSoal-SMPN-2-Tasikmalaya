@@ -109,13 +109,15 @@ class AuditLogoExportFeatureTest extends TestCase
     public function test_data_mentah_and_kunci_templates_are_readable_xlsx_workbooks(): void
     {
         $data = $this->makeUjianContext();
-        $export = new DataMentahTemplateExport($data['ujian'], 'biner');
+        $export = new \App\Exports\AssessmentTemplateExport('skor-01', $data['ujian']);
 
         $this->assertInstanceOf(WithMultipleSheets::class, $export);
-        $this->assertSame(['PETUNJUK', 'IMPORT_SKOR_01'], array_map(
+        $sheetTitles = array_map(
             fn ($sheet) => $sheet->title(),
             $export->sheets()
-        ));
+        );
+        $this->assertContains('PETUNJUK', $sheetTitles);
+        $this->assertContains('DATA_IMPORT_SYSTEM', $sheetTitles);
 
         $this->actingAs($data['guru']->user)
             ->get(route('data-mentah.template', [$data['ujian'], 'biner']))
