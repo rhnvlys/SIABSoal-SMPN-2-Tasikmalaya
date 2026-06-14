@@ -53,4 +53,17 @@ class AnalisisButir extends Model
     {
         return $this->belongsTo(Soal::class, 'soal_id');
     }
+
+    public function hasAnalysisResult(): bool
+    {
+        foreach (['ba', 'bb', 'ja', 'jb', 'dp', 'tk', 'kategori_dp', 'kategori_tk', 'keputusan'] as $field) {
+            $value = $this->getAttribute($field);
+
+            if ($value === null || $value === '') {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

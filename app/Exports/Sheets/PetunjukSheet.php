@@ -65,7 +65,7 @@ class PetunjukSheet extends BaseSheet
                     ['②', 'Cek DAFTAR_HADIR', 'Buka sheet DAFTAR_HADIR untuk memastikan daftar nama siswa sudah sesuai. Pilih status kehadiran siswa (hadir, tidak_hadir, izin, sakit, alfa) menggunakan dropdown.', self::CLR_ZEBRA_EVEN],
                     ['③', 'Isi KUNCI_JAWABAN', 'Buka sheet KUNCI_JAWABAN. Isi kunci jawaban untuk setiap nomor soal menggunakan dropdown (A/B/C/D/E) dan tentukan bobot masing-masing soal.', self::CLR_BLUE_SOFT],
                     ['④', 'Isi Jawaban Siswa', "Pilih salah satu sheet input yang sesuai:\n• INPUT_JAWABAN_ABCD: Jika ingin memasukkan opsi jawaban siswa (A/B/C/D/E).\n• INPUT_SKOR_01: Jika sudah memeriksa jawaban dan langsung memasukkan skor biner (1=benar, 0=salah).", self::CLR_ZEBRA_EVEN],
-                    ['⑤', 'Simpan dan Upload', 'Setelah semua data terisi, simpan file Excel ini. Pastikan sheet DATA_IMPORT_SYSTEM atau DATA_INPUT tidak dihapus karena sheet tersebut dibaca otomatis oleh sistem SIABSoal saat diupload.', self::CLR_GREEN_BG],
+                    ['⑤', 'Simpan dan Upload', 'Setelah semua data terisi, simpan file Excel ini. Sistem membaca sheet input utama; DATA_IMPORT_SYSTEM atau DATA_INPUT hanya digunakan sebagai fallback untuk kompatibilitas.', self::CLR_GREEN_BG],
                 ];
 
                 $row = 5;
@@ -108,7 +108,7 @@ class PetunjukSheet extends BaseSheet
                 $row++;
 
                 $rules = [
-                    ['🚫 Jangan Ubah Struktur Sheet', 'Dilarang menghapus atau mengubah nama sheet terutama DATA_IMPORT_SYSTEM dan DATA_INPUT karena system membaca data dari sana.', self::CLR_RED_BG],
+                    ['🚫 Jangan Ubah Struktur Sheet', 'Jangan mengubah nama atau susunan kolom sheet input utama. DATA_IMPORT_SYSTEM dan DATA_INPUT dipertahankan hanya sebagai sheet teknis/fallback.', self::CLR_RED_BG],
                     ['✅ Format Jawaban ABCD', 'Format jawaban pilihan ganda hanya boleh diisi opsi A, B, C, D, atau E (huruf kapital). Kolom kosong dianggap salah/tidak menjawab.', self::CLR_ZEBRA_EVEN],
                     ['✅ Format Skor Biner 0/1', 'Format skor hanya boleh diisi angka 1 (benar) atau 0 (salah). Kolom kosong akan otomatis dihitung sebagai 0.', self::CLR_BLUE_SOFT],
                     ['📋 Status Kehadiran', 'Wajib menggunakan status kehadiran: hadir, tidak_hadir, izin, sakit, atau alfa.', self::CLR_ZEBRA_EVEN],

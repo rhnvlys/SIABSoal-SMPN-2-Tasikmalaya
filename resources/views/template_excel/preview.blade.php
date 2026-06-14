@@ -17,7 +17,14 @@
     @include('components.card-stat', ['value' => count($result['found_sheets']), 'label' => 'Sheet Ditemukan', 'icon' => 'bi-file-earmark-spreadsheet', 'color' => 'blue'])
     @include('components.card-stat', ['value' => count($result['processable_sheets']), 'label' => 'Sheet Diproses', 'icon' => 'bi-check-circle-fill', 'color' => 'green'])
     @include('components.card-stat', ['value' => count($result['ignored_sheets']), 'label' => 'Sheet Diabaikan', 'icon' => 'bi-shield-lock-fill', 'color' => 'yellow'])
+    @include('components.card-stat', ['value' => count($result['warnings']), 'label' => 'Warning', 'icon' => 'bi-exclamation-triangle-fill', 'color' => 'amber'])
     @include('components.card-stat', ['value' => count($result['errors']), 'label' => 'Error Validasi', 'icon' => 'bi-x-circle-fill', 'color' => 'red'])
+</div>
+
+<div class="alert {{ $result['can_process'] ? 'alert-success' : 'alert-warning' }}" style="margin-bottom:24px">
+    <i class="bi {{ $result['can_process'] ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill' }}"></i>
+    <strong>{{ $result['can_process'] ? 'File dapat diproses' : 'File belum dapat diproses' }}</strong>
+    - {{ $result['can_process'] ? 'sheet input valid dan siap dikonfirmasi.' : 'periksa error validasi atau data input yang belum tersedia.' }}
 </div>
 
 <div class="card mb-3">
@@ -113,7 +120,7 @@
 <div class="btn-group mt-2">
     <a href="{{ route('template-excel.index', ['ujian_id' => $ujian->id]) }}" class="btn btn-outline"><i class="bi bi-arrow-left"></i> Batal</a>
 
-    @if(count($result['errors']) === 0 && count($result['payload']) > 0)
+    @if($result['can_process'])
         <form action="{{ route('template-excel.upload.confirm') }}" method="POST" data-loading data-loading-text="Memproses...">
             @csrf
             <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Proses Import</button>

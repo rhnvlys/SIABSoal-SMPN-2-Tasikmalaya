@@ -112,17 +112,39 @@
                 </thead>
                 <tbody>
                     @foreach($analisis as $a)
+                    @php
+                        $isAnalyzed = in_array($ujian->status, ['dianalisis', 'selesai'], true)
+                            && $a->hasAnalysisResult();
+                    @endphp
                     <tr>
                         <td style="font-weight:600">{{ $a->nomor_soal }}</td>
-                        <td>{{ $a->ba }}</td>
-                        <td>{{ $a->bb }}</td>
-                        <td>{{ $a->ja }}</td>
-                        <td>{{ $a->jb }}</td>
-                        <td>{{ number_format($a->dp, 3) }}</td>
-                        <td>@include('components.badge', ['type' => 'dp_' . strtolower($a->kategori_dp)])</td>
-                        <td>{{ number_format($a->tk, 3) }}</td>
-                        <td>@include('components.badge', ['type' => 'tk_' . strtolower($a->kategori_tk)])</td>
-                        <td>@include('components.badge', ['type' => 'keputusan_' . strtolower(str_replace(' ', '_', $a->keputusan))])</td>
+                        <td>{{ $isAnalyzed ? $a->ba : '-' }}</td>
+                        <td>{{ $isAnalyzed ? $a->bb : '-' }}</td>
+                        <td>{{ $isAnalyzed ? $a->ja : '-' }}</td>
+                        <td>{{ $isAnalyzed ? $a->jb : '-' }}</td>
+                        <td>{{ $isAnalyzed ? number_format($a->dp, 3) : '-' }}</td>
+                        <td>
+                            @if($isAnalyzed)
+                                @include('components.badge', ['type' => 'dp_' . strtolower($a->kategori_dp)])
+                            @else
+                                @include('components.badge', ['type' => 'warning', 'label' => 'Belum Dianalisis'])
+                            @endif
+                        </td>
+                        <td>{{ $isAnalyzed ? number_format($a->tk, 3) : '-' }}</td>
+                        <td>
+                            @if($isAnalyzed)
+                                @include('components.badge', ['type' => 'tk_' . strtolower($a->kategori_tk)])
+                            @else
+                                @include('components.badge', ['type' => 'warning', 'label' => 'Belum Dianalisis'])
+                            @endif
+                        </td>
+                        <td>
+                            @if($isAnalyzed)
+                                @include('components.badge', ['type' => 'keputusan_' . strtolower(str_replace(' ', '_', $a->keputusan))])
+                            @else
+                                @include('components.badge', ['type' => 'warning', 'label' => 'Belum Dianalisis'])
+                            @endif
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>

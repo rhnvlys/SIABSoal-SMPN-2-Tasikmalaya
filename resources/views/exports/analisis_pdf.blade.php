@@ -27,6 +27,7 @@
         .badge-red   { background: #FEE2E2; color: #991B1B; }
         .badge-blue  { background: #DBEAFE; color: #1E40AF; }
         .badge-teal  { background: #CCFBF1; color: #115E59; }
+        .badge-gray  { background: #E5E7EB; color: #374151; }
         .footer { font-size: 8pt; color: #6B7280; margin-top: 20px; text-align: center; }
     </style>
 </head>
@@ -90,15 +91,21 @@
         </thead>
         <tbody>
             @foreach($analisis as $a)
+            @php
+                $isAnalyzed = in_array($ujian->status, ['dianalisis', 'selesai'], true)
+                    && $a->hasAnalysisResult();
+            @endphp
             <tr>
                 <td>{{ $a->nomor_soal }}</td>
-                <td>{{ $a->ba }}</td>
-                <td>{{ $a->bb }}</td>
-                <td>{{ $a->ja }}</td>
-                <td>{{ $a->jb }}</td>
-                <td>{{ number_format($a->dp, 3) }}</td>
+                <td>{{ $isAnalyzed ? $a->ba : '-' }}</td>
+                <td>{{ $isAnalyzed ? $a->bb : '-' }}</td>
+                <td>{{ $isAnalyzed ? $a->ja : '-' }}</td>
+                <td>{{ $isAnalyzed ? $a->jb : '-' }}</td>
+                <td>{{ $isAnalyzed ? number_format($a->dp, 3) : '-' }}</td>
                 <td>
-                    @if($a->kategori_dp === 'Baik')
+                    @if(!$isAnalyzed)
+                        <span class="badge badge-gray">Belum Dianalisis</span>
+                    @elseif($a->kategori_dp === 'Baik')
                         <span class="badge badge-green">Baik</span>
                     @elseif($a->kategori_dp === 'Revisi')
                         <span class="badge badge-amber">Revisi</span>
@@ -106,9 +113,11 @@
                         <span class="badge badge-red">Buang</span>
                     @endif
                 </td>
-                <td>{{ number_format($a->tk, 3) }}</td>
+                <td>{{ $isAnalyzed ? number_format($a->tk, 3) : '-' }}</td>
                 <td>
-                    @if($a->kategori_tk === 'Mudah')
+                    @if(!$isAnalyzed)
+                        <span class="badge badge-gray">Belum Dianalisis</span>
+                    @elseif($a->kategori_tk === 'Mudah')
                         <span class="badge badge-green">Mudah</span>
                     @elseif($a->kategori_tk === 'Sedang')
                         <span class="badge badge-blue">Sedang</span>
@@ -117,7 +126,9 @@
                     @endif
                 </td>
                 <td>
-                    @if($a->keputusan === 'Dipakai')
+                    @if(!$isAnalyzed)
+                        <span class="badge badge-gray">Belum Dianalisis</span>
+                    @elseif($a->keputusan === 'Dipakai')
                         <span class="badge badge-green">Dipakai</span>
                     @elseif($a->keputusan === 'Dipakai dengan catatan')
                         <span class="badge badge-teal">Dipakai*</span>

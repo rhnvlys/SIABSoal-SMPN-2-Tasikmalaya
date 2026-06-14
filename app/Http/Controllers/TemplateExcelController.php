@@ -29,6 +29,11 @@ class TemplateExcelController extends Controller
                 ->with(['guru', 'mapel', 'kelas', 'tahunAjaran'])
                 ->whereKey($request->integer('ujian_id'))
                 ->first();
+
+            if (!$selectedUjian) {
+                return redirect()->route('template-excel.index')
+                    ->with('error', 'Ujian tidak ditemukan atau Anda tidak memiliki akses ke ujian ini.');
+            }
         }
 
         $templates = [
@@ -39,6 +44,7 @@ class TemplateExcelController extends Controller
                 'icon' => 'bi-file-earmark-spreadsheet-fill',
                 'requires_ujian' => true,
                 'featured' => true,
+                'sheet_summary' => '16 sheet: Identitas, Data Kelas, Data Siswa, TP/LM/KKTP, Daftar Hadir, Kunci Jawaban, Input Jawaban, Input Skor, T1-T5, Referensi.',
             ],
             [
                 'type' => 'data-siswa',
@@ -46,6 +52,7 @@ class TemplateExcelController extends Controller
                 'description' => 'Format dasar NIS, NISN, nama siswa, jenis kelamin, kelas, tahun ajaran, dan status.',
                 'icon' => 'bi-mortarboard-fill',
                 'requires_ujian' => false,
+                'sheet_summary' => 'Format khusus data siswa dan sheet teknis import.',
             ],
             [
                 'type' => 'kunci-jawaban',
@@ -53,6 +60,7 @@ class TemplateExcelController extends Controller
                 'description' => 'Format nomor soal, kunci A/B/C/D/E, dan bobot.',
                 'icon' => 'bi-key-fill',
                 'requires_ujian' => true,
+                'sheet_summary' => 'Format khusus kunci jawaban dan bobot soal.',
             ],
             [
                 'type' => 'jawaban-abcd',
@@ -60,6 +68,7 @@ class TemplateExcelController extends Controller
                 'description' => 'Format import jawaban siswa yang akan diproses menjadi skor 0/1.',
                 'icon' => 'bi-ui-checks-grid',
                 'requires_ujian' => true,
+                'sheet_summary' => 'Format khusus input jawaban A/B/C/D/E.',
             ],
             [
                 'type' => 'skor-01',
@@ -67,6 +76,7 @@ class TemplateExcelController extends Controller
                 'description' => 'Format import skor biner jika guru sudah memiliki hasil benar/salah.',
                 'icon' => 'bi-123',
                 'requires_ujian' => true,
+                'sheet_summary' => 'Format khusus input skor benar/salah 0/1.',
             ],
             [
                 'type' => 'daftar-nilai',
@@ -74,6 +84,7 @@ class TemplateExcelController extends Controller
                 'description' => 'Format daftar nilai T4 yang mudah dibaca guru.',
                 'icon' => 'bi-journal-text',
                 'requires_ujian' => false,
+                'sheet_summary' => 'Format hasil daftar nilai T4.',
             ],
             [
                 'type' => 'rekap-nilai',
@@ -81,6 +92,7 @@ class TemplateExcelController extends Controller
                 'description' => 'Format ringkasan T5 untuk rekap kehadiran, nilai, ketuntasan, dan kualitas soal.',
                 'icon' => 'bi-file-earmark-bar-graph-fill',
                 'requires_ujian' => false,
+                'sheet_summary' => 'Format hasil rekap nilai T5.',
             ],
         ];
 
@@ -109,7 +121,12 @@ class TemplateExcelController extends Controller
             $ujian = $this->accessibleUjianQuery()
                 ->with(['guru', 'mapel', 'kelas', 'tahunAjaran'])
                 ->whereKey($request->integer('ujian_id'))
-                ->firstOrFail();
+                ->first();
+
+            if (!$ujian) {
+                return redirect()->route('template-excel.index')
+                    ->with('error', 'Ujian tidak ditemukan atau Anda tidak memiliki akses ke ujian ini.');
+            }
         }
 
         if (in_array($type, ['lengkap', 'kunci-jawaban', 'jawaban-abcd', 'skor-01'], true) && !$ujian) {
@@ -140,26 +157,42 @@ class TemplateExcelController extends Controller
     {
         abort_unless(auth()->user()->isAdmin() || auth()->user()->isGuru(), 403);
 
-        $request->validate([
-            'ujian_id' => 'required|integer',
-            'file' => 'required|file|mimes:csv,txt,xlsx,xls|max:10240',
-        ]);
+        $request->validate(['ujian_id' => 'required|integer']);
 
         $ujian = $this->accessibleUjianQuery()
             ->with(['guru', 'mapel', 'kelas', 'tahunAjaran', 'soal'])
             ->whereKey($request->integer('ujian_id'))
-            ->firstOrFail();
+            ->first();
 
-        $result = $this->completeTemplateImportService->preview($request->file('file'), auth()->user(), $ujian);
+        if (!$ujian) {
+            return redirect()->route('template-excel.index')
+                ->with('error', 'Ujian tidak ditemukan atau Anda tidak memiliki akses ke ujian ini.');
+        }
+
+        $request->validate([
+            'import_mode' => 'nullable|in:skor-01,jawaban-abcd',
+            'file' => 'required|file|mimes:csv,txt,xlsx,xls|max:10240',
+        ]);
+
+        $result = $this->completeTemplateImportService->preview(
+            $request->file('file'),
+            auth()->user(),
+            $ujian,
+            $request->string('import_mode')->toString()
+        );
 
         session([
             'template_lengkap_preview' => [
                 'ujian_id' => $ujian->id,
                 'payload' => $result['payload'],
                 'summary' => $result['summary'],
+                'found_sheets' => $result['found_sheets'],
+                'processable_sheets' => $result['processable_sheets'],
                 'ignored_sheets' => $result['ignored_sheets'],
+                'row_counts' => $result['row_counts'],
                 'warnings' => $result['warnings'],
                 'errors' => $result['errors'],
+                'can_process' => $result['can_process'],
             ],
         ]);
 
@@ -173,7 +206,7 @@ class TemplateExcelController extends Controller
 
         foreach ($result['ignored_sheets'] as $sheet => $reason) {
             LogAktivitas::catat(
-                "Sheet diabaikan karena role: {$sheet}",
+                "Sheet diabaikan: {$sheet}",
                 'Template Excel',
                 $reason,
                 Ujian::class,
@@ -215,7 +248,14 @@ class TemplateExcelController extends Controller
         $ujian = $this->accessibleUjianQuery()
             ->with(['guru', 'mapel', 'kelas', 'tahunAjaran', 'soal'])
             ->whereKey((int) $preview['ujian_id'])
-            ->firstOrFail();
+            ->first();
+
+        if (!$ujian) {
+            session()->forget('template_lengkap_preview');
+
+            return redirect()->route('template-excel.index')
+                ->with('error', 'Ujian tidak ditemukan atau Anda tidak memiliki akses ke ujian ini.');
+        }
 
         $counts = $this->completeTemplateImportService->import($preview['payload'] ?? [], auth()->user(), $ujian);
         session()->forget('template_lengkap_preview');

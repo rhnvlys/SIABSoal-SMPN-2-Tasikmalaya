@@ -34,7 +34,13 @@
                 <div><strong>Tahun Ajaran:</strong> {{ $selectedUjian->tahunAjaran->label ?? '-' }}</div>
             </div>
         @else
-    <p class="text-muted" style="margin-top:12px">Template kunci jawaban, jawaban A/B/C/D/E, dan skor 0/1 membutuhkan pilihan ujian agar jumlah kolom soal sesuai.</p>
+            @if(auth()->user()->isGuru() && $ujianList->isEmpty())
+                <div class="alert alert-warning" style="margin-top:12px">
+                    Belum ada ujian yang dapat diproses. Silakan buat ujian terlebih dahulu atau hubungi admin.
+                </div>
+            @else
+                <p class="text-muted" style="margin-top:12px">Template kunci jawaban, jawaban A/B/C/D/E, dan skor 0/1 membutuhkan pilihan ujian agar jumlah kolom soal sesuai.</p>
+            @endif
 @endif
     </div>
 </div>
@@ -53,6 +59,14 @@
                     <div class="form-group">
                         <label class="form-label" for="template_lengkap_file">File Template Lengkap</label>
                         <input id="template_lengkap_file" type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv,.txt" {{ $selectedUjian ? '' : 'disabled' }} required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="import_mode">Sumber Jawaban Utama</label>
+                        <select id="import_mode" name="import_mode" class="form-control" {{ $selectedUjian ? '' : 'disabled' }}>
+                            <option value="skor-01">INPUT_SKOR_01</option>
+                            <option value="jawaban-abcd">INPUT_JAWABAN_ABCD</option>
+                        </select>
+                        <small class="text-muted">Sheet jawaban lain dan DATA_IMPORT_SYSTEM akan diabaikan agar data tidak diproses ganda.</small>
                     </div>
                     <button type="submit" class="btn btn-primary" {{ $selectedUjian ? '' : 'disabled' }}>
                         <i class="bi bi-eye"></i> Preview Upload
@@ -98,7 +112,7 @@
                     <span class="sidebar-brand-mark" style="width:38px;height:38px"><i class="bi {{ $template['icon'] }}"></i></span>
                     <div>
                         <h3 style="font-size:var(--font-size-base);margin:0">{{ $template['title'] }}</h3>
-                        <small class="text-muted">PETUNJUK, DATA_INPUT, CONTOH</small>
+                        <small class="text-muted">{{ $template['sheet_summary'] }}</small>
                     </div>
                 </div>
                 <p class="text-muted" style="min-height:54px">{{ $template['description'] }}</p>

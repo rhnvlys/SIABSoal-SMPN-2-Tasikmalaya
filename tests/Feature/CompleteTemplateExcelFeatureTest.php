@@ -21,6 +21,7 @@ use Illuminate\Http\UploadedFile;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Excel as ExcelFormat;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Tests\TestCase;
 
 class CompleteTemplateExcelFeatureTest extends TestCase
@@ -60,6 +61,122 @@ class CompleteTemplateExcelFeatureTest extends TestCase
             ]))
             ->assertOk()
             ->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    }
+
+    public function test_downloaded_complete_template_can_be_previewed_without_processing_technical_or_output_sheets(): void
+    {
+        $data = $this->makeTemplateContext();
+
+        PesertaUjian::create([
+            'ujian_id' => $data['ujian']->id,
+            'siswa_id' => $data['validSiswa']->id,
+            'kelas_id' => $data['kelasUjian']->id,
+            'status_kehadiran' => 'hadir',
+        ]);
+
+        $download = $this->actingAs($data['admin'])
+            ->get(route('template-excel.download', [
+                'type' => 'lengkap',
+                'ujian_id' => $data['ujian']->id,
+            ]))
+            ->assertOk();
+
+        $file = UploadedFile::fake()->createWithContent(
+            'Template_Administrasi_Penilaian_SIABSoal.xlsx',
+            $download->streamedContent()
+        );
+
+        $response = $this->actingAs($data['admin'])
+            ->post(route('template-excel.upload.preview'), [
+                'ujian_id' => $data['ujian']->id,
+                'import_mode' => 'skor-01',
+                'file' => $file,
+            ]);
+
+        $response->assertOk();
+        $response->assertSee('File dapat diproses');
+        $response->assertSee('DATA_IMPORT_SYSTEM');
+        $response->assertSee('sheet teknis/fallback');
+        $response->assertSee('HASIL_T1');
+        $response->assertSee('sheet output');
+
+        $preview = session('template_lengkap_preview');
+        $this->assertSame([], $preview['errors']);
+        $this->assertArrayHasKey('INPUT_SKOR_01', $preview['payload']);
+        $this->assertArrayNotHasKey('INPUT_JAWABAN_ABCD', $preview['payload']);
+        $this->assertNotContains('', array_column($preview['payload']['DATA_KELAS'] ?? [], 'nama_kelas'));
+        $this->assertArrayHasKey('DATA_IMPORT_SYSTEM', $preview['ignored_sheets']);
+        $this->assertArrayHasKey('INPUT_JAWABAN_ABCD', $preview['ignored_sheets']);
+        $this->assertArrayHasKey('HASIL_T1', $preview['ignored_sheets']);
+        $this->assertNotContains('DATA_IMPORT_SYSTEM', $preview['processable_sheets']);
+    }
+
+    public function test_complete_template_marks_missing_analysis_as_belum_dianalisis(): void
+    {
+        $data = $this->makeTemplateContext();
+
+        $raw = Excel::raw(
+            new AssessmentTemplateExport('lengkap', $data['ujian']),
+            ExcelFormat::XLSX
+        );
+        $path = tempnam(sys_get_temp_dir(), 'siabsoal-analysis-');
+        file_put_contents($path, $raw);
+
+        try {
+            $spreadsheet = IOFactory::load($path);
+            $sheet = $spreadsheet->getSheetByName('ANALISIS_T3');
+
+            $this->assertSame('-', $sheet->getCell('G7')->getValue());
+            $this->assertSame('Belum Dianalisis', $sheet->getCell('H7')->getValue());
+            $this->assertSame('-', $sheet->getCell('I7')->getValue());
+            $this->assertSame('Belum Dianalisis', $sheet->getCell('J7')->getValue());
+            $this->assertSame('Belum Dianalisis', $sheet->getCell('K7')->getValue());
+        } finally {
+            @unlink($path);
+        }
+    }
+
+    public function test_template_excel_page_describes_complete_workbook_as_sixteen_sheets(): void
+    {
+        $data = $this->makeTemplateContext();
+
+        $this->actingAs($data['admin'])
+            ->get(route('template-excel.index', ['ujian_id' => $data['ujian']->id]))
+            ->assertOk()
+            ->assertSee('16 sheet: Identitas, Data Kelas, Data Siswa, TP/LM/KKTP, Daftar Hadir, Kunci Jawaban, Input Jawaban, Input Skor, T1-T5, Referensi.')
+            ->assertSee('Sumber Jawaban Utama');
+    }
+
+    public function test_guru_gets_clear_message_for_inaccessible_exam_and_empty_state_without_exams(): void
+    {
+        $data = $this->makeTemplateContext();
+        $otherGuruUser = $this->makeUser('Guru', 'guru_tanpa_ujian_' . uniqid());
+
+        Guru::create([
+            'user_id' => $otherGuruUser->id,
+            'nama_guru' => 'Guru Tanpa Ujian',
+            'jenis_kelamin' => 'P',
+            'status' => 'aktif',
+        ]);
+
+        $this->actingAs($otherGuruUser)
+            ->get(route('template-excel.index', ['ujian_id' => $data['ujian']->id]))
+            ->assertRedirect(route('template-excel.index'))
+            ->assertSessionHas('error', 'Ujian tidak ditemukan atau Anda tidak memiliki akses ke ujian ini.');
+
+        $this->actingAs($otherGuruUser)
+            ->get(route('template-excel.index'))
+            ->assertOk()
+            ->assertSee('Belum ada ujian yang dapat diproses. Silakan buat ujian terlebih dahulu atau hubungi admin.');
+
+        $this->actingAs($otherGuruUser)
+            ->post(route('template-excel.upload.preview'), [
+                'ujian_id' => $data['ujian']->id,
+                'import_mode' => 'skor-01',
+                'file' => UploadedFile::fake()->create('template.xlsx', 10),
+            ])
+            ->assertRedirect(route('template-excel.index'))
+            ->assertSessionHas('error', 'Ujian tidak ditemukan atau Anda tidak memiliki akses ke ujian ini.');
     }
 
     public function test_guru_preview_complete_template_processes_only_allowed_exam_rows_and_ignores_global_sheets(): void

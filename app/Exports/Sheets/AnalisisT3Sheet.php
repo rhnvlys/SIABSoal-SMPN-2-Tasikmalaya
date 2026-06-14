@@ -63,18 +63,23 @@ class AnalisisT3Sheet extends BaseSheet
                 $startRow = $row;
                 for ($i = 1; $i <= $jumlahSoal; $i++) {
                     $a = $analisisList->where('nomor_soal', $i)->first();
+                    $isAnalyzed = in_array($this->ujian?->status, ['dianalisis', 'selesai'], true)
+                        && $a?->hasAnalysisResult();
+                    $categoryDp = $isAnalyzed ? $a->kategori_dp : 'Belum Dianalisis';
+                    $categoryTk = $isAnalyzed ? $a->kategori_tk : 'Belum Dianalisis';
+                    $decision = $isAnalyzed ? $a->keputusan : 'Belum Dianalisis';
 
                     $sheet->setCellValue("A{$row}", $i);
                     $sheet->setCellValue("B{$row}", $a?->soal?->kode_tp ?? 'TP 1');
-                    $sheet->setCellValue("C{$row}", $a?->ba ?? 0);
-                    $sheet->setCellValue("D{$row}", $a?->bb ?? 0);
-                    $sheet->setCellValue("E{$row}", $a?->ja ?? 0);
-                    $sheet->setCellValue("F{$row}", $a?->jb ?? 0);
-                    $sheet->setCellValue("G{$row}", $a?->dp ?? 0.00);
-                    $sheet->setCellValue("H{$row}", $a?->kategori_dp ?? 'Sangat Baik');
-                    $sheet->setCellValue("I{$row}", $a?->tk ?? 0.00);
-                    $sheet->setCellValue("J{$row}", $a?->kategori_tk ?? 'Sedang');
-                    $sheet->setCellValue("K{$row}", $a?->keputusan ?? 'Diterima');
+                    $sheet->setCellValue("C{$row}", $isAnalyzed ? $a->ba : '-');
+                    $sheet->setCellValue("D{$row}", $isAnalyzed ? $a->bb : '-');
+                    $sheet->setCellValue("E{$row}", $isAnalyzed ? $a->ja : '-');
+                    $sheet->setCellValue("F{$row}", $isAnalyzed ? $a->jb : '-');
+                    $sheet->setCellValue("G{$row}", $isAnalyzed ? $a->dp : '-');
+                    $sheet->setCellValue("H{$row}", $categoryDp);
+                    $sheet->setCellValue("I{$row}", $isAnalyzed ? $a->tk : '-');
+                    $sheet->setCellValue("J{$row}", $categoryTk);
+                    $sheet->setCellValue("K{$row}", $decision);
 
                     // ── Center all columns ────────────────────────────
                     for ($c = 1; $c <= 11; $c++) {
@@ -83,17 +88,19 @@ class AnalisisT3Sheet extends BaseSheet
                     }
 
                     // ── Number formatting for DP/TK ───────────────────
-                    $this->applyPercentFormat($sheet, "G{$row}");
-                    $this->applyPercentFormat($sheet, "I{$row}");
+                    if ($isAnalyzed) {
+                        $this->applyPercentFormat($sheet, "G{$row}");
+                        $this->applyPercentFormat($sheet, "I{$row}");
+                    }
 
                     // ── Color-code Kategori DP ────────────────────────
-                    $this->applyStatusBadge($sheet, "H{$row}", $a?->kategori_dp ?? 'Sangat Baik');
+                    $this->applyStatusBadge($sheet, "H{$row}", $categoryDp);
 
                     // ── Color-code Kategori TK ────────────────────────
-                    $this->applyStatusBadge($sheet, "J{$row}", $a?->kategori_tk ?? 'Sedang');
+                    $this->applyStatusBadge($sheet, "J{$row}", $categoryTk);
 
                     // ── Color-code Keputusan ──────────────────────────
-                    $this->applyStatusBadge($sheet, "K{$row}", $a?->keputusan ?? 'Diterima');
+                    $this->applyStatusBadge($sheet, "K{$row}", $decision);
 
                     // ── Zebra striping for non-badge columns ──────────
                     if ($row % 2 === 0) {

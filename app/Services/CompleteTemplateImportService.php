@@ -34,15 +34,44 @@ class CompleteTemplateImportService
         'DATA_INPUT',
     ];
 
+    private const ANSWER_INPUT_SHEETS = [
+        'skor-01' => 'INPUT_SKOR_01',
+        'jawaban-abcd' => 'INPUT_JAWABAN_ABCD',
+    ];
+
+    private const FALLBACK_SHEETS = [
+        'DATA_IMPORT_SYSTEM',
+        'DATA_INPUT',
+    ];
+
+    private const OUTPUT_SHEETS = [
+        'HASIL_T1',
+        'OLAH_T2',
+        'ANALISIS_T3',
+        'DAFTAR_NILAI_T4',
+        'REKAP_NILAI_T5',
+    ];
+
+    private const INFORMATION_SHEETS = [
+        'BERANDA',
+        'IDENTITAS',
+        'REFERENSI',
+    ];
+
     public function __construct(private readonly ImportService $importService)
     {
     }
 
-    public function preview(UploadedFile $file, User $user, Ujian $ujian): array
+    public function preview(UploadedFile $file, User $user, Ujian $ujian, ?string $importMode = null): array
     {
         $spreadsheet = IOFactory::load($file->getRealPath());
         $sheetNames = array_map(fn ($name) => strtoupper(trim((string) $name)), $spreadsheet->getSheetNames());
         $sheets = $this->spreadsheetRows($spreadsheet);
+        $requestedAnswerSheet = self::ANSWER_INPUT_SHEETS[$importMode] ?? null;
+        $primaryAnswerSheet = $this->resolvePrimaryAnswerSheet($sheetNames, $importMode);
+        $fallbackSheet = $primaryAnswerSheet === null
+            ? $this->resolveFallbackSheet($sheetNames)
+            : null;
 
         $result = [
             'file_name' => $file->getClientOriginalName(),
@@ -63,13 +92,30 @@ class CompleteTemplateImportService
         ];
 
         foreach ($sheetNames as $idx => $sheetName) {
+            $rows = $this->filledRows($sheets[$idx] ?? []);
+            $result['row_counts'][$sheetName] = max(count($rows) - 1, 0);
+
             if (!in_array($sheetName, self::PROCESSABLE_SHEETS, true)) {
+                $result['ignored_sheets'][$sheetName] = $this->nonInputSheetReason($sheetName);
                 continue;
             }
 
-            $rows = $this->filledRows($sheets[$idx] ?? []);
-            $result['row_counts'][$sheetName] = max(count($rows) - 1, 0);
             $result['valid_sheets'][] = $sheetName;
+
+            $selectionReason = $this->selectionIgnoreReason(
+                $sheetName,
+                $primaryAnswerSheet,
+                $fallbackSheet
+            );
+            if ($selectionReason !== null) {
+                $result['ignored_sheets'][$sheetName] = $selectionReason;
+
+                if (in_array($sheetName, self::FALLBACK_SHEETS, true)) {
+                    $result['warnings'][] = "{$sheetName} diabaikan karena sheet input utama tersedia; sheet ini hanya sheet teknis/fallback.";
+                }
+
+                continue;
+            }
 
             if (!$this->canProcessSheet($sheetName, $user)) {
                 $result['ignored_sheets'][$sheetName] = $this->ignoreReasonForSheet($sheetName, $user, $ujian);
@@ -81,7 +127,13 @@ class CompleteTemplateImportService
                 $targetSheet = $this->payloadTargetSheet($sheetName, $rows, $ujian);
                 $result['payload'][$targetSheet] = array_merge($result['payload'][$targetSheet] ?? [], $sheetPayload);
                 $result['processable_sheets'][] = $sheetName;
+            } else {
+                $result['ignored_sheets'][$sheetName] = 'Tidak diproses karena tidak memiliki baris data valid.';
             }
+        }
+
+        if ($requestedAnswerSheet !== null && empty($result['payload'][$requestedAnswerSheet])) {
+            $result['errors'][] = "Sheet input {$requestedAnswerSheet} tidak ditemukan atau tidak memiliki data valid, dan sheet fallback tidak dapat menyediakan data yang sesuai.";
         }
 
         if (empty($result['payload'])) {
@@ -92,8 +144,73 @@ class CompleteTemplateImportService
         $result['summary']['ignored_sheet_count'] = count($result['ignored_sheets']);
         $result['summary']['error_count'] = count($result['errors']);
         $result['summary']['warning_count'] = count($result['warnings']);
+        $result['can_process'] = empty($result['errors']) && !empty($result['payload']);
 
         return $result;
+    }
+
+    private function resolvePrimaryAnswerSheet(array $sheetNames, ?string $importMode): ?string
+    {
+        if ($importMode !== null && isset(self::ANSWER_INPUT_SHEETS[$importMode])) {
+            $selectedSheet = self::ANSWER_INPUT_SHEETS[$importMode];
+
+            return in_array($selectedSheet, $sheetNames, true) ? $selectedSheet : null;
+        }
+
+        foreach (self::ANSWER_INPUT_SHEETS as $sheetName) {
+            if (in_array($sheetName, $sheetNames, true)) {
+                return $sheetName;
+            }
+        }
+
+        return null;
+    }
+
+    private function resolveFallbackSheet(array $sheetNames): ?string
+    {
+        foreach (self::FALLBACK_SHEETS as $sheetName) {
+            if (in_array($sheetName, $sheetNames, true)) {
+                return $sheetName;
+            }
+        }
+
+        return null;
+    }
+
+    private function selectionIgnoreReason(
+        string $sheetName,
+        ?string $primaryAnswerSheet,
+        ?string $fallbackSheet
+    ): ?string {
+        if (
+            in_array($sheetName, self::ANSWER_INPUT_SHEETS, true)
+            && $sheetName !== $primaryAnswerSheet
+        ) {
+            return $primaryAnswerSheet
+                ? "Diabaikan karena sumber jawaban utama yang dipilih adalah {$primaryAnswerSheet}."
+                : 'Diabaikan karena sumber jawaban utama yang dipilih tidak tersedia pada sheet ini.';
+        }
+
+        if (in_array($sheetName, self::FALLBACK_SHEETS, true) && $sheetName !== $fallbackSheet) {
+            return $primaryAnswerSheet
+                ? "Diabaikan karena {$primaryAnswerSheet} tersedia; {$sheetName} hanya sheet teknis/fallback."
+                : 'Diabaikan karena sheet fallback dengan prioritas lebih tinggi tersedia.';
+        }
+
+        return null;
+    }
+
+    private function nonInputSheetReason(string $sheetName): string
+    {
+        if (in_array($sheetName, self::OUTPUT_SHEETS, true)) {
+            return 'Diabaikan karena merupakan sheet output T1-T5, bukan sumber import.';
+        }
+
+        if (in_array($sheetName, self::INFORMATION_SHEETS, true)) {
+            return 'Diabaikan karena merupakan sheet informasi atau referensi, bukan data import.';
+        }
+
+        return 'Diabaikan karena nama sheet tidak dikenali sebagai sumber import.';
     }
 
     private function spreadsheetRows(Spreadsheet $spreadsheet): array
@@ -227,7 +344,7 @@ class CompleteTemplateImportService
             $tahunAjaranName = trim((string) ($assoc['tahun_ajaran'] ?? ''));
             $tingkat = trim((string) ($assoc['tingkat'] ?? ''));
 
-            if ($namaKelas === '' && $tahunAjaranName === '') {
+            if ($namaKelas === '') {
                 continue;
             }
 
