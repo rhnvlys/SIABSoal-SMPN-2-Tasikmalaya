@@ -206,12 +206,6 @@
         <mxCell id="r18" edge="1" parent="1" source="soal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERone;endArrow=ERone;startFill=0;endFill=0;strokeWidth=1.2;fontSize=10;labelBackgroundColor=#ffffff;entryX=0.636;entryY=-0.051;entryDx=0;entryDy=0;entryPerimeter=0;" target="analisis_h" value="1 : 1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="m9InFLKD6_B_4LcncJDJ-2" edge="1" parent="1" source="settings_h" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERone;endArrow=ERone;startFill=0;endFill=0;strokeWidth=1.2;fontSize=10;labelBackgroundColor=#ffffff;entryX=-0.006;entryY=0.794;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="users" value="1 : 1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="210" y="436" as="sourcePoint" />
-            <mxPoint x="280" y="430" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
