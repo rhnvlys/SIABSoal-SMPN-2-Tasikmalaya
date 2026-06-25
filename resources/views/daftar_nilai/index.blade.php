@@ -94,7 +94,7 @@
             <tbody>
                 @foreach($peserta as $idx => $p)
                 <tr>
-                    <td>{{ $idx + 1 }}</td>
+                    <td>{{ $peserta->firstItem() + $idx }}</td>
                     <td>{{ $p->siswa->nis ?? '-' }}</td>
                     <td>{{ $p->siswa->nisn ?? '-' }}</td>
                     <td style="font-weight:600">{{ $p->siswa->nama_siswa ?? '-' }}</td>
@@ -124,6 +124,9 @@
                 @endforeach
             </tbody>
         </table>
+    </div>
+    <div style="padding:16px 20px">
+        {{ $peserta->links('components.pagination') }}
     </div>
 </div>
 
@@ -164,7 +167,7 @@
             @csrf
             <div class="modal-body">
                 <div class="alert alert-info" style="margin-bottom:16px">
-                    Nilai manual digunakan jika daftar nilai tidak berasal dari hasil olah jawaban T1.
+                    Nilai manual digunakan jika daftar nilai tidak berasal dari hasil olah jawaban T1. Form ini menampilkan peserta pada halaman aktif.
                 </div>
                 <div class="table-responsive" style="max-height:60vh">
                     <table class="table">

@@ -42,7 +42,15 @@ class GroupingService
             ->join('siswa', 'peserta_ujian.siswa_id', '=', 'siswa.id')
             ->orderByDesc('peserta_ujian.nilai')
             ->orderBy('siswa.nama_siswa')
-            ->select('peserta_ujian.*')
+            ->select([
+                'peserta_ujian.id',
+                'peserta_ujian.ujian_id',
+                'peserta_ujian.siswa_id',
+                'peserta_ujian.kelas_id',
+                'peserta_ujian.status_kehadiran',
+                'peserta_ujian.nilai',
+                'peserta_ujian.created_at',
+            ])
             ->get();
 
         $jumlahHadir = $pesertaHadir->count();
@@ -115,6 +123,9 @@ class GroupingService
                 ->where('status_kehadiran', 'tidak_hadir')
                 ->update(['ranking' => null, 'kelompok' => null]);
 
+            $timestamp = now();
+            $rows = [];
+
             foreach ($pesertaHadir->values() as $index => $peserta) {
                 $ranking = $index + 1;
 
@@ -126,10 +137,21 @@ class GroupingService
                     $kelompok = 'tengah';
                 }
 
-                PesertaUjian::where('id', $peserta->id)->update([
+                $rows[] = [
+                    'id' => $peserta->id,
+                    'ujian_id' => $peserta->ujian_id,
+                    'siswa_id' => $peserta->siswa_id,
+                    'kelas_id' => $peserta->kelas_id,
+                    'status_kehadiran' => $peserta->status_kehadiran,
                     'ranking' => $ranking,
                     'kelompok' => $kelompok,
-                ]);
+                    'created_at' => $peserta->created_at ?? $timestamp,
+                    'updated_at' => $timestamp,
+                ];
+            }
+
+            if ($rows !== []) {
+                PesertaUjian::upsert($rows, ['id'], ['ranking', 'kelompok', 'updated_at']);
             }
         });
     }

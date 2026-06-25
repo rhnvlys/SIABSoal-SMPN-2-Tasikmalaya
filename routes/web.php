@@ -151,6 +151,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/ujian/{ujian}/data-mentah', [DataMentahController::class, 'index'])->name('data-mentah.index');
         Route::post('/ujian/{ujian}/data-mentah/manual', [DataMentahController::class, 'storeManual'])->name('data-mentah.manual');
         Route::post('/ujian/{ujian}/data-mentah/proses', [DataMentahController::class, 'proses'])->name('data-mentah.proses');
+        Route::get('/ujian/{ujian}/data-mentah/proses/status', [DataMentahController::class, 'prosesStatus'])->name('data-mentah.proses.status');
+        Route::post('/ujian/{ujian}/data-mentah/proses/start', [DataMentahController::class, 'prosesStart'])->name('data-mentah.proses.start');
+        Route::post('/ujian/{ujian}/data-mentah/proses/batch', [DataMentahController::class, 'prosesBatch'])->name('data-mentah.proses.batch');
         Route::get('/ujian/{ujian}/data-mentah/template/{type}/{filename?}', [DataMentahController::class, 'downloadTemplate'])->name('data-mentah.template');
         Route::post('/ujian/{ujian}/data-mentah/import', [DataMentahController::class, 'import'])->name('data-mentah.import');
         Route::post('/ujian/{ujian}/data-mentah/preview', [DataMentahController::class, 'preview'])->name('data-mentah.preview');

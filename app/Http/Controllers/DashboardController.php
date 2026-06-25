@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AnalisisButir;
 use App\Models\Guru;
 use App\Models\Kelas;
+use App\Models\JawabanSiswa;
 use App\Models\LogAktivitas;
 use App\Models\Mapel;
 use App\Models\Siswa;
@@ -69,7 +70,7 @@ class DashboardController extends Controller
         $kelasUjianIds = UjianKelas::whereIn('ujian_id', $ujianIds)
             ->pluck('kelas_id');
         $kelasSayaIds = $kelasWali->pluck('id')->merge($kelasUjianIds)->unique()->values();
-        $ujianLanjutkan = Ujian::with(['mapel', 'kelas', 'tahunAjaran', 'soal', 'pesertaUjian.jawabanSiswa', 'analisisButir'])
+        $ujianLanjutkan = Ujian::with(['mapel', 'kelas', 'tahunAjaran'])
             ->where('guru_id', $guru->id)
             ->orderByRaw("CASE WHEN status = 'selesai' THEN 1 ELSE 0 END")
             ->orderByDesc('updated_at')
@@ -168,7 +169,8 @@ class DashboardController extends Controller
     {
         $hasUjian = $ujian !== null;
         $status = $ujian?->status;
-        $hasJawaban = $hasUjian && $ujian->pesertaUjian->contains(fn ($peserta) => $peserta->jawabanSiswa->isNotEmpty());
+        $hasJawaban = $hasUjian && JawabanSiswa::whereHas('pesertaUjian', fn ($query) => $query
+            ->where('ujian_id', $ujian->id))->exists();
 
         return [
             ['label' => 'Buat Ujian', 'route' => 'ujian.create', 'params' => [], 'done' => $hasUjian, 'enabled' => true],

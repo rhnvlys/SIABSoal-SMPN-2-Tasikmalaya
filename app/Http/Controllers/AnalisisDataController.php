@@ -28,7 +28,8 @@ class AnalisisDataController extends Controller
         $ujian->load(['soal', 'guru', 'mapel']);
         $analisis = AnalisisButir::where('ujian_id', $ujian->id)
             ->orderBy('nomor_soal')
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
 
         $ringkasan = $this->reportService->getRingkasanAnalisis($ujian->id);
 

@@ -8,12 +8,13 @@ use App\Models\JawabanSiswa;
 use App\Models\SiswaKelas;
 use App\Models\LogAktivitas;
 use App\Exports\AssessmentTemplateExport;
-use App\Imports\SpreadsheetRowsImport;
 use App\Services\ScoringService;
 use App\Services\ImportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
+use Throwable;
 
 class DataMentahController extends Controller
 {
@@ -33,15 +34,28 @@ class DataMentahController extends Controller
     {
         $this->syncPesertaUjian($ujian);
 
-        $ujian->load(['soal', 'pesertaUjian.siswa', 'pesertaUjian.jawabanSiswa']);
+        $ujian->load([
+            'guru:id,nama_guru',
+            'mapel:id,nama_mapel',
+            'tahunAjaran:id,tahun_ajaran,semester',
+            'kelas:id,nama_kelas',
+            'soal' => fn ($query) => $query
+                ->select(['id', 'ujian_id', 'nomor_soal', 'kunci_jawaban'])
+                ->orderBy('nomor_soal'),
+        ]);
 
-        // Ambil peserta ujian sorted by siswa name
+        // Ambil hanya satu halaman peserta. Jawaban dibatasi pada peserta di halaman ini.
         $peserta = PesertaUjian::where('ujian_id', $ujian->id)
-            ->with(['siswa', 'jawabanSiswa'])
+            ->with([
+                'siswa:id,nis,nisn,nama_siswa,jenis_kelamin',
+                'jawabanSiswa' => fn ($query) => $query
+                    ->select(['id', 'peserta_ujian_id', 'soal_id', 'jawaban', 'skor_biner', 'is_benar']),
+            ])
             ->join('siswa', 'peserta_ujian.siswa_id', '=', 'siswa.id')
             ->orderBy('siswa.nama_siswa')
             ->select('peserta_ujian.*')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('data_mentah.index', compact('ujian', 'peserta'));
     }
@@ -131,22 +145,121 @@ class DataMentahController extends Controller
      */
     public function proses(Request $request, Ujian $ujian)
     {
-        try {
-            $mode = $request->input('mode', 'abcd'); // 'abcd' atau 'biner'
+        return redirect()->route('data-mentah.index', $ujian)
+            ->with('warning', 'Proses T1 sekarang berjalan bertahap. Klik tombol Proses Data Mentah T1 pada halaman ini.');
+    }
 
-            if ($mode === 'biner') {
-                $this->scoringService->prosesSkorBiner($ujian->id);
-            } else {
-                $this->scoringService->prosesJawabanABCD($ujian->id);
+    public function prosesStart(Request $request, Ujian $ujian)
+    {
+        $validated = $request->validate([
+            'mode' => 'required|in:abcd,biner',
+            'reset' => 'sometimes|boolean',
+        ]);
+
+        $sessionKey = $this->batchSessionKey($ujian);
+        $existing = $request->session()->get($sessionKey);
+
+        if (!$request->boolean('reset') && is_array($existing) && ($existing['status'] ?? null) === 'running') {
+            return response()->json($existing);
+        }
+
+        try {
+            $total = $this->scoringService->prepareBatch($ujian->id);
+            $state = [
+                'status' => $total === 0 ? 'completed' : 'running',
+                'total' => $total,
+                'processed' => 0,
+                'remaining' => $total,
+                'progress' => $total === 0 ? 100 : 0,
+                'next_offset' => 0,
+                'mode' => $validated['mode'],
+                'message' => $total === 0
+                    ? 'Tidak ada peserta yang perlu diproses.'
+                    : "Proses T1 dimulai untuk {$total} peserta.",
+            ];
+
+            $request->session()->put($sessionKey, $state);
+
+            return response()->json($state);
+        } catch (Throwable $exception) {
+            return $this->batchFailureResponse($request, $ujian, $validated['mode'], $exception);
+        }
+    }
+
+    public function prosesBatch(Request $request, Ujian $ujian)
+    {
+        $validated = $request->validate([
+            'offset' => 'required|integer|min:0',
+            'limit' => 'required|integer|min:1|max:' . ScoringService::MAX_BATCH_SIZE,
+            'mode' => 'required|in:abcd,biner',
+        ]);
+
+        $sessionKey = $this->batchSessionKey($ujian);
+        $state = $request->session()->get($sessionKey);
+
+        if (!is_array($state)) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Proses T1 belum dimulai. Silakan mulai ulang proses.',
+            ], 409);
+        }
+
+        if (($state['status'] ?? null) === 'completed') {
+            return response()->json($state);
+        }
+
+        if (($state['mode'] ?? null) !== $validated['mode'] || (int) ($state['next_offset'] ?? -1) !== (int) $validated['offset']) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Urutan batch tidak sesuai. Silakan mulai ulang proses T1.',
+            ], 409);
+        }
+
+        try {
+            $result = $this->scoringService->processBatch(
+                $ujian->id,
+                $validated['mode'],
+                (int) $validated['offset'],
+                (int) $validated['limit']
+            );
+
+            $result['mode'] = $validated['mode'];
+            $result['message'] = $result['status'] === 'completed'
+                ? 'Proses T1 selesai.'
+                : "Memproses {$result['processed']} dari {$result['total']} peserta.";
+
+            $request->session()->put($sessionKey, $result);
+
+            if ($result['status'] === 'completed') {
+                $request->session()->flash('success', 'Data Mentah T1 berhasil diproses secara bertahap.');
+                LogAktivitas::catat("Memproses Data Mentah T1 ujian: {$ujian->nama_ujian}", 'Data Mentah');
             }
 
-            LogAktivitas::catat("Memproses Data Mentah T1 ujian: {$ujian->nama_ujian}", 'Data Mentah');
-
-            return redirect()->route('data-mentah.index', $ujian)
-                             ->with('success', 'Data Mentah T1 berhasil diproses.');
-        } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
+            return response()->json($result);
+        } catch (Throwable $exception) {
+            return $this->batchFailureResponse($request, $ujian, $validated['mode'], $exception);
         }
+    }
+
+    public function prosesStatus(Request $request, Ujian $ujian)
+    {
+        $state = $request->session()->get($this->batchSessionKey($ujian));
+
+        if (is_array($state)) {
+            return response()->json($state);
+        }
+
+        $total = PesertaUjian::where('ujian_id', $ujian->id)->count();
+
+        return response()->json([
+            'status' => 'idle',
+            'total' => $total,
+            'processed' => 0,
+            'remaining' => $total,
+            'progress' => 0,
+            'next_offset' => 0,
+            'message' => 'Proses T1 belum dimulai.',
+        ]);
     }
 
     /**
@@ -268,35 +381,31 @@ class DataMentahController extends Controller
             return $this->filledRows($rows);
         }
 
+        // Workbook hanya dibaca sekali. Prioritaskan dua sheet sistem dan hentikan
+        // pencarian segera setelah format valid ditemukan.
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
-        $sheetNames = array_map(fn($name) => strtoupper(trim((string)$name)), $spreadsheet->getSheetNames());
+        $candidateNames = ['DATA_IMPORT_SYSTEM', 'DATA_INPUT'];
 
-        $sheets = Excel::toArray(new SpreadsheetRowsImport(), $file);
+        foreach ($candidateNames as $candidateName) {
+            $sheet = $spreadsheet->getSheetByName($candidateName);
+            if ($sheet === null) {
+                continue;
+            }
 
-        // 1. Coba baca DATA_IMPORT_SYSTEM
-        $importIdx = array_search('DATA_IMPORT_SYSTEM', $sheetNames);
-        if ($importIdx !== false && isset($sheets[$importIdx])) {
-            $rows = $this->filledRows($sheets[$importIdx]);
+            $rows = $this->filledRows($sheet->toArray(null, true, true, false));
             $header = $rows[0] ?? null;
             if ($header && $this->importService->isHeaderValid($header, $ujian, $mode)) {
                 return $rows;
             }
         }
 
-        // 2. Coba baca DATA_INPUT
-        $inputIdx = array_search('DATA_INPUT', $sheetNames);
-        if ($inputIdx !== false && isset($sheets[$inputIdx])) {
-            $rows = $this->filledRows($sheets[$inputIdx]);
-            $header = $rows[0] ?? null;
-            if ($header && $this->importService->isHeaderValid($header, $ujian, $mode)) {
-                return $rows;
+        // Fallback untuk template lama/non-sistem.
+        foreach ($spreadsheet->getWorksheetIterator() as $sheet) {
+            if (in_array(strtoupper(trim($sheet->getTitle())), $candidateNames, true)) {
+                continue;
             }
-        }
 
-        // 3. Fallback: Loop all sheets
-        foreach ($sheets as $idx => $sheetRows) {
-            if ($idx === $importIdx || $idx === $inputIdx) continue;
-            $rows = $this->filledRows($sheetRows);
+            $rows = $this->filledRows($sheet->toArray(null, true, true, false));
             $header = $rows[0] ?? null;
             if ($header && $this->importService->isHeaderValid($header, $ujian, $mode)) {
                 return $rows;
@@ -402,27 +511,85 @@ class DataMentahController extends Controller
             return;
         }
 
-        $siswaKelas = SiswaKelas::with('siswa')
+        $siswaKelas = SiswaKelas::query()
             ->whereIn('kelas_id', $kelasIds)
             ->where('tahun_ajaran_id', $ujian->tahun_ajaran_id)
             ->where('status', 'aktif')
             ->whereHas('siswa', fn ($query) => $query->where('status', 'aktif'))
             ->orderBy('id')
-            ->get()
+            ->get(['id', 'siswa_id', 'kelas_id'])
             ->unique('siswa_id');
 
-        foreach ($siswaKelas as $sk) {
-            PesertaUjian::firstOrCreate(
-                ['ujian_id' => $ujian->id, 'siswa_id' => $sk->siswa_id],
-                [
-                    'kelas_id' => $sk->kelas_id,
-                    'status_kehadiran' => 'hadir',
-                    'jumlah_benar' => 0,
-                    'jumlah_salah' => 0,
-                    'total_skor' => 0,
-                    'nilai' => 0,
-                ]
-            );
+        if ($siswaKelas->isEmpty()) {
+            return;
         }
+
+        $existingSiswaIds = PesertaUjian::where('ujian_id', $ujian->id)
+            ->whereIn('siswa_id', $siswaKelas->pluck('siswa_id'))
+            ->pluck('siswa_id')
+            ->all();
+        $existingLookup = array_fill_keys($existingSiswaIds, true);
+        $timestamp = now();
+
+        $rows = $siswaKelas
+            ->reject(fn (SiswaKelas $siswaKelas) => isset($existingLookup[$siswaKelas->siswa_id]))
+            ->map(fn (SiswaKelas $siswaKelas) => [
+                'ujian_id' => $ujian->id,
+                'siswa_id' => $siswaKelas->siswa_id,
+                'kelas_id' => $siswaKelas->kelas_id,
+                'status_kehadiran' => 'hadir',
+                'jumlah_benar' => 0,
+                'jumlah_salah' => 0,
+                'total_skor' => 0,
+                'nilai' => 0,
+                'created_at' => $timestamp,
+                'updated_at' => $timestamp,
+            ])
+            ->values()
+            ->all();
+
+        if ($rows !== []) {
+            PesertaUjian::insertOrIgnore($rows);
+        }
+    }
+
+    private function batchSessionKey(Ujian $ujian): string
+    {
+        return 'data_mentah_batch_' . $ujian->id;
+    }
+
+    private function batchFailureResponse(Request $request, Ujian $ujian, string $mode, Throwable $exception)
+    {
+        Log::error('Batch T1 gagal', [
+            'ujian_id' => $ujian->id,
+            'user_id' => $request->user()?->id,
+            'exception' => $exception,
+        ]);
+
+        $safeMessages = [
+            'Kunci jawaban belum lengkap. Lengkapi kunci jawaban terlebih dahulu.',
+            'Mode proses T1 tidak valid.',
+            'Offset batch tidak boleh negatif.',
+            'Offset batch melebihi jumlah peserta. Mulai ulang proses T1.',
+            'Peserta untuk batch berikutnya tidak ditemukan. Mulai ulang proses T1.',
+        ];
+        $publicMessage = in_array($exception->getMessage(), $safeMessages, true)
+            ? $exception->getMessage()
+            : 'Proses T1 gagal pada batch tertentu. Silakan ulangi proses atau hubungi admin.';
+
+        $state = [
+            'status' => 'failed',
+            'total' => PesertaUjian::where('ujian_id', $ujian->id)->count(),
+            'processed' => (int) data_get($request->session()->get($this->batchSessionKey($ujian)), 'processed', 0),
+            'remaining' => (int) data_get($request->session()->get($this->batchSessionKey($ujian)), 'remaining', 0),
+            'progress' => (float) data_get($request->session()->get($this->batchSessionKey($ujian)), 'progress', 0),
+            'next_offset' => (int) data_get($request->session()->get($this->batchSessionKey($ujian)), 'next_offset', 0),
+            'mode' => $mode,
+            'message' => $publicMessage,
+        ];
+
+        $request->session()->put($this->batchSessionKey($ujian), $state);
+
+        return response()->json($state, 500);
     }
 }

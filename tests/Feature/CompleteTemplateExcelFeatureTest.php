@@ -22,6 +22,7 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Excel as ExcelFormat;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Tests\TestCase;
 
 class CompleteTemplateExcelFeatureTest extends TestCase
@@ -81,9 +82,13 @@ class CompleteTemplateExcelFeatureTest extends TestCase
             ]))
             ->assertOk();
 
+        $downloadContent = $download->baseResponse instanceof BinaryFileResponse
+            ? file_get_contents($download->baseResponse->getFile()->getPathname())
+            : $download->streamedContent();
+
         $file = UploadedFile::fake()->createWithContent(
             'Template_Administrasi_Penilaian_SIABSoal.xlsx',
-            $download->streamedContent()
+            $downloadContent
         );
 
         $response = $this->actingAs($data['admin'])

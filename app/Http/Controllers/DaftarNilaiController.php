@@ -23,7 +23,7 @@ class DaftarNilaiController extends Controller
      */
     public function index(Ujian $ujian)
     {
-        $data = $this->reportService->getDaftarNilai($ujian->id);
+        $data = $this->reportService->getDaftarNilai($ujian->id, 20);
 
         LogAktivitas::catat(
             "Melihat Daftar Nilai T4 ujian: {$ujian->nama_ujian}",

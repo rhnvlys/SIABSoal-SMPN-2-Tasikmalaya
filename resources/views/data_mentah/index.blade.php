@@ -100,19 +100,20 @@
 
     {{-- Proses Data Mentah --}}
     @if($peserta->count() > 0 && $kunciLengkap)
-    <form action="{{ route('data-mentah.proses', $ujian) }}" method="POST" style="display:inline-flex;gap:8px;align-items:center"
-          data-loading data-loading-text="Memproses..."
-          data-confirm="Proses Data Mentah T1 akan mengonversi jawaban menjadi skor 0/1 dan menghitung ulang nilai. Lanjutkan?"
-          data-confirm-button="Ya, proses">
-        @csrf
-        <select name="mode" class="form-control" style="width:180px">
+    <div id="t1BatchControls"
+         data-start-url="{{ route('data-mentah.proses.start', $ujian) }}"
+         data-batch-url="{{ route('data-mentah.proses.batch', $ujian) }}"
+         data-status-url="{{ route('data-mentah.proses.status', $ujian) }}"
+         data-redirect-url="{{ route('data-mentah.index', $ujian) }}"
+         style="display:inline-flex;gap:8px;align-items:center">
+        <select id="t1BatchMode" class="form-control" style="width:180px">
             <option value="abcd">Mode Jawaban A-E</option>
             <option value="biner">Mode Skor 0/1</option>
         </select>
-        <button type="submit" class="btn btn-success">
+        <button type="button" class="btn btn-success" id="t1BatchStart">
             <i class="bi bi-play-fill"></i> Proses Data Mentah T1
         </button>
-    </form>
+    </div>
     @endif
 
     {{-- Export --}}
@@ -126,11 +127,40 @@
     @endif
 </div>
 
+{{-- Progress proses batch T1 --}}
+<div class="modal-overlay" id="t1BatchProgress" role="dialog" aria-modal="true" aria-labelledby="t1BatchProgressTitle">
+    <div class="modal-content t1-progress-modal">
+        <div class="modal-header">
+            <div>
+                <h3 id="t1BatchProgressTitle">Proses Data Mentah T1</h3>
+                <p class="t1-progress-subtitle">Perhitungan dilakukan bertahap agar tetap stabil di Vercel.</p>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="t1-progress-status">
+                <span id="t1BatchMessage">Menyiapkan proses...</span>
+                <strong id="t1BatchPercent">0%</strong>
+            </div>
+            <div class="t1-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div class="t1-progress-fill" id="t1BatchBar"></div>
+            </div>
+            <p class="t1-progress-count" id="t1BatchCount">0 dari 0 peserta diproses</p>
+            <div class="alert alert-danger" id="t1BatchError" hidden>
+                Proses T1 gagal pada batch tertentu. Silakan ulangi proses atau hubungi admin.
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" id="t1BatchClose" hidden>Tutup</button>
+            <button type="button" class="btn btn-primary" id="t1BatchRetry" hidden>Ulangi Proses</button>
+        </div>
+    </div>
+</div>
+
 {{-- Tabel Data Mentah --}}
 @if($peserta->count() > 0)
 <div class="card">
     <div class="card-header">
-        <i class="bi bi-table"></i> Data Mentah — {{ $peserta->count() }} Siswa
+        <i class="bi bi-table"></i> Data Mentah — {{ $peserta->total() }} Siswa
     </div>
     <div class="table-responsive table-sticky-cols">
         <table class="table table-data-mentah">
@@ -163,7 +193,7 @@
                     };
                 @endphp
                 <tr>
-                    <td class="sticky-col sticky-col-1">{{ $idx + 1 }}</td>
+                    <td class="sticky-col sticky-col-1">{{ $peserta->firstItem() + $idx }}</td>
                     <td class="sticky-col sticky-col-2" style="font-weight:600">{{ $p->siswa->nis ?? '-' }}</td>
                     <td class="sticky-col sticky-col-3">{{ $p->siswa->nisn ?? '-' }}</td>
                     <td class="sticky-col sticky-col-4" style="font-weight:600">{{ $p->siswa->nama_siswa ?? '-' }}</td>
@@ -202,6 +232,9 @@
                 @endforeach
             </tbody>
         </table>
+    </div>
+    <div style="padding:16px 20px">
+        {{ $peserta->links('components.pagination') }}
     </div>
 </div>
 @else
@@ -451,5 +484,160 @@
     justify-content: flex-end;
     gap: 8px;
 }
+.t1-progress-modal { max-width: 560px; }
+.t1-progress-subtitle { margin: 4px 0 0; color: var(--text-secondary); font-size: 14px; }
+.t1-progress-status { display:flex; justify-content:space-between; gap:16px; margin-bottom:12px; }
+.t1-progress-status span { color: var(--text-secondary); }
+.t1-progress-track {
+    height: 12px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+}
+.t1-progress-fill {
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--primary), var(--success));
+    transition: width 220ms ease;
+}
+.t1-progress-count { margin:10px 0 0; color:var(--text-muted); font-size:14px; }
+#t1BatchError { margin:18px 0 0; }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const controls = document.getElementById('t1BatchControls');
+    if (!controls) return;
+
+    const modal = document.getElementById('t1BatchProgress');
+    const startButton = document.getElementById('t1BatchStart');
+    const modeSelect = document.getElementById('t1BatchMode');
+    const retryButton = document.getElementById('t1BatchRetry');
+    const closeButton = document.getElementById('t1BatchClose');
+    const errorBox = document.getElementById('t1BatchError');
+    const message = document.getElementById('t1BatchMessage');
+    const percent = document.getElementById('t1BatchPercent');
+    const count = document.getElementById('t1BatchCount');
+    const bar = document.getElementById('t1BatchBar');
+    const track = bar.parentElement;
+    const csrf = document.querySelector('meta[name="csrf-token"]').content;
+    let isRunning = false;
+
+    function updateProgress(state) {
+        const value = Math.max(0, Math.min(100, Number(state.progress || 0)));
+        message.textContent = state.message || 'Proses T1 sedang berjalan.';
+        percent.textContent = value.toFixed(value % 1 === 0 ? 0 : 2) + '%';
+        count.textContent = `${state.processed || 0} dari ${state.total || 0} peserta diproses`;
+        bar.style.width = value + '%';
+        track.setAttribute('aria-valuenow', value);
+    }
+
+    function showModal() {
+        modal.classList.add('show');
+        startButton.disabled = true;
+        modeSelect.disabled = true;
+        errorBox.hidden = true;
+        retryButton.hidden = true;
+        closeButton.hidden = true;
+    }
+
+    function showFailure(text) {
+        isRunning = false;
+        message.textContent = 'Proses T1 berhenti.';
+        errorBox.textContent = text || 'Proses T1 gagal pada batch tertentu. Silakan ulangi proses atau hubungi admin.';
+        errorBox.hidden = false;
+        retryButton.hidden = false;
+        closeButton.hidden = false;
+        startButton.disabled = false;
+        modeSelect.disabled = false;
+    }
+
+    async function request(url, options = {}) {
+        const response = await fetch(url, {
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrf,
+                ...(options.headers || {})
+            },
+            ...options
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.message || `Request gagal (${response.status}).`);
+        return data;
+    }
+
+    async function runNext(state) {
+        updateProgress(state);
+        if (state.status === 'completed') {
+            isRunning = false;
+            message.textContent = state.message || 'Proses T1 selesai.';
+            setTimeout(() => window.location.assign(controls.dataset.redirectUrl), 650);
+            return;
+        }
+
+        if (state.status !== 'running') {
+            showFailure(state.message);
+            return;
+        }
+
+        try {
+            const next = await request(controls.dataset.batchUrl, {
+                method: 'POST',
+                body: JSON.stringify({
+                    offset: Number(state.next_offset || 0),
+                    limit: 5,
+                    mode: state.mode || modeSelect.value
+                })
+            });
+            await runNext(next);
+        } catch (error) {
+            showFailure(error.message);
+        }
+    }
+
+    async function start(reset) {
+        if (isRunning) return;
+        isRunning = true;
+        showModal();
+        updateProgress({ progress: 0, processed: 0, total: 0, message: 'Menyiapkan proses T1...' });
+
+        try {
+            const state = await request(controls.dataset.startUrl, {
+                method: 'POST',
+                body: JSON.stringify({ mode: modeSelect.value, reset: reset })
+            });
+            modeSelect.value = state.mode || modeSelect.value;
+            await runNext(state);
+        } catch (error) {
+            showFailure(error.message);
+        }
+    }
+
+    startButton.addEventListener('click', function () {
+        if (window.confirm('Proses T1 akan menghitung ulang nilai serta mereset hasil T2/T3 lama. Lanjutkan?')) {
+            start(true);
+        }
+    });
+    retryButton.addEventListener('click', () => start(true));
+    closeButton.addEventListener('click', () => modal.classList.remove('show'));
+
+    request(controls.dataset.statusUrl, { method: 'GET' })
+        .then(function (state) {
+            if (state.status !== 'running') return;
+            isRunning = true;
+            modeSelect.value = state.mode || modeSelect.value;
+            showModal();
+            runNext(state);
+        })
+        .catch(function () {
+            // Status awal bersifat non-blocking; user tetap dapat memulai proses baru.
+        });
+});
+</script>
 @endpush

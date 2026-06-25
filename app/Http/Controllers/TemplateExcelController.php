@@ -124,8 +124,8 @@ class TemplateExcelController extends Controller
                 ->first();
 
             if (!$ujian) {
-                return redirect()->route('template-excel.index')
-                    ->with('error', 'Ujian tidak ditemukan atau Anda tidak memiliki akses ke ujian ini.');
+                // Jangan bocorkan keberadaan ujian milik guru lain melalui endpoint download.
+                abort(404);
             }
         }
 

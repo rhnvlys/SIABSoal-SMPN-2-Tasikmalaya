@@ -150,6 +150,9 @@
                 </tbody>
             </table>
         </div>
+        <div style="padding:16px 20px">
+            {{ $analisis->links('components.pagination') }}
+        </div>
     </div>
 @else
     @include('components.empty-state', [

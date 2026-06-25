@@ -2,167 +2,130 @@
 
 namespace App\Services;
 
-use App\Models\Ujian;
-use App\Models\PesertaUjian;
-use App\Models\JawabanSiswa;
 use App\Models\AnalisisButir;
+use App\Models\JawabanSiswa;
+use App\Models\PesertaUjian;
+use App\Models\Soal;
+use App\Models\Ujian;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
- * ScoringService — Tahap 1 (T1) Data Mentah
+ * Tahap 1 Data Mentah.
  *
- * Mengolah jawaban siswa menjadi skor 1/0 dan menghitung nilai akhir peserta ujian.
- * Implementasi dibuat bulk/upsert agar proses T1 tidak timeout di Vercel Serverless.
+ * Request web memanggil prepareBatch() sekali lalu processBatch() berulang.
+ * Setiap transaction hanya menangani maksimal sepuluh peserta agar aman untuk
+ * batas durasi Vercel Serverless.
  */
 class ScoringService
 {
-    /**
-     * Validasi apakah kunci jawaban ujian sudah lengkap.
-     *
-     * @return bool true jika semua soal sudah memiliki kunci jawaban
-     */
+    public const DEFAULT_BATCH_SIZE = 5;
+    public const MAX_BATCH_SIZE = 10;
+
     public function validasiKunciJawaban(int $ujianId): bool
     {
-        $ujian = Ujian::findOrFail($ujianId);
-
-        return $ujian->isKunciLengkap();
+        return Ujian::findOrFail($ujianId)->isKunciLengkap();
     }
 
     /**
-     * Proses jawaban A/B/C/D/E menjadi skor 0/1.
+     * Reset hasil turunan T2/T3 sebelum batch pertama dijalankan.
      */
-    public function prosesJawabanABCD(int $ujianId): array
+    public function prepareBatch(int $ujianId): int
     {
-        $ujian = Ujian::with('soal')->findOrFail($ujianId);
+        $ujian = Ujian::select(['id', 'jumlah_soal', 'status'])->findOrFail($ujianId);
+        $this->assertQuestionKeysComplete($ujian);
 
-        if (!$ujian->isKunciLengkap()) {
-            throw new \Exception('Kunci jawaban belum lengkap. Lengkapi kunci jawaban terlebih dahulu.');
-        }
+        $total = PesertaUjian::where('ujian_id', $ujian->id)->count();
 
-        $soalList = $ujian->soal->sortBy('nomor_soal')->values();
-        $soalIds = $soalList->pluck('id')->values();
-        $kunciMap = $soalList->pluck('kunci_jawaban', 'id')->map(fn ($value) => strtoupper((string) $value))->toArray();
-
-        $hasilProses = [];
-
-        DB::transaction(function () use ($ujian, $soalIds, $kunciMap, &$hasilProses) {
-            $pesertaList = PesertaUjian::where('ujian_id', $ujian->id)->get();
-            $pesertaIds = $pesertaList->pluck('id')->values();
-
-            if ($pesertaList->isEmpty() || empty($kunciMap)) {
-                $ujian->update(['status' => 'data_mentah']);
-                return;
-            }
-
-            $jawabanMap = JawabanSiswa::whereIn('peserta_ujian_id', $pesertaIds)
-                ->whereIn('soal_id', $soalIds)
-                ->get(['peserta_ujian_id', 'soal_id', 'jawaban'])
-                ->groupBy('peserta_ujian_id')
-                ->map(fn ($rows) => $rows->keyBy('soal_id'));
-
-            $timestamp = now();
-            $jawabanRows = [];
-            $pesertaUpdates = [];
-
-            foreach ($pesertaList as $peserta) {
-                $jumlahBenar = 0;
-
-                foreach ($kunciMap as $soalId => $kunci) {
-                    if ($peserta->status_kehadiran === 'tidak_hadir') {
-                        $jawabanSiswa = null;
-                        $isBenar = false;
-                    } else {
-                        $jawabanRecord = $jawabanMap->get($peserta->id)?->get($soalId);
-                        $rawJawaban = $jawabanRecord ? strtoupper(trim((string) $jawabanRecord->jawaban)) : '';
-                        $jawabanSiswa = in_array($rawJawaban, ['A', 'B', 'C', 'D', 'E'], true) ? $rawJawaban : null;
-                        $isBenar = $jawabanSiswa !== null && $jawabanSiswa === strtoupper((string) $kunci);
-                    }
-
-                    $skorBiner = $isBenar ? 1 : 0;
-                    $jumlahBenar += $skorBiner;
-
-                    $jawabanRows[] = [
-                        'peserta_ujian_id' => $peserta->id,
-                        'soal_id' => $soalId,
-                        'jawaban' => $jawabanSiswa,
-                        'skor_biner' => $skorBiner,
-                        'is_benar' => $isBenar,
-                        'created_at' => $timestamp,
-                        'updated_at' => $timestamp,
-                    ];
-                }
-
-                $pesertaUpdates[] = $this->buildPesertaUpdateRow($peserta, $ujian->jumlah_soal, $jumlahBenar, $ujian->kktp_value, $timestamp);
-            }
-
-            $this->bulkUpsertJawaban($jawabanRows);
-            $this->bulkUpdatePeserta($pesertaUpdates);
-
+        DB::transaction(function () use ($ujian, $total): void {
             PesertaUjian::where('ujian_id', $ujian->id)->update([
                 'ranking' => null,
                 'kelompok' => null,
-                'updated_at' => $timestamp,
+                'updated_at' => now(),
             ]);
 
             AnalisisButir::where('ujian_id', $ujian->id)->delete();
-            $ujian->update(['status' => 'data_mentah']);
-
-            $hasilProses = PesertaUjian::where('ujian_id', $ujian->id)->get()->all();
+            $ujian->update(['status' => $total === 0 ? 'data_mentah' : 'kunci_lengkap']);
         });
 
-        return $hasilProses;
+        return $total;
     }
 
     /**
-     * Proses skor 0/1 langsung tanpa konversi dari A/B/C/D/E.
+     * Proses satu potongan peserta dan kembalikan progress keseluruhan ujian.
      */
-    public function prosesSkorBiner(int $ujianId): array
-    {
-        $ujian = Ujian::with('soal')->findOrFail($ujianId);
-
-        if (!$ujian->isKunciLengkap()) {
-            throw new \Exception('Kunci jawaban belum lengkap. Lengkapi kunci jawaban terlebih dahulu.');
+    public function processBatch(
+        int $ujianId,
+        string $mode,
+        int $offset,
+        int $limit = self::DEFAULT_BATCH_SIZE
+    ): array {
+        if (!in_array($mode, ['abcd', 'biner'], true)) {
+            throw new \InvalidArgumentException('Mode proses T1 tidak valid.');
         }
 
-        $soalIds = $ujian->soal->sortBy('nomor_soal')->pluck('id')->values();
-        $hasilProses = [];
+        if ($offset < 0) {
+            throw new \InvalidArgumentException('Offset batch tidak boleh negatif.');
+        }
 
-        DB::transaction(function () use ($ujian, $soalIds, &$hasilProses) {
-            $pesertaList = PesertaUjian::where('ujian_id', $ujian->id)->get();
-            $pesertaIds = $pesertaList->pluck('id')->values();
+        $limit = max(1, min($limit, self::MAX_BATCH_SIZE));
+        $ujian = Ujian::select(['id', 'jumlah_soal', 'kkm', 'kktp', 'status'])->findOrFail($ujianId);
+        $soalList = $this->questionList($ujian);
+        $total = PesertaUjian::where('ujian_id', $ujian->id)->count();
 
-            if ($pesertaList->isEmpty() || $soalIds->isEmpty()) {
-                $ujian->update(['status' => 'data_mentah']);
-                return;
+        if ($offset > $total) {
+            throw new \InvalidArgumentException('Offset batch melebihi jumlah peserta. Mulai ulang proses T1.');
+        }
+
+        if ($total === 0) {
+            $ujian->update(['status' => 'data_mentah']);
+
+            return $this->progressResult(0, 0, 0);
+        }
+
+        return DB::transaction(function () use ($ujian, $soalList, $mode, $offset, $limit, $total): array {
+            $pesertaList = PesertaUjian::where('ujian_id', $ujian->id)
+                ->orderBy('id')
+                ->offset($offset)
+                ->limit($limit)
+                ->get([
+                    'id',
+                    'ujian_id',
+                    'siswa_id',
+                    'kelas_id',
+                    'status_kehadiran',
+                    'created_at',
+                ]);
+
+            if ($pesertaList->isEmpty()) {
+                throw new \RuntimeException('Peserta untuk batch berikutnya tidak ditemukan. Mulai ulang proses T1.');
             }
 
-            $skorMap = JawabanSiswa::whereIn('peserta_ujian_id', $pesertaIds)
+            $pesertaIds = $pesertaList->pluck('id');
+            $soalIds = $soalList->pluck('id');
+            $jawabanMap = JawabanSiswa::whereIn('peserta_ujian_id', $pesertaIds)
                 ->whereIn('soal_id', $soalIds)
-                ->get(['peserta_ujian_id', 'soal_id', 'skor_biner'])
+                ->get(['peserta_ujian_id', 'soal_id', 'jawaban', 'skor_biner'])
                 ->groupBy('peserta_ujian_id')
-                ->map(fn ($rows) => $rows->keyBy('soal_id'));
+                ->map(fn (Collection $rows) => $rows->keyBy('soal_id'));
 
             $timestamp = now();
             $jawabanRows = [];
-            $pesertaUpdates = [];
+            $pesertaRows = [];
 
             foreach ($pesertaList as $peserta) {
                 $jumlahBenar = 0;
+                $jawabanPeserta = $jawabanMap->get($peserta->id, collect());
 
-                foreach ($soalIds as $soalId) {
-                    $skorBiner = 0;
-
-                    if ($peserta->status_kehadiran !== 'tidak_hadir') {
-                        $jawabanRecord = $skorMap->get($peserta->id)?->get($soalId);
-                        $skorBiner = ((int) ($jawabanRecord?->skor_biner ?? 0)) === 1 ? 1 : 0;
-                    }
-
+                foreach ($soalList as $soal) {
+                    $existing = $jawabanPeserta->get($soal->id);
+                    [$jawaban, $skorBiner] = $this->scoreAnswer($peserta, $soal, $existing, $mode);
                     $jumlahBenar += $skorBiner;
 
                     $jawabanRows[] = [
                         'peserta_ujian_id' => $peserta->id,
-                        'soal_id' => $soalId,
-                        'jawaban' => null,
+                        'soal_id' => $soal->id,
+                        'jawaban' => $jawaban,
                         'skor_biner' => $skorBiner,
                         'is_benar' => $skorBiner === 1,
                         'created_at' => $timestamp,
@@ -170,41 +133,103 @@ class ScoringService
                     ];
                 }
 
-                $pesertaUpdates[] = $this->buildPesertaUpdateRow($peserta, $ujian->jumlah_soal, $jumlahBenar, $ujian->kktp_value, $timestamp);
+                $pesertaRows[] = array_merge([
+                    'id' => $peserta->id,
+                    'ujian_id' => $peserta->ujian_id,
+                    'siswa_id' => $peserta->siswa_id,
+                    'kelas_id' => $peserta->kelas_id,
+                    'status_kehadiran' => $peserta->status_kehadiran,
+                    'created_at' => $peserta->created_at ?? $timestamp,
+                    'updated_at' => $timestamp,
+                ], $this->buildPesertaScoreData(
+                    $peserta,
+                    (int) $ujian->jumlah_soal,
+                    $jumlahBenar,
+                    (float) $ujian->kktp_value
+                ));
             }
 
             $this->bulkUpsertJawaban($jawabanRows);
-            $this->bulkUpdatePeserta($pesertaUpdates);
+            $this->bulkUpdatePeserta($pesertaRows);
 
-            PesertaUjian::where('ujian_id', $ujian->id)->update([
-                'ranking' => null,
-                'kelompok' => null,
-                'updated_at' => $timestamp,
-            ]);
+            $processed = min($total, $offset + $pesertaList->count());
+            if ($processed >= $total) {
+                $ujian->update(['status' => 'data_mentah']);
+            }
 
-            AnalisisButir::where('ujian_id', $ujian->id)->delete();
-            $ujian->update(['status' => 'data_mentah']);
-
-            $hasilProses = PesertaUjian::where('ujian_id', $ujian->id)->get()->all();
+            return $this->progressResult($total, $processed, $processed);
         });
-
-        return $hasilProses;
     }
 
     /**
-     * Hitung nilai akhir peserta ujian.
+     * Compatibility API untuk pemanggilan CLI lama. Route web tidak memakai
+     * method ini karena seluruh batch tidak boleh dijalankan dalam satu request.
      */
+    public function prosesJawabanABCD(int $ujianId): array
+    {
+        return $this->processAllForCompatibility($ujianId, 'abcd');
+    }
+
+    public function prosesSkorBiner(int $ujianId): array
+    {
+        return $this->processAllForCompatibility($ujianId, 'biner');
+    }
+
     public function hitungNilaiPeserta(PesertaUjian $peserta, int $jumlahSoal, int $jumlahBenar, float $kkm): void
     {
         $peserta->update($this->buildPesertaScoreData($peserta, $jumlahSoal, $jumlahBenar, $kkm));
     }
 
-    private function buildPesertaUpdateRow(PesertaUjian $peserta, int $jumlahSoal, int $jumlahBenar, float $kkm, $timestamp): array
+    private function processAllForCompatibility(int $ujianId, string $mode): array
     {
-        return array_merge(
-            ['id' => $peserta->id, 'updated_at' => $timestamp],
-            $this->buildPesertaScoreData($peserta, $jumlahSoal, $jumlahBenar, $kkm)
-        );
+        $total = $this->prepareBatch($ujianId);
+
+        for ($offset = 0; $offset < $total; $offset += self::DEFAULT_BATCH_SIZE) {
+            $this->processBatch($ujianId, $mode, $offset, self::DEFAULT_BATCH_SIZE);
+        }
+
+        return PesertaUjian::where('ujian_id', $ujianId)->orderBy('id')->get()->all();
+    }
+
+    private function assertQuestionKeysComplete(Ujian $ujian): void
+    {
+        $complete = Soal::where('ujian_id', $ujian->id)
+            ->whereNotNull('kunci_jawaban')
+            ->count();
+
+        if ($complete !== (int) $ujian->jumlah_soal) {
+            throw new \RuntimeException('Kunci jawaban belum lengkap. Lengkapi kunci jawaban terlebih dahulu.');
+        }
+    }
+
+    private function questionList(Ujian $ujian): Collection
+    {
+        $soalList = Soal::where('ujian_id', $ujian->id)
+            ->orderBy('nomor_soal')
+            ->get(['id', 'ujian_id', 'nomor_soal', 'kunci_jawaban']);
+
+        if ($soalList->count() !== (int) $ujian->jumlah_soal || $soalList->contains(fn (Soal $soal) => !$soal->kunci_jawaban)) {
+            throw new \RuntimeException('Kunci jawaban belum lengkap. Lengkapi kunci jawaban terlebih dahulu.');
+        }
+
+        return $soalList;
+    }
+
+    private function scoreAnswer(PesertaUjian $peserta, Soal $soal, ?JawabanSiswa $existing, string $mode): array
+    {
+        if ($peserta->status_kehadiran === 'tidak_hadir') {
+            return [null, 0];
+        }
+
+        if ($mode === 'biner') {
+            return [null, ((int) ($existing?->skor_biner ?? 0)) === 1 ? 1 : 0];
+        }
+
+        $raw = strtoupper(trim((string) ($existing?->jawaban ?? '')));
+        $jawaban = in_array($raw, ['A', 'B', 'C', 'D', 'E'], true) ? $raw : null;
+        $isBenar = $jawaban !== null && $jawaban === strtoupper((string) $soal->kunci_jawaban);
+
+        return [$jawaban, $isBenar ? 1 : 0];
     }
 
     private function buildPesertaScoreData(PesertaUjian $peserta, int $jumlahSoal, int $jumlahBenar, float $kkm): array
@@ -219,12 +244,11 @@ class ScoringService
             ];
         }
 
-        $jumlahSalah = max(0, $jumlahSoal - $jumlahBenar);
         $nilai = $jumlahSoal > 0 ? round(($jumlahBenar / $jumlahSoal) * 100, 2) : 0;
 
         return [
             'jumlah_benar' => $jumlahBenar,
-            'jumlah_salah' => $jumlahSalah,
+            'jumlah_salah' => max(0, $jumlahSoal - $jumlahBenar),
             'total_skor' => $jumlahBenar,
             'nilai' => $nilai,
             'keterangan' => $nilai >= $kkm ? 'tercapai' : 'perlu_peningkatan',
@@ -244,12 +268,26 @@ class ScoringService
 
     private function bulkUpdatePeserta(array $rows): void
     {
-        foreach (array_chunk($rows, 500) as $chunk) {
+        foreach (array_chunk($rows, self::MAX_BATCH_SIZE) as $chunk) {
             PesertaUjian::upsert(
                 $chunk,
                 ['id'],
                 ['jumlah_benar', 'jumlah_salah', 'total_skor', 'nilai', 'keterangan', 'updated_at']
             );
         }
+    }
+
+    private function progressResult(int $total, int $processed, int $nextOffset): array
+    {
+        $remaining = max(0, $total - $processed);
+
+        return [
+            'status' => $remaining === 0 ? 'completed' : 'running',
+            'total' => $total,
+            'processed' => $processed,
+            'remaining' => $remaining,
+            'progress' => $total > 0 ? round(($processed / $total) * 100, 2) : 100,
+            'next_offset' => $nextOffset,
+        ];
     }
 }

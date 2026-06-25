@@ -44,16 +44,13 @@
 </div>
 
 {{-- Statistik Siswa --}}
-@php
-    $totalPeserta = $pesertaHadir->count() + $pesertaTidakHadir->count();
-@endphp
 <div class="stats-grid" style="margin-bottom:24px">
-    @include('components.card-stat', ['value' => $totalPeserta, 'label' => 'Jumlah Siswa', 'icon' => 'bi-people-fill', 'color' => 'blue'])
-    @include('components.card-stat', ['value' => $pesertaHadir->count(), 'label' => 'Siswa Hadir', 'icon' => 'bi-person-check-fill', 'color' => 'green'])
-    @include('components.card-stat', ['value' => $pesertaTidakHadir->count(), 'label' => 'Tidak Hadir', 'icon' => 'bi-person-x-fill', 'color' => 'red'])
-    @include('components.card-stat', ['value' => $kelAtas->count(), 'label' => 'Kelompok Atas', 'icon' => 'bi-arrow-up-circle-fill', 'color' => 'green'])
-    @include('components.card-stat', ['value' => $kelBawah->count(), 'label' => 'Kelompok Bawah', 'icon' => 'bi-arrow-down-circle-fill', 'color' => 'amber'])
-    @include('components.card-stat', ['value' => $kelTengah->count(), 'label' => 'Kelompok Tengah', 'icon' => 'bi-dash-circle-fill', 'color' => 'purple'])
+    @include('components.card-stat', ['value' => (int) $statistik->total, 'label' => 'Jumlah Siswa', 'icon' => 'bi-people-fill', 'color' => 'blue'])
+    @include('components.card-stat', ['value' => (int) $statistik->hadir, 'label' => 'Siswa Hadir', 'icon' => 'bi-person-check-fill', 'color' => 'green'])
+    @include('components.card-stat', ['value' => (int) $statistik->tidak_hadir, 'label' => 'Tidak Hadir', 'icon' => 'bi-person-x-fill', 'color' => 'red'])
+    @include('components.card-stat', ['value' => (int) $statistik->kelompok_atas, 'label' => 'Kelompok Atas', 'icon' => 'bi-arrow-up-circle-fill', 'color' => 'green'])
+    @include('components.card-stat', ['value' => (int) $statistik->kelompok_bawah, 'label' => 'Kelompok Bawah', 'icon' => 'bi-arrow-down-circle-fill', 'color' => 'amber'])
+    @include('components.card-stat', ['value' => (int) $statistik->kelompok_tengah, 'label' => 'Kelompok Tengah', 'icon' => 'bi-dash-circle-fill', 'color' => 'purple'])
 </div>
 
 {{-- Tombol Proses --}}
@@ -90,7 +87,7 @@
                     <i class="bi bi-play-fill"></i> Proses Olah Data T2
                 </button>
 
-                @if($pesertaHadir->count() > 0)
+                @if($pesertaHadir->total() > 0)
                     @php
                         $cleanUjianName = str_replace(' ', '_', strtolower($ujian->nama_ujian));
                     @endphp
@@ -113,7 +110,7 @@
 @endif
 
 {{-- Tabel Hasil Ranking --}}
-@if($pesertaHadir->count() > 0)
+@if($pesertaHadir->total() > 0)
 <div class="card">
     <div class="card-header">
         <i class="bi bi-sort-numeric-down"></i> Hasil Ranking & Kelompok
@@ -160,13 +157,16 @@
             </tbody>
         </table>
     </div>
+    <div style="padding:16px 20px">
+        {{ $pesertaHadir->links('components.pagination') }}
+    </div>
 </div>
 
 {{-- Siswa Tidak Hadir --}}
-@if($pesertaTidakHadir->count() > 0)
+@if($pesertaTidakHadir->total() > 0)
 <div class="card" style="margin-top:24px">
     <div class="card-header">
-        <i class="bi bi-person-x-fill"></i> Siswa Tidak Hadir ({{ $pesertaTidakHadir->count() }} siswa)
+        <i class="bi bi-person-x-fill"></i> Siswa Tidak Hadir ({{ $pesertaTidakHadir->total() }} siswa)
     </div>
     <div class="table-responsive">
         <table class="table">
@@ -182,7 +182,7 @@
             <tbody>
                 @foreach($pesertaTidakHadir as $idx => $p)
                 <tr>
-                    <td>{{ $idx + 1 }}</td>
+                    <td>{{ $pesertaTidakHadir->firstItem() + $idx }}</td>
                     <td>{{ $p->siswa->nis ?? '-' }}</td>
                     <td>{{ $p->siswa->nama_siswa ?? '-' }}</td>
                     <td>{{ $p->siswa->jenis_kelamin ?? '-' }}</td>
@@ -191,6 +191,9 @@
                 @endforeach
             </tbody>
         </table>
+    </div>
+    <div style="padding:16px 20px">
+        {{ $pesertaTidakHadir->links('components.pagination') }}
     </div>
 </div>
 @endif

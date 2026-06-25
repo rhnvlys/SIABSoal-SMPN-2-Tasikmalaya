@@ -22,26 +22,33 @@ class OlahDataController extends Controller
      */
     public function index(Ujian $ujian)
     {
-        $ujian->load(['soal', 'pesertaUjian.siswa', 'pesertaUjian.jawabanSiswa']);
+        $ujian->load(['guru', 'mapel', 'tahunAjaran', 'kelas']);
+
+        $statistik = PesertaUjian::where('ujian_id', $ujian->id)
+            ->selectRaw('COUNT(*) AS total')
+            ->selectRaw("SUM(CASE WHEN status_kehadiran = 'hadir' THEN 1 ELSE 0 END) AS hadir")
+            ->selectRaw("SUM(CASE WHEN status_kehadiran = 'tidak_hadir' THEN 1 ELSE 0 END) AS tidak_hadir")
+            ->selectRaw("SUM(CASE WHEN kelompok = 'atas' THEN 1 ELSE 0 END) AS kelompok_atas")
+            ->selectRaw("SUM(CASE WHEN kelompok = 'bawah' THEN 1 ELSE 0 END) AS kelompok_bawah")
+            ->selectRaw("SUM(CASE WHEN kelompok = 'tengah' THEN 1 ELSE 0 END) AS kelompok_tengah")
+            ->first();
 
         // Ambil peserta hadir diurutkan ranking
         $pesertaHadir = PesertaUjian::where('ujian_id', $ujian->id)
             ->where('status_kehadiran', 'hadir')
-            ->with(['siswa', 'jawabanSiswa'])
+            ->with('siswa:id,nis,nisn,nama_siswa,jenis_kelamin')
             ->orderBy('ranking')
-            ->get();
+            ->paginate(20, ['peserta_ujian.*'], 'hadir_page')
+            ->withQueryString();
 
         $pesertaTidakHadir = PesertaUjian::where('ujian_id', $ujian->id)
             ->where('status_kehadiran', 'tidak_hadir')
-            ->with('siswa')
-            ->get();
+            ->with('siswa:id,nis,nama_siswa,jenis_kelamin')
+            ->orderBy('id')
+            ->paginate(20, ['peserta_ujian.*'], 'tidak_hadir_page')
+            ->withQueryString();
 
-        // Statistik kelompok
-        $kelAtas  = $pesertaHadir->where('kelompok', 'atas');
-        $kelBawah = $pesertaHadir->where('kelompok', 'bawah');
-        $kelTengah = $pesertaHadir->where('kelompok', 'tengah');
-
-        return view('olah_data.index', compact('ujian', 'pesertaHadir', 'pesertaTidakHadir', 'kelAtas', 'kelBawah', 'kelTengah'));
+        return view('olah_data.index', compact('ujian', 'pesertaHadir', 'pesertaTidakHadir', 'statistik'));
     }
 
     /**
