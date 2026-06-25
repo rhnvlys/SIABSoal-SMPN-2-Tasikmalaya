@@ -63,6 +63,8 @@ yarn-error.log
 /.vscode
 
 # Local AI / agent / skill files that must not be pushed
+*.md
+*.ai
 AGENTS.md.backup-*
 .agents/
 AGENTS.md
