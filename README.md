@@ -9,9 +9,9 @@
 <p>
   <img src="https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 10">
   <img src="https://img.shields.io/badge/PHP-8.1%2B-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.1+">
-  <img src="https://img.shields.io/badge/MySQL%20%2F%20TiDB-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL / TiDB">
+  <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
   <img src="https://img.shields.io/badge/Blade-Frontend-F05340?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel Blade">
-  <img src="https://img.shields.io/badge/Docker%20%2F%20Koyeb-Deployment-121212?style=for-the-badge&logo=docker&logoColor=white" alt="Docker / Koyeb">
+  <img src="https://img.shields.io/badge/Vercel-Production-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel">
 </p>
 
 <p>
@@ -23,11 +23,24 @@
 
 ---
 
+## Status Project
+
+| Item | Keterangan |
+|---|---|
+| Branch utama pengembangan | `work/siabsoal-build` |
+| Production | https://siabsoal-smpn2-tasikmalaya-ten.vercel.app |
+| Localhost | `http://127.0.0.1:8000` |
+| Framework | Laravel 10 |
+| Database | MySQL untuk lokal dan production |
+| Frontend build | Vite |
+
+---
+
 ## Ringkasan Project
 
 **SIABSoal SMPN 2 Tasikmalaya** adalah sistem informasi berbasis web untuk membantu guru dalam administrasi penilaian, pengolahan jawaban siswa, analisis butir soal, daftar nilai, dan rekap nilai. Sistem mendukung template Excel agar guru dapat mengisi data dengan format yang familiar, kemudian data diproses otomatis oleh sistem.
 
-Project ini dikembangkan sebagai website Kerja Praktik dengan fokus pada alur analisis T1 sampai T5: Data Mentah, Olah Data, Analisis DP dan TK, Daftar Nilai, dan Rekap Nilai.
+Project ini dikembangkan sebagai website Kerja Praktik dengan fokus pada alur analisis T1 sampai T5: Data Mentah, Olah Data, Analisis DP dan TK, Daftar Nilai, dan Rekap Nilai. Repository ini hanya menyimpan source code publik; credential, environment production, cache, log, dan file lokal tidak disimpan di GitHub.
 
 ---
 
@@ -64,6 +77,7 @@ SIABSoal dibuat sebagai alternatif berbasis web agar proses input jawaban, pengo
 - Pengelolaan kunci jawaban.
 - Menu Template Excel untuk data siswa, kunci jawaban, jawaban A/B/C/D/E, skor 0/1, daftar nilai, dan rekap nilai.
 - Data Mentah T1.
+- Proses batch Data Mentah T1 agar pengolahan data besar lebih stabil di hosting.
 - Olah Data T2.
 - Analisis Data T3.
 - Daftar Nilai T4.
@@ -73,6 +87,7 @@ SIABSoal dibuat sebagai alternatif berbasis web agar proses input jawaban, pengo
 - Audit trail atau riwayat aktivitas.
 - Export laporan PDF dan Excel.
 - Template import dan export Excel.
+- Pagination pada tabel besar untuk menjaga performa.
 
 ---
 
@@ -110,11 +125,12 @@ SIABSoal dibuat sebagai alternatif berbasis web agar proses input jawaban, pengo
 | Bahasa | PHP 8.1+ |
 | Template | Blade |
 | Frontend | HTML, CSS, JavaScript |
-| Database | MySQL / TiDB |
+| Database | MySQL |
 | Import dan Export Excel | Laravel Excel |
 | Export PDF | DomPDF |
-| Container | Docker |
-| Hosting | Koyeb |
+| Frontend Build | Vite |
+| Hosting | Vercel |
+| Deployment alternatif | Docker/Koyeb jika dibutuhkan |
 | Version Control | Git dan GitHub |
 
 ---
@@ -147,36 +163,43 @@ http://127.0.0.1:8000
 
 ---
 
-## Deployment Docker/Koyeb
+## Deployment Vercel
 
-Project ini disiapkan untuk deployment menggunakan Docker di Koyeb. File utama deployment:
-
-```text
-Dockerfile
-docker/koyeb-start.sh
-.env.koyeb.example
-```
-
-Gunakan branch:
+Project ini sudah disiapkan untuk deployment production di Vercel menggunakan konfigurasi berikut:
 
 ```text
-work/siabsoal-build
+vercel.json
+api/index.php
+.vercelignore
+.env.production.example
 ```
 
-Environment production harus diatur melalui dashboard hosting, bukan disimpan di repository.
+Perintah deploy dari root project:
 
-Contoh placeholder environment:
+```bash
+vercel deploy --prod --yes
+```
+
+URL production aktif:
+
+```text
+https://siabsoal-smpn2-tasikmalaya-ten.vercel.app
+```
+
+Environment production harus diatur melalui dashboard Vercel, bukan disimpan di repository.
+
+Contoh placeholder environment production:
 
 ```env
 APP_NAME="SIABSoal SMPN 2 Tasikmalaya"
 APP_ENV=production
 APP_KEY=base64:GENERATE_DI_LOKAL_LALU_INPUT_DI_DASHBOARD
 APP_DEBUG=false
-APP_URL=https://domain-hosting-kamu
+APP_URL=https://siabsoal-smpn2-tasikmalaya-ten.vercel.app
 
 DB_CONNECTION=mysql
 DB_HOST=ISI_DARI_DASHBOARD_DATABASE
-DB_PORT=4000
+DB_PORT=3306
 DB_DATABASE=ISI_DARI_DASHBOARD_DATABASE
 DB_USERNAME=ISI_DARI_DASHBOARD_DATABASE
 DB_PASSWORD=ISI_DARI_DASHBOARD_DATABASE
@@ -190,6 +213,20 @@ Jangan menaruh password, token, APP_KEY production, credential database, atau se
 
 ---
 
+## Deployment Alternatif Docker/Koyeb
+
+File berikut masih tersedia jika project perlu dijalankan melalui Docker atau Koyeb:
+
+```text
+Dockerfile
+docker/koyeb-start.sh
+.env.koyeb.example
+```
+
+Gunakan environment variable dari dashboard hosting. Jangan commit credential production.
+
+---
+
 ## Keamanan Repository
 
 File berikut tidak boleh dipush ke GitHub:
@@ -200,9 +237,12 @@ File berikut tidak boleh dipush ke GitHub:
 - File backup seperti `.zip`, `.rar`, `.7z`, `.bak`, dan `.backup`.
 - Folder dependency seperti `vendor/` dan `node_modules/`.
 - File runtime seperti `storage/logs/`, cache, session, dan `public/storage/`.
+- File kerja lokal seperti `.agents/`, `.codegraph/`, `.vercel/`, file AI, dan dokumen lokal yang tidak diperlukan publik.
 
 
 Seluruh credential production harus disimpan melalui dashboard hosting atau environment variable yang aman.
+
+Catatan: `README.md` adalah dokumen publik repository dan menjadi pengecualian karena ditampilkan di halaman GitHub.
 
 ---
 
