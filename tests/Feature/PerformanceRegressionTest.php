@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Exports\ArrayReportExport;
+use App\Models\AnalisisButir;
 use App\Models\Guru;
 use App\Models\JawabanSiswa;
 use App\Models\Kelas;
@@ -60,7 +61,7 @@ class PerformanceRegressionTest extends TestCase
 
         $this->assertLessThanOrEqual(12, $queries, "T3 menjalankan {$queries} query; BA/BB masih dihitung per soal.");
         $this->assertCount(25, $result);
-        $this->assertDatabaseCount('analisis_butir', 25);
+        $this->assertSame(25, AnalisisButir::where('ujian_id', $data['ujian']->id)->count());
         $first = $data['ujian']->analisisButir()->where('nomor_soal', 1)->firstOrFail();
         $this->assertSame(12, $first->ja);
         $this->assertSame(12, $first->jb);

@@ -135,31 +135,109 @@ SIABSoal dibuat sebagai alternatif berbasis web agar proses input jawaban, pengo
 
 ---
 
-## Instalasi Lokal
+## Panduan Instalasi di Laptop Baru
 
+Ikuti langkah-langkah di bawah ini untuk memasang dan menjalankan aplikasi **SIABSoal** di laptop yang baru dari awal:
+
+### 1. Prasyarat Sistem (Prerequisites)
+Pastikan laptop Anda sudah memiliki software berikut terpasang:
+- **PHP** versi 8.1 atau 8.2.
+- **Composer** (Dependency Manager untuk PHP).
+- **Node.js** (versi LTS terbaru) & **NPM**.
+- **Laragon** (sangat direkomendasikan untuk Windows) atau **XAMPP** sebagai server web dan basis data MySQL lokal.
+
+### 2. Kloning Repository
+Buka terminal (Git Bash, Command Prompt, atau PowerShell), arahkan ke folder direktori kerja Anda, lalu jalankan perintah:
 ```bash
 git clone https://github.com/rhnvlys/SIABSoal-SMPN-2-Tasikmalaya.git
 cd SIABSoal-SMPN-2-Tasikmalaya
+```
+
+### 3. Mengatur Environment File (`.env`)
+Salin file `.env.example` menjadi `.env`:
+* **Melalui Git Bash / Linux / macOS:**
+  ```bash
+  cp .env.example .env
+  ```
+* **Melalui Windows PowerShell:**
+  ```powershell
+  copy .env.example .env
+  ```
+* **Melalui Command Prompt (CMD):**
+  ```cmd
+  copy .env.example .env
+  ```
+
+Buka file `.env` baru tersebut menggunakan text editor, lalu pastikan pengaturan database Anda sudah sesuai (secara default menggunakan Laragon/XAMPP):
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=siabsoal_smpn2
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### 4. Membuat Database Baru
+1. Jalankan MySQL di Laragon atau XAMPP Anda.
+2. Buka **phpMyAdmin** atau tool database client seperti **HeidiSQL** / **DBeaver**.
+3. Buat database baru dengan nama `siabsoal_smpn2`.
+
+### 5. Mengunduh Dependencies
+Instal seluruh package PHP dan Javascript yang dibutuhkan oleh aplikasi:
+```bash
 composer install
 npm install
-cp .env.example .env
+```
+
+### 6. Menghasilkan Key Aplikasi
+Jalankan perintah berikut untuk menghasilkan security key unik untuk aplikasi Anda:
+```bash
 php artisan key:generate
-php artisan migrate --seed
-npm run build
-php artisan serve
 ```
 
-Untuk Windows PowerShell, gunakan perintah berikut untuk menyalin file environment:
-
-```powershell
-copy .env.example .env
+### 7. Migrasi Database & Seeding Data
+Jalankan migrasi untuk membuat seluruh tabel database beserta data master awal, konfigurasi sekolah, dan data simulasi ujian lengkap (Matematika kelas IX A):
+```bash
+php artisan migrate:fresh --seed
 ```
 
-Setelah server berjalan, akses aplikasi melalui:
+### 8. Kompilasi Aset Frontend & Menjalankan Server
+Kompilasi asset frontend menggunakan Vite dan jalankan server pengembangan lokal Laravel:
 
+* **Kompilasi aset (sekali jalankan):**
+  ```bash
+  npm run build
+  ```
+* **Menjalankan server Laravel:**
+  ```bash
+  php artisan serve
+  ```
+
+Setelah server berjalan, akses aplikasi melalui web browser di:
 ```text
 http://127.0.0.1:8000
 ```
+
+---
+
+## Akun Demo & Uji Coba
+
+Gunakan akun-akun di bawah ini untuk menguji coba hak akses role sistem:
+
+| Role | Username | Password | Deskripsi Akses |
+|---|---|---|---|
+| **Admin** | `admin` | `admin123` | Akses penuh pengelolaan master data, log aktivitas, dan user management. |
+| **Guru** | `guru` | `guru123` | Akses manajemen ujian miliknya, entry jawaban, dan proses analisis butir soal (T1-T5). |
+| **Kepala Sekolah** | `kepsek` | `kepsek123` | Akses monitoring dashboard, read-only laporan, audit log, dan ekspor. |
+
+---
+
+## Data Dummy Excel untuk Presentasi/Uji Coba
+
+Untuk keperluan demonstrasi kepada Dosen Pembimbing, kami telah menyediakan template data dummy ujian lengkap yang sudah berisi data siswa dan format isian jawaban/skor:
+- File ini dapat diunduh langsung di root project dengan nama: **`Template_Lengkap_Dummy_Ujian.xlsx`** (atau diakses di browser pada url **`http://localhost:8000/Template_Lengkap_Dummy_Ujian.xlsx`** saat server lokal Anda berjalan).
+- File ini berisi **16 sheet** (Identitas, Kelas, Siswa, Kunci Jawaban, Jawaban Siswa, Skor, T1-T5, dan referensi parameter) yang telah disesuaikan dengan kurikulum dan struktur administrasi sekolah.
 
 ---
 
