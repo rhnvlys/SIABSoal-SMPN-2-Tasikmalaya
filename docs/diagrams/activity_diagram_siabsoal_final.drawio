@@ -1,178 +1,184 @@
 <mxfile host="app.diagrams.net" agent="ChatGPT" compressed="false" pages="4">
   <diagram id="login-dashboard" name="Activity Login dan Dashboard">
-    <mxGraphModel dx="1895" dy="1185" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="1232" dy="770" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="l1" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;fillColor=#f5f5f5;swimlaneFillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;fontFamily=Times New Roman;" value="Pengguna (Admin / Guru / Kepala Sekolah)" vertex="1">
+        <mxCell id="l1" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;swimlaneFillColor=none;fontStyle=1;fontSize=16;fontFamily=Times New Roman;" value="Pengguna (Admin / Guru / Kepala Sekolah)" vertex="1">
           <mxGeometry height="1100" width="450" x="30" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="s" parent="l1" style="ellipse;html=1;fillColor=#000000;strokeColor=#000000;fontFamily=Times New Roman;fontSize=14;" value="" vertex="1">
+        <mxCell id="s" parent="l1" style="ellipse;html=1;fontFamily=Times New Roman;fontSize=16;fontStyle=1" value="" vertex="1">
           <mxGeometry height="24" width="24" x="208" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="l2" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;fillColor=#f5f5f5;swimlaneFillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=14;fontFamily=Times New Roman;" value="Sistem SIABSoal" vertex="1">
+        <mxCell id="l2" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;swimlaneFillColor=none;fontStyle=1;fontSize=16;fontFamily=Times New Roman;" value="Sistem SIABSoal" vertex="1">
           <mxGeometry height="1100" width="500" x="480" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="l3" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;fillColor=#f5f5f5;swimlaneFillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=14;fontFamily=Times New Roman;" value="Database MySQL" vertex="1">
+        <mxCell id="l3" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;swimlaneFillColor=none;fontStyle=1;fontSize=16;fontFamily=Times New Roman;" value="Database MySQL" vertex="1">
           <mxGeometry height="1100" width="320" x="980" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="db1" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Mencari akun pengguna dan role" vertex="1">
+        <mxCell id="db1" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Mencari akun pengguna dan role" vertex="1">
           <mxGeometry height="65" width="230" x="45" y="256.5" as="geometry" />
         </mxCell>
-        <mxCell id="u1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Membuka halaman login" vertex="1">
+        <mxCell id="u1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Membuka halaman login" vertex="1">
           <mxGeometry height="48" width="300" x="100" y="165" as="geometry" />
         </mxCell>
-        <mxCell id="u2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Mengisi username dan password" vertex="1">
+        <mxCell id="u2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Mengisi username dan password" vertex="1">
           <mxGeometry height="48" width="300" x="100" y="245" as="geometry" />
         </mxCell>
-        <mxCell id="u3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Mengirim permintaan login" vertex="1">
+        <mxCell id="u3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Mengirim permintaan login" vertex="1">
           <mxGeometry height="48" width="300" x="100" y="325" as="geometry" />
         </mxCell>
-        <mxCell id="s1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Menerima data login" vertex="1">
+        <mxCell id="s1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Menerima data login" vertex="1">
           <mxGeometry height="48" width="290" x="585" y="325" as="geometry" />
         </mxCell>
-        <mxCell id="s2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Memvalidasi username, password, dan status akun" vertex="1">
+        <mxCell id="s2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Memvalidasi username, password, dan status akun" vertex="1">
           <mxGeometry height="55" width="330" x="565" y="425" as="geometry" />
         </mxCell>
-        <mxCell id="d1" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Data login&#xa;valid?" vertex="1">
+        <mxCell id="d1" parent="1" style="rhombus;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Data login&#xa;valid?" vertex="1">
           <mxGeometry height="85" width="110" x="675" y="520" as="geometry" />
         </mxCell>
-        <mxCell id="s3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Menampilkan pesan login gagal" vertex="1">
+        <mxCell id="s3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Menampilkan pesan login gagal" vertex="1">
           <mxGeometry height="50" width="340" x="560" y="645" as="geometry" />
         </mxCell>
-        <mxCell id="s4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Membaca role pengguna" vertex="1">
+        <mxCell id="s4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Membaca role pengguna" vertex="1">
           <mxGeometry height="48" width="270" x="595" y="745" as="geometry" />
         </mxCell>
-        <mxCell id="s5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Menampilkan dashboard sesuai role:&#xa;Admin, Guru, atau Kepala Sekolah" vertex="1">
+        <mxCell id="s5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Menampilkan dashboard sesuai role:&#xa;Admin, Guru, atau Kepala Sekolah" vertex="1">
           <mxGeometry height="60" width="360" x="550" y="850" as="geometry" />
         </mxCell>
-        <mxCell id="e" parent="1" style="ellipse;shape=doubleEllipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Times New Roman;fontSize=14;" value="" vertex="1">
+        <mxCell id="e" parent="1" style="ellipse;shape=doubleEllipse;html=1;fontFamily=Times New Roman;fontSize=16;fontStyle=1" value="" vertex="1">
           <mxGeometry height="28" width="28" x="716" y="965" as="geometry" />
         </mxCell>
-        <mxCell id="f1" edge="1" parent="1" source="s" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=14;" target="u1">
+        <mxCell id="f1" edge="1" parent="1" source="s" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=16;fontStyle=1" target="u1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f2" edge="1" parent="1" source="u1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=14;" target="u2">
+        <mxCell id="f2" edge="1" parent="1" source="u1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=16;fontStyle=1" target="u2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f3" edge="1" parent="1" source="u2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=14;" target="u3">
+        <mxCell id="f3" edge="1" parent="1" source="u2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=16;fontStyle=1" target="u3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f4" edge="1" parent="1" source="u3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=14;" target="s1">
+        <mxCell id="f4" edge="1" parent="1" source="u3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=16;fontStyle=1" target="s1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f5" edge="1" parent="1" source="s1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=14;" target="db1">
+        <mxCell id="f5" edge="1" parent="1" source="s1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=16;fontStyle=1" target="db1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f6" edge="1" parent="1" source="s1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontFamily=Times New Roman;fontSize=14;" target="s2">
+        <mxCell id="f6" edge="1" parent="1" source="s1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontFamily=Times New Roman;fontSize=16;fontStyle=1" target="s2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f7" edge="1" parent="1" source="s2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=14;" target="d1">
+        <mxCell id="f7" edge="1" parent="1" source="s2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=16;fontStyle=1" target="d1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f8" edge="1" parent="1" source="d1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;labelBackgroundColor=#ffffff;fontFamily=Times New Roman;" target="s3" value="Tidak">
+        <mxCell id="f8" edge="1" parent="1" source="d1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;labelBackgroundColor=#ffffff;fontFamily=Times New Roman;fontStyle=1" target="s3" value="Tidak">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f9" edge="1" parent="1" source="s3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;labelBackgroundColor=#ffffff;fontFamily=Times New Roman;" value="Ulangi">
+        <mxCell id="f9" edge="1" parent="1" source="s3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;labelBackgroundColor=#ffffff;fontFamily=Times New Roman;fontStyle=1" value="Ulangi">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="250" y="370" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="f10" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;labelBackgroundColor=#ffffff;fontFamily=Times New Roman;" target="s4" value="Ya">
+        <mxCell id="f10" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;labelBackgroundColor=#ffffff;fontFamily=Times New Roman;fontStyle=1" target="s4" value="Ya">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="730" y="690" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="f11" edge="1" parent="1" source="s4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=14;" target="s5">
+        <mxCell id="f11" edge="1" parent="1" source="s4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=16;fontStyle=1" target="s5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f12" edge="1" parent="1" source="s5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=14;" target="e">
+        <mxCell id="f12" edge="1" parent="1" source="s5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=16;fontStyle=1" target="e">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
   <diagram id="kelola-ujian" name="Activity Kelola Data Ujian">
-    <mxGraphModel dx="2240" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1500" math="0" shadow="0">
+    <mxGraphModel dx="1540" dy="963" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1500" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="l1" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;fillColor=#f5f5f5;swimlaneFillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;fontFamily=Times New Roman;" value="Admin / Guru" vertex="1">
+        <mxCell id="l1" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;swimlaneFillColor=none;fontStyle=1;fontSize=16;fontFamily=Times New Roman;" value="Admin / Guru" vertex="1">
           <mxGeometry height="1300" width="450" x="30" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="u5" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Melihat detail ujian" vertex="1">
+        <mxCell id="u5" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Melihat detail ujian" vertex="1">
           <mxGeometry height="50" width="260" x="90" y="1174" as="geometry" />
         </mxCell>
-        <mxCell id="u4" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Mengelola nomor soal dan kunci jawaban" vertex="1">
+        <mxCell id="u4" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Mengelola nomor soal dan kunci jawaban" vertex="1">
           <mxGeometry height="50" width="310" x="65" y="780" as="geometry" />
         </mxCell>
-        <mxCell id="l2" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;fillColor=#f5f5f5;swimlaneFillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=14;fontFamily=Times New Roman;" value="Sistem SIABSoal" vertex="1">
+        <mxCell id="l2" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;swimlaneFillColor=none;fontStyle=1;fontSize=16;fontFamily=Times New Roman;" value="Sistem SIABSoal" vertex="1">
           <mxGeometry height="1300" width="500" x="480" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="s2" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Memvalidasi data ujian" vertex="1">
+        <mxCell id="s2" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Memvalidasi data ujian" vertex="1">
           <mxGeometry height="48" width="280" x="110" y="342" as="geometry" />
         </mxCell>
-        <mxCell id="s3" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Menampilkan pesan kesalahan validasi" vertex="1">
+        <mxCell id="s3" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Menampilkan pesan kesalahan validasi" vertex="1">
           <mxGeometry height="48" width="350" x="75" y="626" as="geometry" />
         </mxCell>
-        <mxCell id="s1" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Menampilkan daftar ujian sesuai hak akses pengguna" vertex="1">
+        <mxCell id="s1" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Menampilkan daftar ujian sesuai hak akses pengguna" vertex="1">
           <mxGeometry height="52" width="350" x="95" y="163" as="geometry" />
         </mxCell>
-        <mxCell id="l3" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;fillColor=#f5f5f5;swimlaneFillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=14;fontFamily=Times New Roman;" value="Database MySQL" vertex="1">
+        <mxCell id="d1" parent="l2" style="rhombus;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Data&#xa;valid?" vertex="1">
+          <mxGeometry height="85" width="110" x="195" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="f6" edge="1" parent="l2" source="s2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="d1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f7" edge="1" parent="l2" source="d1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="s3" value="Tidak">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s5" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Menampilkan pesan kesalahan kunci jawaban" vertex="1">
+          <mxGeometry height="48" width="380" x="60" y="980" as="geometry" />
+        </mxCell>
+        <mxCell id="l3" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;swimlaneFillColor=none;fontStyle=1;fontSize=16;fontFamily=Times New Roman;" value="Database MySQL" vertex="1">
           <mxGeometry height="1300" width="330" x="980" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="db1" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Simpan atau perbarui data ujian" vertex="1">
-          <mxGeometry height="65" width="240" x="60" y="510" as="geometry" />
+        <mxCell id="db1" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Simpan atau perbarui data ujian" vertex="1">
+          <mxGeometry height="65" width="240" x="60" y="490" as="geometry" />
         </mxCell>
-        <mxCell id="db2" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Simpan data soal dan kunci jawaban" vertex="1">
+        <mxCell id="db2" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Simpan data soal dan kunci jawaban" vertex="1">
           <mxGeometry height="65" width="260" x="40" y="830" as="geometry" />
         </mxCell>
-        <mxCell id="n1" parent="l3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=2;fontFamily=Times New Roman;" value="Nama ujian, mapel, kelas, tahun ajaran,&#xa;KKTP/KKM, tujuan pembelajaran,&#xa;dan lingkup materi." vertex="1">
-          <mxGeometry height="72" width="270" x="35" y="220" as="geometry" />
+        <mxCell id="n1" parent="l3" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=3;fontFamily=Times New Roman;" value="Nama ujian, mapel, kelas, tahun ajaran,&#xa;KKTP/KKM, tujuan pembelajaran,&#xa;dan lingkup materi." vertex="1">
+          <mxGeometry height="122" width="285" x="22.5" y="170" as="geometry" />
         </mxCell>
-        <mxCell id="s" parent="1" style="ellipse;html=1;fillColor=#000000;strokeColor=#000000;fontSize=14;fontFamily=Times New Roman;" value="" vertex="1">
+        <mxCell id="s" parent="1" style="ellipse;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="" vertex="1">
           <mxGeometry height="24" width="24" x="244" y="110" as="geometry" />
         </mxCell>
-        <mxCell id="u1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Memilih menu Data Ujian" vertex="1">
+        <mxCell id="u1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Memilih menu Data Ujian" vertex="1">
           <mxGeometry height="48" width="300" x="100" y="165" as="geometry" />
         </mxCell>
-        <mxCell id="u2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Memilih aksi tambah, ubah, lihat detail, atau hapus ujian" vertex="1">
+        <mxCell id="u2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Memilih aksi tambah, ubah, lihat detail, atau hapus ujian" vertex="1">
           <mxGeometry height="55" width="330" x="85" y="275" as="geometry" />
         </mxCell>
-        <mxCell id="u3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Mengisi atau memperbarui data ujian" vertex="1">
+        <mxCell id="u3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Mengisi atau memperbarui data ujian" vertex="1">
           <mxGeometry height="50" width="300" x="100" y="400" as="geometry" />
         </mxCell>
-        <mxCell id="d1" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Data&#xa;valid?" vertex="1">
-          <mxGeometry height="85" width="110" x="675" y="560" as="geometry" />
-        </mxCell>
-        <mxCell id="s4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Memvalidasi nomor soal dan kunci jawaban" vertex="1">
+        <mxCell id="s4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Memvalidasi nomor soal dan kunci jawaban" vertex="1">
           <mxGeometry height="50" width="370" x="545" y="790" as="geometry" />
         </mxCell>
-        <mxCell id="d2" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Kunci&#xa;valid?" vertex="1">
+        <mxCell id="d2" parent="1" style="rhombus;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Kunci&#xa;valid?" vertex="1">
           <mxGeometry height="85" width="110" x="675" y="880" as="geometry" />
         </mxCell>
-        <mxCell id="s5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Menampilkan pesan kesalahan kunci jawaban" vertex="1">
-          <mxGeometry height="48" width="380" x="540" y="1010" as="geometry" />
-        </mxCell>
-        <mxCell id="s6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Menampilkan detail ujian dan status kelengkapan kunci jawaban" vertex="1">
+        <mxCell id="s6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Menampilkan detail ujian dan status kelengkapan kunci jawaban" vertex="1">
           <mxGeometry height="55" width="390" x="535" y="1135" as="geometry" />
         </mxCell>
-        <mxCell id="e" parent="1" style="ellipse;shape=doubleEllipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=14;fontFamily=Times New Roman;" value="" vertex="1">
+        <mxCell id="e" parent="1" style="ellipse;shape=doubleEllipse;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="" vertex="1">
           <mxGeometry height="28" width="28" x="716" y="1245" as="geometry" />
         </mxCell>
-        <mxCell id="f1" edge="1" parent="1" source="s" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u1">
+        <mxCell id="f1" edge="1" parent="1" source="s" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="u1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f2" edge="1" parent="1" source="u1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="s1">
+        <mxCell id="f2" edge="1" parent="1" source="u1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="s1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f3" edge="1" parent="1" source="s1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u2">
+        <mxCell id="f3" edge="1" parent="1" source="s1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="u2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f4" edge="1" parent="1" source="u2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u3">
+        <mxCell id="f4" edge="1" parent="1" source="u2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="u3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f5" edge="1" parent="1" source="u3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontFamily=Times New Roman;" target="n1">
+        <mxCell id="f5" edge="1" parent="1" source="u3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="n1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="560" y="425" />
@@ -180,42 +186,36 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="f6" edge="1" parent="1" source="s2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="d1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="f7" edge="1" parent="1" source="d1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="s3" value="Tidak">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="f8" edge="1" parent="1" source="s3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u3" value="Perbaiki">
+        <mxCell id="f8" edge="1" parent="1" source="s3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="u3" value="Perbaiki">
           <mxGeometry relative="1" x="-0.2359" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="f9" edge="1" parent="1" source="d1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="db1" value="Ya">
+        <mxCell id="f9" edge="1" parent="1" source="d1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="db1" value="Ya">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f11" edge="1" parent="1" source="u4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="s4">
+        <mxCell id="f11" edge="1" parent="1" source="u4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="s4">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f12" edge="1" parent="1" source="s4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="d2">
+        <mxCell id="f12" edge="1" parent="1" source="s4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="d2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f13" edge="1" parent="1" source="d2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="s5" value="Tidak">
+        <mxCell id="f13" edge="1" parent="1" source="d2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="s5" value="Tidak">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f14" edge="1" parent="1" source="s5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u4" value="Perbaiki">
+        <mxCell id="f14" edge="1" parent="1" source="s5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="u4" value="Perbaiki">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f15" edge="1" parent="1" source="d2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="db2" value="Ya">
+        <mxCell id="f15" edge="1" parent="1" source="d2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="db2" value="Ya">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f17" edge="1" parent="1" source="s6" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u5">
+        <mxCell id="f17" edge="1" parent="1" source="s6" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="u5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f18" edge="1" parent="1" source="u5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="e">
+        <mxCell id="f18" edge="1" parent="1" source="u5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="e">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f16" edge="1" parent="1" source="db2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=14;fontFamily=Times New Roman;" target="s6">
+        <mxCell id="f16" edge="1" parent="1" source="db2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="s6">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1150" y="1162" />
@@ -224,7 +224,7 @@
             <mxPoint x="949.9988235294122" y="1172.53" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ngQCBG_JGK9SRgKQMCff-1" edge="1" parent="1" source="db1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=14;fontFamily=Times New Roman;" target="u4">
+        <mxCell id="ngQCBG_JGK9SRgKQMCff-1" edge="1" parent="1" source="db1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="u4">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1160" y="770" />
@@ -234,144 +234,157 @@
             <mxPoint x="270" y="987.53" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ngQCBG_JGK9SRgKQMCff-4" edge="1" parent="1" source="n1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=14;fontFamily=Times New Roman;" target="s2">
+        <mxCell id="ngQCBG_JGK9SRgKQMCff-4" edge="1" parent="1" source="n1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="s2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
   <diagram id="t1t5" name="Activity Proses Analisis T1-T5">
-    <mxGraphModel dx="3520" dy="2200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="2300" math="0" shadow="0">
+    <mxGraphModel dx="1232" dy="770" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="2300" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="l1" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;fillColor=#f5f5f5;swimlaneFillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;fontFamily=Times New Roman;" value="Admin / Guru" vertex="1">
+        <mxCell id="l1" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;swimlaneFillColor=none;fontStyle=0;fontSize=20;fontFamily=Times New Roman;convertToSvg=1;" value="Admin / Guru" vertex="1">
           <mxGeometry height="2020" width="385" x="20" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="s" parent="l1" style="ellipse;html=1;fillColor=#000000;strokeColor=#000000;fontSize=14;fontFamily=Times New Roman;" value="" vertex="1">
+        <mxCell id="s" parent="l1" style="ellipse;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="" vertex="1">
           <mxGeometry height="24" width="24" x="178" y="45" as="geometry" />
         </mxCell>
-        <mxCell id="u2" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Memilih metode input:&#xa;manual atau import Excel" vertex="1">
-          <mxGeometry height="55" width="280" x="55" y="270" as="geometry" />
+        <mxCell id="u2" parent="l1" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Memilih metode input:&#xa;manual atau import Excel" vertex="1">
+          <mxGeometry height="85" width="280" x="55" y="240" as="geometry" />
         </mxCell>
-        <mxCell id="u3" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Input status kehadiran dan jawaban siswa A/B/C/D/E atau skor 0/1" vertex="1">
-          <mxGeometry height="70" width="300" x="55" y="434" as="geometry" />
+        <mxCell id="u3" parent="l1" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Input status kehadiran dan jawaban&lt;div&gt;&amp;nbsp;siswa A/B/C/D/E atau skor 0/1&lt;/div&gt;" vertex="1">
+          <mxGeometry height="86" width="300" x="55" y="434" as="geometry" />
         </mxCell>
-        <mxCell id="u5" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Konfirmasi import data valid" vertex="1">
+        <mxCell id="u5" parent="l1" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Konfirmasi import data valid" vertex="1">
           <mxGeometry height="50" width="250" x="65" y="807.5" as="geometry" />
         </mxCell>
-        <mxCell id="u6" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Menjalankan Proses Data Mentah T1" vertex="1">
+        <mxCell id="u6" parent="l1" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Menjalankan Proses Data&amp;nbsp;&lt;div&gt;Mentah T1&lt;/div&gt;" vertex="1">
           <mxGeometry height="50" width="270" x="60" y="970" as="geometry" />
         </mxCell>
-        <mxCell id="u8" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Menjalankan Analisis Data T3" vertex="1">
+        <mxCell id="u8" parent="l1" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Menjalankan Analisis Data T3" vertex="1">
           <mxGeometry height="50" width="270" x="60" y="1315" as="geometry" />
         </mxCell>
-        <mxCell id="l2" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;fillColor=#f5f5f5;swimlaneFillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=14;fontFamily=Times New Roman;" value="Sistem SIABSoal" vertex="1">
+        <mxCell id="u9" parent="l1" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Melihat T4 dan T5" vertex="1">
+          <mxGeometry height="48" width="220" x="85" y="1650" as="geometry" />
+        </mxCell>
+        <mxCell id="l2" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;swimlaneFillColor=none;fontStyle=0;fontSize=20;fontFamily=Times New Roman;convertToSvg=1;" value="Sistem SIABSoal" vertex="1">
           <mxGeometry height="2020" width="585" x="405" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="s1" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Memeriksa kelengkapan data ujian dan kunci jawaban" vertex="1">
+        <mxCell id="s1" parent="l2" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Memeriksa kelengkapan&amp;nbsp;&lt;div&gt;data ujian dan kunci jawaban&lt;/div&gt;" vertex="1">
           <mxGeometry height="50" width="305" x="145" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="d1" parent="l2" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Data ujian dan&#xa;kunci lengkap?" vertex="1">
-          <mxGeometry height="85" width="110" x="237.5" y="170" as="geometry" />
+        <mxCell id="d1" parent="l2" style="rhombus;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Data ujian dan&#xa;kunci lengkap?" vertex="1">
+          <mxGeometry height="125" width="187.5" x="198.75" y="140" as="geometry" />
         </mxCell>
-        <mxCell id="d2" parent="l2" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Metode&#xa;input?" vertex="1">
+        <mxCell id="d2" parent="l2" style="rhombus;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Metode&#xa;input?" vertex="1">
           <mxGeometry height="85" width="110" x="235" y="315" as="geometry" />
         </mxCell>
-        <mxCell id="s2" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Validasi input manual" vertex="1">
+        <mxCell id="s2" parent="l2" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Validasi input manual" vertex="1">
           <mxGeometry height="48" width="285" x="150" y="445" as="geometry" />
         </mxCell>
-        <mxCell id="s3" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Validasi file dan header, kemudian tampilkan preview import" vertex="1">
+        <mxCell id="s3" parent="l2" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Validasi file dan header, kemudian&lt;div&gt;&amp;nbsp;tampilkan preview import&lt;/div&gt;" vertex="1">
           <mxGeometry height="55" width="350" x="120" y="700" as="geometry" />
         </mxCell>
-        <mxCell id="s4" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Mengonversi jawaban A/B/C/D/E menjadi skor 1/0 atau memproses skor biner" vertex="1">
-          <mxGeometry height="68" width="365" x="110" y="1046" as="geometry" />
+        <mxCell id="s4" parent="l2" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Mengonversi jawaban A/B/C/D/E menjadi&amp;nbsp;&lt;div&gt;skor 1/0 atau memproses skor biner&lt;/div&gt;" vertex="1">
+          <mxGeometry height="68" width="410" x="110" y="1046" as="geometry" />
         </mxCell>
-        <mxCell id="s5" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Proses Olah Data T2:&#xa;hitung benar, salah, nilai, ranking, kelompok atas, tengah, dan bawah" vertex="1">
+        <mxCell id="s5" parent="l2" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Proses Olah Data T2:&lt;br&gt;hitung benar, salah, nilai, ranking,&lt;div&gt;kelompok atas, tengah, dan bawah&lt;/div&gt;" vertex="1">
           <mxGeometry height="80" width="395" x="110" y="1167.5" as="geometry" />
         </mxCell>
-        <mxCell id="d5" parent="l2" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="T2 siap&#xa;dan kelompok&#xa;seimbang?" vertex="1">
-          <mxGeometry height="95" width="110" x="237.5" y="1410" as="geometry" />
+        <mxCell id="d5" parent="l2" style="rhombus;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="T2 siap&#xa;dan kelompok&#xa;seimbang?" vertex="1">
+          <mxGeometry height="120" width="232.5" x="205" y="1410" as="geometry" />
         </mxCell>
-        <mxCell id="e" parent="l2" style="ellipse;shape=doubleEllipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=14;fontFamily=Times New Roman;" value="" vertex="1">
-          <mxGeometry height="28" width="28" x="293.5" y="1930" as="geometry" />
+        <mxCell id="s6" parent="l2" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Memvalidasi T2 selesai dan kelompok atas/bawah&amp;nbsp;&lt;div&gt;tersedia serta seimbang&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="437.5" x="102.5" y="1300" as="geometry" />
         </mxCell>
-        <mxCell id="s8" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Menyusun Daftar Nilai T4 dan Rekap Nilai T5" vertex="1">
-          <mxGeometry height="55" width="300" x="157.5" y="1675" as="geometry" />
-        </mxCell>
-        <mxCell id="f32" edge="1" parent="l2" source="s8" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="e">
+        <mxCell id="f25" edge="1" parent="l2" source="s6" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="d5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="l3" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;fillColor=#f5f5f5;swimlaneFillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=14;fontFamily=Times New Roman;" value="Database MySQL" vertex="1">
+        <mxCell id="s7" parent="l2" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Menghitung BA, BB, JA, JB, DP, TK, kategori DP/TK,&amp;nbsp;&lt;div&gt;dan keputusan butir&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="490" x="76.25" y="1580" as="geometry" />
+        </mxCell>
+        <mxCell id="f26" edge="1" parent="l2" source="d5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="s7" value="Ya">
+          <mxGeometry relative="1" x="0.3377" y="-26" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d4" parent="l2" style="rhombus;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Preview&#xa;tanpa error?" vertex="1">
+          <mxGeometry height="95" width="195" x="197.5" y="785" as="geometry" />
+        </mxCell>
+        <mxCell id="f13" edge="1" parent="l2" source="s3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="d4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e" parent="l2" style="ellipse;shape=doubleEllipse;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="" vertex="1">
+          <mxGeometry height="28" width="28" x="293.5" y="1970" as="geometry" />
+        </mxCell>
+        <mxCell id="s8" parent="l2" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Menyusun Daftar Nilai T4 dan&amp;nbsp;&lt;div&gt;Rekap Nilai T5&lt;/div&gt;" vertex="1">
+          <mxGeometry height="55" width="300" x="157.5" y="1810" as="geometry" />
+        </mxCell>
+        <mxCell id="f32" edge="1" parent="l2" source="s8" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="e">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l3" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;swimlaneFillColor=none;fontStyle=0;fontSize=20;fontFamily=Times New Roman;convertToSvg=1;" value="Database MySQL" vertex="1">
           <mxGeometry height="2020" width="365" x="990" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="db1" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Baca data ujian dan soal" vertex="1">
-          <mxGeometry height="65" width="230" x="65" y="180" as="geometry" />
+        <mxCell id="db1" parent="l3" style="shape=cylinder3d;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Baca data ujian dan soal" vertex="1">
+          <mxGeometry height="65" width="230" x="65" y="170" as="geometry" />
         </mxCell>
-        <mxCell id="db2" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Simpan peserta ujian dan jawaban siswa" vertex="1">
+        <mxCell id="db2" parent="l3" style="shape=cylinder3d;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Simpan peserta ujian&amp;nbsp;&lt;div&gt;dan jawaban siswa&lt;/div&gt;" vertex="1">
           <mxGeometry height="65" width="250" x="55" y="550" as="geometry" />
         </mxCell>
-        <mxCell id="db3" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Simpan hasil import jawaban siswa" vertex="1">
-          <mxGeometry height="65" width="260" x="35" y="962.5" as="geometry" />
+        <mxCell id="db3" parent="l3" style="shape=cylinder3d;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Simpan hasil import jawaban siswa" vertex="1">
+          <mxGeometry height="65" width="315" x="35" y="962.5" as="geometry" />
         </mxCell>
-        <mxCell id="db4" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Perbarui jawaban_siswa dan status ujian" vertex="1">
-          <mxGeometry height="65" width="270" x="45" y="1100" as="geometry" />
+        <mxCell id="db4" parent="l3" style="shape=cylinder3d;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Perbarui jawaban_siswa&amp;nbsp;&lt;div&gt;dan status ujian&lt;/div&gt;" vertex="1">
+          <mxGeometry height="105" width="270" x="45" y="1060" as="geometry" />
         </mxCell>
-        <mxCell id="db5" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Simpan nilai, ranking, kelompok, dan status olah_data" vertex="1">
+        <mxCell id="db5" parent="l3" style="shape=cylinder3d;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Simpan nilai, ranking, kelompok,&lt;div&gt;&amp;nbsp;dan status olah_data&lt;/div&gt;" vertex="1">
           <mxGeometry height="65" width="290" x="45" y="1240" as="geometry" />
         </mxCell>
-        <mxCell id="db6" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Simpan hasil pada analisis_butir dan ubah status menjadi dianalisis" vertex="1">
-          <mxGeometry height="70" width="300" x="55" y="1540" as="geometry" />
+        <mxCell id="db6" parent="l3" style="shape=cylinder3d;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Simpan hasil pada analisis_butir dan&amp;nbsp;&lt;div&gt;ubah status&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;menjadi dianalisis&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="335" x="30" y="1570" as="geometry" />
         </mxCell>
-        <mxCell id="l4" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;fillColor=#f5f5f5;swimlaneFillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=14;fontFamily=Times New Roman;" value="Kepala Sekolah" vertex="1">
-          <mxGeometry height="2030" width="385" x="1355" y="60" as="geometry" />
+        <mxCell id="l4" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;swimlaneFillColor=none;fontStyle=0;fontSize=20;fontFamily=Times New Roman;convertToSvg=1;" value="Kepala Sekolah" vertex="1">
+          <mxGeometry height="2020" width="385" x="1355" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="k1" parent="l4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontFamily=Times New Roman;" value="Melihat laporan secara read-only" vertex="1">
-          <mxGeometry height="55" width="255" x="65" y="1675" as="geometry" />
+        <mxCell id="k1" parent="l4" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Melihat laporan&amp;nbsp;&lt;div&gt;secara read-only&lt;/div&gt;" vertex="1">
+          <mxGeometry height="55" width="255" x="95" y="1710" as="geometry" />
         </mxCell>
-        <mxCell id="u1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Memilih ujian yang akan diolah" vertex="1">
+        <mxCell id="u1" parent="1" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Memilih ujian yang akan diolah" vertex="1">
           <mxGeometry height="48" width="280" x="70" y="155" as="geometry" />
         </mxCell>
-        <mxCell id="d3" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Data&#xa;valid?" vertex="1">
+        <mxCell id="d3" parent="1" style="rhombus;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Data&#xa;valid?" vertex="1">
           <mxGeometry height="85" width="110" x="645" y="600" as="geometry" />
         </mxCell>
-        <mxCell id="u4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Download template dan unggah file Excel" vertex="1">
+        <mxCell id="u4" parent="1" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Download template dan&amp;nbsp;&lt;div&gt;unggah file Excel&lt;/div&gt;" vertex="1">
           <mxGeometry height="55" width="290" x="65" y="760" as="geometry" />
         </mxCell>
-        <mxCell id="d4" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Preview&#xa;tanpa error?" vertex="1">
-          <mxGeometry height="85" width="110" x="645" y="850" as="geometry" />
-        </mxCell>
-        <mxCell id="u7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Memilih metode kelompok:&#xa;50% atau jumlah manual" vertex="1">
+        <mxCell id="u7" parent="1" style="rounded=1;html=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" value="Memilih metode kelompok:&#xa;50% atau jumlah manual" vertex="1">
           <mxGeometry height="55" width="280" x="70" y="1240" as="geometry" />
         </mxCell>
-        <mxCell id="s6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Memvalidasi T2 selesai dan kelompok atas/bawah tersedia serta seimbang" vertex="1">
-          <mxGeometry height="60" width="385" x="505" y="1370" as="geometry" />
-        </mxCell>
-        <mxCell id="s7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Menghitung BA, BB, JA, JB, DP, TK, kategori DP/TK, dan keputusan butir" vertex="1">
-          <mxGeometry height="70" width="395" x="500" y="1600" as="geometry" />
-        </mxCell>
-        <mxCell id="u9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Melihat T4 dan T5" vertex="1">
-          <mxGeometry height="48" width="220" x="100" y="1735" as="geometry" />
-        </mxCell>
-        <mxCell id="f1" edge="1" parent="1" source="s" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u1">
+        <mxCell id="f1" edge="1" parent="1" source="s" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="u1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f2" edge="1" parent="1" source="u1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="s1">
+        <mxCell id="f2" edge="1" parent="1" source="u1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="s1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f3" edge="1" parent="1" source="s1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="db1">
+        <mxCell id="f3" edge="1" parent="1" source="s1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="db1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f4" edge="1" parent="1" source="db1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="d1">
+        <mxCell id="f4" edge="1" parent="1" source="db1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="d1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f5" edge="1" parent="1" source="d1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Times New Roman;" target="u2" value="Ya">
+        <mxCell id="f5" edge="1" parent="1" source="d1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="u2" value="Ya">
+          <mxGeometry relative="1" x="0.1906" y="8" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f6" edge="1" parent="1" source="u2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="d2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f6" edge="1" parent="1" source="u2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontFamily=Times New Roman;" target="d2">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="f7" edge="1" parent="1" source="d2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u3" value="Manual">
+        <mxCell id="f7" edge="1" parent="1" source="d2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="u3" value="Manual">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="695" y="470" />
@@ -379,33 +392,31 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="f8" edge="1" parent="1" source="u3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="s2">
+        <mxCell id="f8" edge="1" parent="1" source="u3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="s2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f9" edge="1" parent="1" source="s2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="d3">
+        <mxCell id="f9" edge="1" parent="1" source="s2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="d3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f10" edge="1" parent="1" source="d3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Times New Roman;" target="db2" value="Ya">
+        <mxCell id="f10" edge="1" parent="1" source="d3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="db2" value="Ya">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f11" edge="1" parent="1" source="d2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u4" value="Import Excel">
-          <mxGeometry relative="1" as="geometry">
+        <mxCell id="f11" edge="1" parent="1" source="d2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="u4" value="Import Excel">
+          <mxGeometry relative="1" x="0.0046" y="13" as="geometry">
+            <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="40" y="418" />
               <mxPoint x="40" y="788" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="f12" edge="1" parent="1" source="u4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="s3">
+        <mxCell id="f12" edge="1" parent="1" source="u4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="s3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f13" edge="1" parent="1" source="s3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="d4">
+        <mxCell id="f14" edge="1" parent="1" source="d4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="u5" value="Ya">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f14" edge="1" parent="1" source="d4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fontFamily=Times New Roman;" target="u5" value="Ya">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="f15" edge="1" parent="1" source="u5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="db3">
+        <mxCell id="f15" edge="1" parent="1" source="u5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="db3">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="300" y="970" />
@@ -413,57 +424,42 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="f17" edge="1" parent="1" source="db3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u6">
+        <mxCell id="f17" edge="1" parent="1" source="db3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="u6">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f18" edge="1" parent="1" source="u6" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=14;fontFamily=Times New Roman;" target="s4">
+        <mxCell id="f18" edge="1" parent="1" source="u6" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="s4">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f19" edge="1" parent="1" source="s4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontFamily=Times New Roman;" target="db4">
+        <mxCell id="f19" edge="1" parent="1" source="s4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=-0.001;entryY=0.173;entryDx=0;entryDy=0;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;entryPerimeter=0;" target="db4">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f20" edge="1" parent="1" source="db4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u7">
+        <mxCell id="f20" edge="1" parent="1" source="db4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="u7">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f21" edge="1" parent="1" source="u7" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="s5">
+        <mxCell id="f21" edge="1" parent="1" source="u7" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="s5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f22" edge="1" parent="1" source="s5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontFamily=Times New Roman;" target="db5">
+        <mxCell id="f22" edge="1" parent="1" source="s5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="db5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f23" edge="1" parent="1" source="db5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u8">
+        <mxCell id="f23" edge="1" parent="1" source="db5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="u8">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f24" edge="1" parent="1" source="u8" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="s6">
+        <mxCell id="f24" edge="1" parent="1" source="u8" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="s6">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f25" edge="1" parent="1" source="s6" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="d5">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="f26" edge="1" parent="1" source="d5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="s7" value="Ya">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="f27" edge="1" parent="1" source="s7" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="db6">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="f28" edge="1" parent="1" source="db6" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="s8">
+        <mxCell id="f28" edge="1" parent="1" source="db6" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="s8">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1195" y="1700" />
-              <mxPoint x="700" y="1700" />
+              <mxPoint x="1187" y="1760" />
+              <mxPoint x="700" y="1760" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="f29" edge="1" parent="1" source="s8" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u9">
+        <mxCell id="f30" edge="1" parent="1" source="s8" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="k1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f30" edge="1" parent="1" source="s8" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="k1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="f31" edge="1" parent="1" source="u9" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontFamily=Times New Roman;" target="e">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="yz8VwK-4EJyxfkuTb6x0-1" edge="1" parent="1" source="db2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontFamily=Times New Roman;" target="u6">
+        <mxCell id="yz8VwK-4EJyxfkuTb6x0-1" edge="1" parent="1" source="db2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="u6">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1170" y="950" />
@@ -471,93 +467,114 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="yz8VwK-4EJyxfkuTb6x0-2" edge="1" parent="1" source="k1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="s8" value="">
+        <mxCell id="yz8VwK-4EJyxfkuTb6x0-2" edge="1" parent="1" source="k1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="s8" value="">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1420" y="1758" as="sourcePoint" />
             <mxPoint x="730" y="1850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f29" edge="1" parent="1" source="s8" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;entryX=0.432;entryY=0.625;entryDx=0;entryDy=0;entryPerimeter=0;" target="u9">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="210.0666666666666" y="1823" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f31" edge="1" parent="1" source="u9" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;" target="e">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="325" y="1820" />
+              <mxPoint x="512" y="1820" />
+              <mxPoint x="512" y="2044" />
+            </Array>
+            <mxPoint x="210" y="1823" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f27" edge="1" parent="1" source="s7" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=20;fontFamily=Times New Roman;fontStyle=0;convertToSvg=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="db6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="947.5" y="1730" as="sourcePoint" />
+            <mxPoint x="1020" y="1730" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
   <diagram id="laporan-export" name="Activity Lihat dan Export Laporan">
-    <mxGraphModel dx="1643" dy="1027" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1250" math="0" shadow="0">
+    <mxGraphModel dx="1232" dy="770" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1250" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="l1" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;fillColor=#f5f5f5;swimlaneFillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;fontFamily=Times New Roman;" value="Pengguna (Admin / Guru / Kepala Sekolah)" vertex="1">
+        <mxCell id="l1" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;swimlaneFillColor=none;fontStyle=1;fontSize=16;fontFamily=Times New Roman;" value="Pengguna (Admin / Guru / Kepala Sekolah)" vertex="1">
           <mxGeometry height="1010" width="410" x="70" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="s" parent="l1" style="ellipse;html=1;fillColor=#000000;strokeColor=#000000;fontSize=14;fontFamily=Times New Roman;" value="" vertex="1">
-          <mxGeometry height="24" width="24" x="208" y="50" as="geometry" />
+        <mxCell id="s" parent="l1" style="ellipse;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="" vertex="1">
+          <mxGeometry height="24" width="24" x="168" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="u2" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Melihat laporan pada sistem" vertex="1">
+        <mxCell id="u2" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Melihat laporan pada sistem" vertex="1">
           <mxGeometry height="48" width="280" x="80" y="226" as="geometry" />
         </mxCell>
-        <mxCell id="u3" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Memilih format PDF atau Excel" vertex="1">
+        <mxCell id="u3" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Memilih format PDF atau Excel" vertex="1">
           <mxGeometry height="48" width="290" x="75" y="478.5" as="geometry" />
         </mxCell>
-        <mxCell id="u4" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Mengunduh laporan" vertex="1">
+        <mxCell id="u4" parent="l1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Mengunduh laporan" vertex="1">
           <mxGeometry height="48" width="260" x="90" y="827" as="geometry" />
         </mxCell>
-        <mxCell id="l2" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;fillColor=#f5f5f5;swimlaneFillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=14;fontFamily=Times New Roman;" value="Sistem SIABSoal" vertex="1">
+        <mxCell id="l2" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;swimlaneFillColor=none;fontStyle=1;fontSize=16;fontFamily=Times New Roman;" value="Sistem SIABSoal" vertex="1">
           <mxGeometry height="1010" width="500" x="480" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="s1" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Memeriksa hak akses dan meminta data laporan" vertex="1">
+        <mxCell id="s1" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Memeriksa hak akses dan meminta data laporan" vertex="1">
           <mxGeometry height="50" width="330" x="85" y="107.5" as="geometry" />
         </mxCell>
-        <mxCell id="s3" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Membentuk file PDF" vertex="1">
+        <mxCell id="s3" parent="l2" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Membentuk file PDF" vertex="1">
           <mxGeometry height="48" width="270" x="115" y="590" as="geometry" />
         </mxCell>
-        <mxCell id="l3" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;fillColor=#f5f5f5;swimlaneFillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=14;fontFamily=Times New Roman;" value="Database MySQL" vertex="1">
+        <mxCell id="l3" parent="1" style="swimlane;html=1;rounded=0;horizontal=1;startSize=32;swimlaneFillColor=none;fontStyle=1;fontSize=16;fontFamily=Times New Roman;" value="Database MySQL" vertex="1">
           <mxGeometry height="1010" width="340" x="980" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="db1" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Baca data ujian, jawaban, nilai, kelompok, dan analisis butir" vertex="1">
+        <mxCell id="db1" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Baca data ujian, jawaban, nilai, kelompok, dan analisis butir" vertex="1">
           <mxGeometry height="70" width="250" x="55" y="97.5" as="geometry" />
         </mxCell>
-        <mxCell id="db2" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Simpan riwayat export pada log_aktivitas" vertex="1">
-          <mxGeometry height="65" width="270" x="25" y="645" as="geometry" />
+        <mxCell id="db2" parent="l3" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Simpan riwayat export&amp;nbsp;&lt;div&gt;pada log_aktivitas&lt;/div&gt;" vertex="1">
+          <mxGeometry height="105" width="270" x="25" y="645" as="geometry" />
         </mxCell>
-        <mxCell id="u1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Times New Roman;" value="Memilih ujian dan jenis laporan:&#xa;T1, T2, T3, T4, atau T5" vertex="1">
+        <mxCell id="u1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Memilih ujian dan jenis laporan:&#xa;T1, T2, T3, T4, atau T5" vertex="1">
           <mxGeometry height="55" width="310" x="95" y="165" as="geometry" />
         </mxCell>
-        <mxCell id="s2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Menyusun dan menampilkan laporan" vertex="1">
+        <mxCell id="s2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Menyusun dan menampilkan laporan" vertex="1">
           <mxGeometry height="50" width="290" x="585" y="285" as="geometry" />
         </mxCell>
-        <mxCell id="d1" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Export&#xa;laporan?" vertex="1">
+        <mxCell id="d1" parent="1" style="rhombus;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Export&#xa;laporan?" vertex="1">
           <mxGeometry height="85" width="110" x="675" y="390" as="geometry" />
         </mxCell>
-        <mxCell id="d2" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Times New Roman;" value="Format&#xa;file?" vertex="1">
+        <mxCell id="d2" parent="1" style="rhombus;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Format&#xa;file?" vertex="1">
           <mxGeometry height="85" width="110" x="675" y="520" as="geometry" />
         </mxCell>
-        <mxCell id="s4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Membentuk file Excel" vertex="1">
+        <mxCell id="s4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Membentuk file Excel" vertex="1">
           <mxGeometry height="48" width="270" x="595" y="755" as="geometry" />
         </mxCell>
-        <mxCell id="s5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Times New Roman;" value="Mengirim file laporan untuk diunduh" vertex="1">
+        <mxCell id="s5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="Mengirim file laporan untuk diunduh" vertex="1">
           <mxGeometry height="50" width="330" x="565" y="885" as="geometry" />
         </mxCell>
-        <mxCell id="e" parent="1" style="ellipse;shape=doubleEllipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=14;fontFamily=Times New Roman;" value="" vertex="1">
+        <mxCell id="e" parent="1" style="ellipse;shape=doubleEllipse;html=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" value="" vertex="1">
           <mxGeometry height="28" width="28" x="716" y="1010" as="geometry" />
         </mxCell>
-        <mxCell id="f1" edge="1" parent="1" source="s" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u1">
+        <mxCell id="f1" edge="1" parent="1" source="s" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="u1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f2" edge="1" parent="1" source="u1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="s1">
+        <mxCell id="f2" edge="1" parent="1" source="u1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="s1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f3" edge="1" parent="1" source="s1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="db1">
+        <mxCell id="f3" edge="1" parent="1" source="s1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="db1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f4" edge="1" parent="1" source="db1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=14;fontFamily=Times New Roman;" target="s2">
+        <mxCell id="f4" edge="1" parent="1" source="db1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="s2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f5" edge="1" parent="1" source="s2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u2">
+        <mxCell id="f5" edge="1" parent="1" source="s2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="u2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f6" edge="1" parent="1" source="u2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=14;fontFamily=Times New Roman;" target="d1">
+        <mxCell id="f6" edge="1" parent="1" source="u2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="d1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f7" edge="1" parent="1" source="d1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="e" value="Tidak">
+        <mxCell id="f7" edge="1" parent="1" source="d1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="e" value="Tidak">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1290" y="432.5" />
@@ -565,37 +582,37 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="f8" edge="1" parent="1" source="d1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u3" value="Ya">
+        <mxCell id="f8" edge="1" parent="1" source="d1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="u3" value="Ya">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f9" edge="1" parent="1" source="u3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="d2">
+        <mxCell id="f9" edge="1" parent="1" source="u3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="d2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f10" edge="1" parent="1" source="d2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;fontFamily=Times New Roman;" target="s3" value="PDF">
+        <mxCell id="f10" edge="1" parent="1" source="d2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;fontFamily=Times New Roman;fontStyle=1" target="s3" value="PDF">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f11" edge="1" parent="1" source="d2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Times New Roman;" target="s4" value="Excel">
+        <mxCell id="f11" edge="1" parent="1" source="d2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Times New Roman;fontStyle=1" target="s4" value="Excel">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="730" y="630" />
-              <mxPoint x="585" y="630" />
-              <mxPoint x="585" y="779" />
+              <mxPoint x="560" y="630" />
+              <mxPoint x="560" y="779" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="f12" edge="1" parent="1" source="s3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontFamily=Times New Roman;" target="db2">
+        <mxCell id="f12" edge="1" parent="1" source="s3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="db2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f13" edge="1" parent="1" source="s4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="db2">
+        <mxCell id="f13" edge="1" parent="1" source="s4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="db2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f14" edge="1" parent="1" source="db2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=14;fontFamily=Times New Roman;" target="s5">
+        <mxCell id="f14" edge="1" parent="1" source="db2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="s5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f15" edge="1" parent="1" source="s5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=14;fontFamily=Times New Roman;" target="u4">
+        <mxCell id="f15" edge="1" parent="1" source="s5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="u4">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f16" edge="1" parent="1" source="u4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=14;fontFamily=Times New Roman;" target="e">
+        <mxCell id="f16" edge="1" parent="1" source="u4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=16;fontFamily=Times New Roman;fontStyle=1" target="e">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
